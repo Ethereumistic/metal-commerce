@@ -6,9 +6,12 @@ import { validateProductFilters } from "./lib/commerce";
 import { readCategoryCatalog, readProductCatalog } from "./lib/commerce.server";
 import { createShopGateway } from "./lib/shop.server";
 
-function noStore(response: Response) {
+const LOCAL_HOST = /^(localhost|127\.0\.0\.1|\[::1\])$|\.localhost$/;
+
+function noStore(response: Response, secure: boolean) {
   const headers = new Headers(response.headers);
   headers.set("Cache-Control", "private, no-store");
+  if (secure) headers.set("Strict-Transport-Security", "max-age=31536000");
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -17,8 +20,28 @@ function noStore(response: Response) {
 }
 export default {
   async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    // Shop sessions use __Host- cookies, which only work over HTTPS.
+    if (url.protocol === "http:" && !LOCAL_HOST.test(url.hostname)) {
+      url.protocol = "https:";
+      return new Response(null, {
+        status: 308,
+        headers: { Location: url.href, "Cache-Control": "no-store" },
+      });
+    }
+    const secure = url.protocol === "https:";
     try {
-      return noStore(await serve(request));
+      const response = await serve(request);
+      if (response.status >= 400)
+        console.warn(
+          JSON.stringify({
+            event: "metal_craft_error_response",
+            status: response.status,
+            method: request.method,
+            path: url.pathname,
+          }),
+        );
+      return noStore(response, secure);
     } catch {
       console.warn(JSON.stringify({ event: "metal_craft_request_unavailable" }));
       return noStore(
@@ -28,6 +51,7 @@ export default {
             : "Storefront temporarily unavailable.",
           { status: 503 },
         ),
+        secure,
       );
     }
   },
