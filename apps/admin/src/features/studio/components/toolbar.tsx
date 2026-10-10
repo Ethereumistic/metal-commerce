@@ -304,8 +304,7 @@ function ExportPopover() {
             <>
               <ToleranceField value={tolerance} onChange={setTolerance} />
               <p className="-mt-1 text-xs text-muted-foreground">
-                DXF holds closed cut contours: the product outline on layer CUT_OUTLINE and merged artwork openings
-                on CUT_INNER, in {doc.unit === "mm" ? "millimetres" : "unitless design units"}.
+                DXF holds closed cut contours (product outline and merged artwork) on layer 0, in {doc.unit === "mm" ? "millimetres" : "unitless design units"}.
               </p>
             </>
           )}

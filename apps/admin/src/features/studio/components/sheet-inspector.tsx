@@ -28,7 +28,7 @@ export function SheetInspector() {
   const [busy, setBusy] = useState<ExportFormat | null>(null);
   const [tolerance, setTolerance] = useState(DXF_TOLERANCE);
   const [commonLine, setCommonLine] = useState(true);
-  const [reference, setReference] = useState(false);
+  const [reference, setReference] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { sheet, artboard } = doc;
   const layout = nest(sheet, artboard);
@@ -226,14 +226,13 @@ export function SheetInspector() {
           />
         )}
         <SwitchField
-          label="Reference layers"
-          hint="Adds the sheet edge (REF_SHEET) and safety margin (REF_MARGIN). Turn these layers off before cutting."
+          label="Sheet & margin (layer SHEET)"
+          hint="Draws the sheet edge and the safety margin on layer SHEET, which is for reference and not cut."
           checked={reference}
           onChange={setReference}
         />
         <p className="text-xs text-muted-foreground">
-          DXF is real size in mm, origin at the sheet's bottom-left. Piece outlines are on CUT_OUTLINE; artwork
-          openings, as merged closed contours, on CUT_INNER. SVG and PNG are for viewing. The SVG omits the margin guide.
+          DXF is real size in mm, origin at the sheet's bottom-left. Everything to cut (piece outlines and artwork contours) is on layer 0. SVG and PNG are for viewing. The SVG omits the margin guide.
         </p>
         {error && <p className="text-xs text-destructive">{error}</p>}
       </Section>

@@ -247,7 +247,7 @@ export async function exportSheet(
     const { dxf } = sheetDxf(doc, (index) => signForSlot(doc, index), {
       tolerance: options.tolerance ?? DXF_TOLERANCE,
       commonLine: options.commonLine ?? true,
-      reference: options.reference ?? false,
+      reference: options.reference ?? true,
       artwork: options.artwork,
     });
     return download(new Blob([dxf], { type: "application/dxf" }), `${name}.dxf`);

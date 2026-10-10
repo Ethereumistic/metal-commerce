@@ -35,17 +35,20 @@ export type DxfOptions = {
 export type SheetDxfOptions = DxfOptions & {
   /** Merge shared straight piece edges into single lines (gap 0). */
   commonLine: boolean;
-  /** Add the sheet edge and safety margin on non-cutting reference layers. */
+  /** Add the sheet edge and safety margin on the non-cutting SHEET layer. */
   reference: boolean;
   /** Include artwork openings; off writes piece outlines only. */
   artwork: boolean;
 };
 
+/**
+ * The workshop's laser cuts everything on layer 0 (always present in a DXF).
+ * The sheet edge and safety margin are reference only, on SHEET in AutoCAD
+ * colour index 4 (standard cyan / light blue).
+ */
 export const LAYERS = {
-  outline: { name: "CUT_OUTLINE", color: 1 },
-  inner: { name: "CUT_INNER", color: 5 },
-  sheet: { name: "REF_SHEET", color: 8 },
-  margin: { name: "REF_MARGIN", color: 2 },
+  cut: { name: "0" },
+  sheet: { name: "SHEET", color: 4 },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -361,19 +364,15 @@ const BULGE_QUARTER = Math.tan(Math.PI / 8); // 90° arc
 function createWriter(doc: StudioDocument, reference: boolean) {
   const writer = new DxfWriter();
   writer.setUnits(doc.unit === "mm" ? Units.Millimeters : Units.Unitless);
-  writer.addLayer(LAYERS.outline.name, LAYERS.outline.color, "Continuous");
-  writer.addLayer(LAYERS.inner.name, LAYERS.inner.color, "Continuous");
-  if (reference) {
-    writer.addLayer(LAYERS.sheet.name, LAYERS.sheet.color, "Continuous");
-    writer.addLayer(LAYERS.margin.name, LAYERS.margin.color, "Continuous");
-  }
+  // Layer 0 is created by the writer itself.
+  if (reference) writer.addLayer(LAYERS.sheet.name, LAYERS.sheet.color, "Continuous");
   return writer;
 }
 
 /** Writes a product outline with its top-left at (ox, oy) in a Y-down frame of height `frame`. */
 function writeOutline(writer: DxfWriter, artboard: Artboard, ox: number, oy: number, frame: number, tolerance: number) {
   const { width: w, height: h } = artboard;
-  const layerName = LAYERS.outline.name;
+  const layerName = LAYERS.cut.name;
   const X = (x: number) => ox + x;
   const Y = (y: number) => frame - (oy + y);
   if (artboard.shape === "ellipse") {
@@ -418,7 +417,7 @@ function writeContours(writer: DxfWriter, rings: Ring[], ox: number, oy: number,
   for (const ring of rings)
     writer.addLWPolyline(
       ring.map((p) => ({ point: point2d(ox + p.x, frame - (oy + p.y)) })),
-      { flags: LWPolylineFlags.Closed, layerName: LAYERS.inner.name },
+      { flags: LWPolylineFlags.Closed, layerName: LAYERS.cut.name },
     );
 }
 
@@ -480,7 +479,7 @@ export function sheetDxf(doc: StudioDocument, signFor: (index: number) => Sign, 
         { flags: LWPolylineFlags.Closed, layerName },
       );
     rect(0, 0, sheet.width, sheet.height, LAYERS.sheet.name);
-    rect(layout.usable.x, layout.usable.y, layout.usable.width, layout.usable.height, LAYERS.margin.name);
+    rect(layout.usable.x, layout.usable.y, layout.usable.width, layout.usable.height, LAYERS.sheet.name);
   }
 
   if (options.commonLine && canCommonLine(doc)) {
@@ -492,7 +491,7 @@ export function sheetDxf(doc: StudioDocument, signFor: (index: number) => Sign, 
       horizontal.push({ a: x, b: x + artboard.width, at: y }, { a: x, b: x + artboard.width, at: y + artboard.height });
       vertical.push({ a: y, b: y + artboard.height, at: x }, { a: y, b: y + artboard.height, at: x + artboard.width });
     }
-    const layerName = LAYERS.outline.name;
+    const layerName = LAYERS.cut.name;
     for (const s of mergeSegments(horizontal))
       writer.addLine(point3d(s.a, H - s.at, 0), point3d(s.b, H - s.at, 0), { layerName });
     for (const s of mergeSegments(vertical))

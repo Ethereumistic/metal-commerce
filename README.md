@@ -43,9 +43,10 @@ Operators sign in with their **Echoray platform account**, either with an email 
 - **Export.** SVG output is vector-only, with no fonts, scripts or external links, and uses mm units when the design is set to millimetres. PNG output is at a chosen pixel width.
 - **Sheet layout.** The artboard is the *product* (square or circle, in mm). "Sheet layout" nests it on the machine sheet: by default 1500 × 3000 mm with a 48 mm safety margin, giving 3 × 6 = 18 pieces of 468 mm. Sheet size and presets, margin, gap and leftover placement are adjustable. "Largest size that fits" sizes the product for N pieces across. Pieces can show the design sign or cycle through all 12. The sheet exports as a real-size SVG (mm) or PNG.
 - **DXF for the laser.** Export → DXF (one product, or all 12 signs as a ZIP), or "DXF for the laser" in Sheet layout for the whole sheet. Files are real size in mm with the Y axis up. Layers:
-  - `CUT_OUTLINE`: piece outlines. Circles are true `CIRCLE` entities. Square grids with no gap use merged shared lines, so each edge is cut once.
-  - `CUT_INNER`: artwork openings as closed contours. Strokes become their outlines, fills follow their fill rule, overlapping layers merge, and artwork in the background colour cuts back. Curves are flattened to ±0.02 mm by default.
-  - `REF_SHEET` / `REF_MARGIN`: optional reference layers. Turn them off before cutting.
+  - `0`: everything the laser cuts, as the workshop expects.
+    - Piece outlines: circles are true `CIRCLE` entities, and square grids with no gap use merged shared lines, so each edge is cut once.
+    - Artwork openings as closed contours: strokes become their outlines, fills follow their fill rule, overlapping layers merge, and artwork in the background colour cuts back. Curves are flattened to ±0.02 mm by default.
+  - `SHEET`: sheet edge and safety margin for reference, not cut. AutoCAD colour 4 (cyan). Included in sheet exports by default.
   - Built with svgpath, clipper-lib and @tarikjabiri/dxf (`apps/admin/src/features/studio/dxf.ts`).
 - **Theme.** The admin has light, dark and system themes. The Studio canvas always stays light so artwork colours read true.
 - **Storage.** Designs live in this browser's localStorage, not the database. "Save design file" and "Open design file" move the versioned JSON between machines. The format (`model.ts`, `DOCUMENT_VERSION`) is ready for server persistence later.
