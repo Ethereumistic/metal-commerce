@@ -156,3 +156,4 @@ Existing active registrations must be preserved; a pending or already recorded o
 | project.inlang/settings.json  | Locale and message-format configuration                          |
 
 Photography sources are recorded in [ASSET_SOURCES.md](ASSET_SOURCES.md).
+# metal-commerce
