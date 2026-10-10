@@ -3,7 +3,7 @@ import type { Sign } from "./signs";
 // The studio document is plain, versioned JSON so it can move from browser
 // storage to a database later without a format change.
 
-export const DOCUMENT_VERSION = 1;
+export const DOCUMENT_VERSION = 2;
 
 export type Unit = "px" | "mm";
 
@@ -20,6 +20,37 @@ export type Artboard = {
   /** Safe-area inset shown as a guide and used by "fit" and edge alignment. */
   padding: number;
 };
+
+/** Machine sheet the product (the artboard) is nested on. Units: millimetres. */
+export type Sheet = {
+  width: number;
+  height: number;
+  /** Safety margin the cutter cannot use, on every side. */
+  margin: number;
+  /** Gap between neighbouring pieces (0 = shared edges). */
+  spacing: number;
+  /** Where the grid sits inside the usable area; leftover space goes to the other side. */
+  anchor: "bottom-left" | "top-left" | "center";
+  /** Every piece shows the design sign, or the 12 signs repeat in order. */
+  fill: "same" | "cycle";
+};
+
+export const MACHINE_PRESETS = [
+  { id: "current", label: "Current machine · 1500 × 3000 mm", width: 1500, height: 3000 },
+  { id: "incoming", label: "Incoming machine · 2000 × 4000 mm", width: 2000, height: 4000 },
+] as const;
+
+export const DEFAULT_SHEET: Sheet = {
+  width: 1500,
+  height: 3000,
+  margin: 48,
+  spacing: 0,
+  anchor: "bottom-left",
+  fill: "same",
+};
+
+/** Default product: 468 mm fits 3 × 6 = 18 pieces on a 1500 × 3000 sheet with 48 mm margins. */
+export const DEFAULT_PRODUCT_SIZE = 468;
 
 type LayerBase = {
   id: string;
@@ -105,7 +136,9 @@ export type StudioDocument = {
   unit: Unit;
   /** The sign used by layers that follow the document (and by `{sign}` tokens). */
   sign: Sign;
+  /** The product: its outline and size (mm when `unit` is "mm"). */
   artboard: Artboard;
+  sheet: Sheet;
   /** Bottom to top. */
   layers: Layer[];
   uploads: Record<string, Upload>;
@@ -197,18 +230,20 @@ export function createDocument(
     name,
     createdAt: now,
     updatedAt: now,
-    unit: "px",
+    unit: "mm",
     sign,
     artboard: {
-      width: 704,
-      height: 704,
+      width: DEFAULT_PRODUCT_SIZE,
+      height: DEFAULT_PRODUCT_SIZE,
       shape: "rect",
       cornerRadius: 0,
       background: "#151515",
       backgroundVisible: true,
       clip: false,
-      padding: 48,
+      // Same proportion as the accepted 704-unit vector sets (48 / 704).
+      padding: 32,
     },
+    sheet: { ...DEFAULT_SHEET },
     layers: [],
     uploads: {},
   };
@@ -250,8 +285,8 @@ export function createFromTemplate(template: Template, sign: Sign = "aries") {
 /** Validates and upgrades an unknown value (storage, file import) to a document. */
 export function parseDocument(value: unknown): StudioDocument {
   if (!value || typeof value !== "object") throw new Error("Not a design file");
-  const doc = value as Partial<StudioDocument>;
-  if (doc.version !== DOCUMENT_VERSION)
+  const doc = value as Omit<Partial<StudioDocument>, "version"> & { version?: number };
+  if (doc.version !== 1 && doc.version !== DOCUMENT_VERSION)
     throw new Error(`Unsupported design version: ${String(doc.version)}`);
   if (
     typeof doc.id !== "string" ||
@@ -260,5 +295,11 @@ export function parseDocument(value: unknown): StudioDocument {
     typeof doc.name !== "string"
   )
     throw new Error("Design file is incomplete");
-  return { ...doc, uploads: doc.uploads ?? {} } as StudioDocument;
+  // v1 → v2: designs gained machine-sheet settings.
+  return {
+    ...doc,
+    version: DOCUMENT_VERSION,
+    sheet: { ...DEFAULT_SHEET, ...doc.sheet },
+    uploads: doc.uploads ?? {},
+  } as StudioDocument;
 }

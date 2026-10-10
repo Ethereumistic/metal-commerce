@@ -2,6 +2,7 @@ import { strToU8, zipSync } from "fflate";
 import { ensureFont } from "./fonts";
 import { artboardShapeMarkup, layerTransform, resolveLayer } from "./geometry";
 import type { StudioDocument } from "./model";
+import { nest } from "./sheet";
 import { SIGNS, type Sign } from "./signs";
 import { attributesToString, escapeAttribute } from "./svg";
 
@@ -21,20 +22,15 @@ export async function prepareFonts(doc: StudioDocument) {
   );
 }
 
-/** Self-contained SVG: vector-only, no fonts, scripts or external references. */
-export function renderSvg(doc: StudioDocument, options: RenderOptions = {}) {
+/** Artwork markup in artboard coordinates (no root <svg>). */
+export function renderArtwork(
+  doc: StudioDocument,
+  options: { sign?: Sign; background?: boolean; idPrefix?: string } = {},
+) {
   const sign = options.sign ?? doc.sign;
   const { artboard } = doc;
   const background = options.background ?? artboard.backgroundVisible;
-  const size = options.pixelWidth
-    ? {
-        width: options.pixelWidth,
-        height: Math.round((options.pixelWidth * artboard.height) / artboard.width),
-      }
-    : {
-        width: `${artboard.width}${doc.unit === "mm" ? "mm" : ""}`,
-        height: `${artboard.height}${doc.unit === "mm" ? "mm" : ""}`,
-      };
+  const clipId = `${options.idPrefix ?? ""}artboard-clip`;
 
   const layers = doc.layers
     .filter((layer) => layer.visible)
@@ -51,14 +47,74 @@ export function renderSvg(doc: StudioDocument, options: RenderOptions = {}) {
     .join("");
 
   const clip = artboard.clip
-    ? `<defs><clipPath id="artboard-clip">${artboardShapeMarkup(artboard, "")}</clipPath></defs>`
+    ? `<defs><clipPath id="${clipId}">${artboardShapeMarkup(artboard, "")}</clipPath></defs>`
     : "";
-  const body = artboard.clip ? `<g clip-path="url(#artboard-clip)">${layers}</g>` : layers;
+  const body = artboard.clip ? `<g clip-path="url(#${clipId})">${layers}</g>` : layers;
   const fill = background
     ? artboardShapeMarkup(artboard, ` fill="${escapeAttribute(artboard.background)}"`)
     : "";
+  return `${clip}${fill}${body}`;
+}
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${artboard.width} ${artboard.height}">${clip}${fill}${body}</svg>`;
+/** Self-contained SVG: vector-only, no fonts, scripts or external references. */
+export function renderSvg(doc: StudioDocument, options: RenderOptions = {}) {
+  const { artboard } = doc;
+  const size = options.pixelWidth
+    ? {
+        width: options.pixelWidth,
+        height: Math.round((options.pixelWidth * artboard.height) / artboard.width),
+      }
+    : {
+        width: `${artboard.width}${doc.unit === "mm" ? "mm" : ""}`,
+        height: `${artboard.height}${doc.unit === "mm" ? "mm" : ""}`,
+      };
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${artboard.width} ${artboard.height}">${renderArtwork(doc, options)}</svg>`;
+}
+
+export type SheetRenderOptions = {
+  /** Draw the safety margin and leftover area (preview aid; off for production files). */
+  guides?: boolean;
+  /** Draw the artwork inside each piece; off shows outlines only. */
+  artwork?: boolean;
+  /** Draw each piece's cut outline. */
+  outlines?: boolean;
+  pixelWidth?: number;
+};
+
+export function signForSlot(doc: StudioDocument, index: number): Sign {
+  if (doc.sheet.fill === "same") return doc.sign;
+  return SIGNS[(SIGNS.indexOf(doc.sign) + index) % SIGNS.length]!;
+}
+
+/** The machine sheet with every nested piece, in millimetre user units. */
+export function renderSheetSvg(doc: StudioDocument, options: SheetRenderOptions = {}) {
+  const { sheet, artboard } = doc;
+  const layout = nest(sheet, artboard);
+  const guides = options.guides ?? false;
+  const artwork = options.artwork ?? true;
+  const outlines = options.outlines ?? true;
+  const stroke = Math.max(sheet.width, sheet.height) / 1500; // ≈ 2 mm on the current machine
+
+  const pieces = layout.slots
+    .map((slot) => {
+      const inner = artwork
+        ? renderArtwork(doc, { sign: signForSlot(doc, slot.index), idPrefix: `p${slot.index}-` })
+        : "";
+      const outline = outlines
+        ? artboardShapeMarkup(artboard, ` fill="none" stroke="#38bdf8" stroke-width="${stroke}"`)
+        : "";
+      return `<g transform="translate(${slot.x} ${slot.y})">${inner}${outline}</g>`;
+    })
+    .join("");
+
+  const margin = guides
+    ? `<rect x="${layout.usable.x}" y="${layout.usable.y}" width="${layout.usable.width}" height="${layout.usable.height}" fill="none" stroke="#f59e0b" stroke-width="${stroke}" stroke-dasharray="${stroke * 8} ${stroke * 5}"/>`
+    : "";
+  const size = options.pixelWidth
+    ? { width: options.pixelWidth, height: Math.round((options.pixelWidth * sheet.height) / sheet.width) }
+    : { width: `${sheet.width}mm`, height: `${sheet.height}mm` };
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${sheet.width} ${sheet.height}"><rect width="${sheet.width}" height="${sheet.height}" fill="#c9cdd2"/>${margin}${pieces}</svg>`;
 }
 
 export async function rasterize(svg: string, width: number, height: number) {
@@ -168,4 +224,22 @@ export function exportProject(doc: StudioDocument) {
     new Blob([JSON.stringify(doc, null, 2)], { type: "application/json" }),
     `${slug(doc.name)}.design.json`,
   );
+}
+
+export async function exportSheet(
+  doc: StudioDocument,
+  format: ExportFormat,
+  options: { artwork: boolean; pngWidth: number },
+) {
+  await prepareFonts(doc);
+  const name = `${slug(doc.name)}-sheet-${doc.sheet.width}x${doc.sheet.height}`;
+  if (format === "svg")
+    return download(
+      new Blob([renderSheetSvg(doc, { artwork: options.artwork })], { type: "image/svg+xml" }),
+      `${name}.svg`,
+    );
+  const width = options.pngWidth;
+  const height = Math.round((width * doc.sheet.height) / doc.sheet.width);
+  const svg = renderSheetSvg(doc, { artwork: options.artwork, pixelWidth: width });
+  download(await rasterize(svg, width, height), `${name}.png`);
 }

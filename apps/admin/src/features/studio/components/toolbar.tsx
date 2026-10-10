@@ -38,12 +38,25 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu";
 import { Kbd } from "@workspace/ui/components/kbd";
-import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@workspace/ui/components/popover";
 import { Separator } from "@workspace/ui/components/separator";
 import { Toggle } from "@workspace/ui/components/toggle";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip";
 import type { Template } from "../model";
-import { exportDocument, exportProject, usesSign, type ExportFormat } from "../render";
+import {
+  exportDocument,
+  exportProject,
+  usesSign,
+  type ExportFormat,
+} from "../render";
 import { SIGNS, SIGN_LABELS } from "../signs";
 import { useActiveDocument, useStudio } from "../store";
 import { Labelled, Num, Segmented, SelectField, SwitchField } from "./fields";
@@ -62,7 +75,16 @@ function ToolButton({
 }: React.ComponentProps<typeof Button> & { label: string; shortcut?: string }) {
   return (
     <Tooltip>
-      <TooltipTrigger render={<Button variant="ghost" size="icon-sm" aria-label={label} {...props} />} />
+      <TooltipTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={label}
+            {...props}
+          />
+        }
+      />
       <TooltipContent>
         {label} {shortcut && <Kbd>{shortcut}</Kbd>}
       </TooltipContent>
@@ -76,7 +98,9 @@ function DesignsMenu() {
   const activeId = useStudio((state) => state.activeId);
   // Names only, so dragging on the canvas does not re-render this menu.
   const designs = useStudio(
-    useShallow((state) => state.order.map((id) => `${id}\u0000${state.documents[id]?.name ?? ""}`)),
+    useShallow((state) =>
+      state.order.map((id) => `${id}\u0000${state.documents[id]?.name ?? ""}`),
+    ),
   ).map((entry) => entry.split("\u0000") as [string, string]);
   const input = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -85,16 +109,26 @@ function DesignsMenu() {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="ghost" className="max-w-64 gap-1.5 px-2 font-medium" />}>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className="max-w-64 gap-1.5 px-2 font-medium"
+            />
+          }
+        >
           <span className="truncate">{doc.name}</span>
           <ChevronDown className="text-muted-foreground" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-64">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Designs in this browser</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={activeId} onValueChange={(id) => studio.setActive(String(id))}>
+            <DropdownMenuRadioGroup
+              value={activeId}
+              onValueChange={(id) => studio.setActive(String(id))}
+            >
               {designs.map(([id, name]) => (
-                <DropdownMenuRadioItem key={id} value={id}>
+                <DropdownMenuRadioItem key={id} value={id} closeOnClick>
                   <span className="truncate">{name}</span>
                 </DropdownMenuRadioItem>
               ))}
@@ -107,7 +141,10 @@ function DesignsMenu() {
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {TEMPLATES.map((template) => (
-                <DropdownMenuItem key={template.value} onClick={() => studio.createDocument(template.value)}>
+                <DropdownMenuItem
+                  key={template.value}
+                  onClick={() => studio.createDocument(template.value)}
+                >
                   {template.label}
                 </DropdownMenuItem>
               ))}
@@ -124,7 +161,10 @@ function DesignsMenu() {
             <FileJson /> Save design file (.json)
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => setConfirmDelete(true)}
+          >
             <Trash2 /> Delete design
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -142,7 +182,11 @@ function DesignsMenu() {
           try {
             studio.importDocument(JSON.parse(await file.text()));
           } catch (error) {
-            setImportError(error instanceof Error ? error.message : "Could not open the file.");
+            setImportError(
+              error instanceof Error
+                ? error.message
+                : "Could not open the file.",
+            );
           }
         }}
       />
@@ -152,7 +196,8 @@ function DesignsMenu() {
           <DialogHeader>
             <DialogTitle>Delete “{doc.name}”?</DialogTitle>
             <DialogDescription>
-              The design is removed from this browser. Save a design file first if you want a copy.
+              The design is removed from this browser. Save a design file first
+              if you want a copy.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -199,7 +244,12 @@ function ExportPopover() {
     setBusy(true);
     setError(null);
     try {
-      await exportDocument(doc, { formats, pngWidth, background, signs: scope });
+      await exportDocument(doc, {
+        formats,
+        pngWidth,
+        background,
+        signs: scope,
+      });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Export failed.");
     } finally {
@@ -253,10 +303,15 @@ function ExportPopover() {
           </Labelled>
           {scope === "all" && !usesSign(doc) && (
             <p className="text-xs text-muted-foreground">
-              No layer follows the design sign, so all 12 files will look the same.
+              No layer follows the design sign, so all 12 files will look the
+              same.
             </p>
           )}
-          <SwitchField label="Include background" checked={background} onChange={setBackground} />
+          <SwitchField
+            label="Include background"
+            checked={background}
+            onChange={setBackground}
+          />
           <p className="text-xs text-muted-foreground">
             {fileCount === 1
               ? "Downloads one file."
@@ -283,61 +338,97 @@ export function Toolbar() {
 
   return (
     <div className="flex h-12 shrink-0 items-center gap-1 border-b px-2">
+      <Segmented
+        className="w-auto"
+        value={view.mode}
+        options={[
+          { value: "design", label: "Design" },
+          { value: "sheet", label: "Sheet layout" },
+        ]}
+        onChange={(mode) => setView({ mode })}
+      />
+      <Separator
+        orientation="vertical"
+        className="mx-1 data-vertical:h-5 data-vertical:self-auto"
+      />
       <DesignsMenu />
-      <Separator orientation="vertical" className="mx-1 data-vertical:h-5 data-vertical:self-auto" />
+      <Separator
+        orientation="vertical"
+        className="mx-1 data-vertical:h-5 data-vertical:self-auto"
+      />
       <div className="w-36">
         <SelectField
           value={doc.sign}
-          options={SIGNS.map((sign) => ({ value: sign, label: SIGN_LABELS[sign] }))}
+          options={SIGNS.map((sign) => ({
+            value: sign,
+            label: SIGN_LABELS[sign],
+          }))}
           onChange={(sign) => edit((draft) => void (draft.sign = sign))}
           className="h-8"
           aria-label="Design sign"
         />
       </div>
-      <Separator orientation="vertical" className="mx-1 data-vertical:h-5 data-vertical:self-auto" />
-      <ToolButton label="Undo" shortcut="Ctrl Z" onClick={undo} disabled={!canUndo}>
+      <Separator
+        orientation="vertical"
+        className="mx-1 data-vertical:h-5 data-vertical:self-auto"
+      />
+      <ToolButton
+        label="Undo"
+        shortcut="Ctrl Z"
+        onClick={undo}
+        disabled={!canUndo}
+      >
         <Undo2 />
       </ToolButton>
-      <ToolButton label="Redo" shortcut="Ctrl Shift Z" onClick={redo} disabled={!canRedo}>
+      <ToolButton
+        label="Redo"
+        shortcut="Ctrl Shift Z"
+        onClick={redo}
+        disabled={!canRedo}
+      >
         <Redo2 />
       </ToolButton>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Toggle
-              size="sm"
-              pressed={view.showGuides}
-              onPressedChange={(showGuides) => setView({ showGuides })}
-              aria-label="Show guides"
-            />
-          }
-        >
-          <Grid2x2 />
-        </TooltipTrigger>
-        <TooltipContent>Centre lines and safe padding</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Toggle
-              size="sm"
-              pressed={view.snapping}
-              onPressedChange={(snapping) => setView({ snapping })}
-              aria-label="Snapping"
-            />
-          }
-        >
-          <Magnet />
-        </TooltipTrigger>
-        <TooltipContent>
-          Snapping (hold <Kbd>Alt</Kbd> to bypass)
-        </TooltipContent>
-      </Tooltip>
+      {view.mode === "design" && (
+        <>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Toggle
+                  size="sm"
+                  pressed={view.showGuides}
+                  onPressedChange={(showGuides) => setView({ showGuides })}
+                  aria-label="Show guides"
+                />
+              }
+            >
+              <Grid2x2 />
+            </TooltipTrigger>
+            <TooltipContent>Centre lines and safe padding</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Toggle
+                  size="sm"
+                  pressed={view.snapping}
+                  onPressedChange={(snapping) => setView({ snapping })}
+                  aria-label="Snapping"
+                />
+              }
+            >
+              <Magnet />
+            </TooltipTrigger>
+            <TooltipContent>
+              Snapping (hold <Kbd>Alt</Kbd> to bypass)
+            </TooltipContent>
+          </Tooltip>
+        </>
+      )}
       <div className="ml-auto flex items-center gap-2">
         <span className="hidden text-xs text-muted-foreground lg:inline">
-          {doc.artboard.width} × {doc.artboard.height} {doc.unit}
+          Product {doc.artboard.width} × {doc.artboard.height} {doc.unit}
         </span>
-        <ExportPopover />
+        {view.mode === "design" && <ExportPopover />}
       </div>
     </div>
   );

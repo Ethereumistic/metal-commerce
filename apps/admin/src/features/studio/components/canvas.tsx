@@ -266,13 +266,14 @@ export function Canvas() {
   const handleSize = 9 * unit;
 
   return (
-    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-muted/60">
+    // The canvas backdrop stays light in every theme so artwork colours read true.
+    <div className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-neutral-100 [color-scheme:light]">
       <div
         ref={viewportRef}
         className="min-h-0 flex-1 overflow-auto"
         style={{
           backgroundImage:
-            "radial-gradient(circle, color-mix(in oklch, var(--foreground) 12%, transparent) 1px, transparent 1px)",
+            "radial-gradient(circle, rgb(0 0 0 / 0.12) 1px, transparent 1px)",
           backgroundSize: "16px 16px",
         }}
       >

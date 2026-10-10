@@ -41,6 +41,8 @@ Operators sign in with their **Echoray platform account**, either with an email 
 - **Text.** Any Google Font, loaded through the Fontsource CDN. Text is converted to vector outlines with opentype.js. You can set letter spacing, case, kerning, arc text and the `{sign}`/`{dates}` tokens.
 - **Design sign.** Layers set to "Follow design sign", and tokens in text, change with the design's sign. Export → "All 12 signs" produces a ZIP of every sign.
 - **Export.** SVG output is vector-only, with no fonts, scripts or external links, and uses mm units when the design is set to millimetres. PNG output is at a chosen pixel width.
+- **Sheet layout.** The artboard is the *product* (square or circle, in mm). "Sheet layout" nests it on the machine sheet: by default 1500 × 3000 mm with a 48 mm safety margin, giving 3 × 6 = 18 pieces of 468 mm. Sheet size and presets, margin, gap and leftover placement are adjustable. "Largest size that fits" sizes the product for N pieces across. Pieces can show the design sign or cycle through all 12. The sheet exports as a real-size SVG (mm) or PNG.
+- **Theme.** The admin has light, dark and system themes. The Studio canvas always stays light so artwork colours read true.
 - **Storage.** Designs live in this browser's localStorage, not the database. "Save design file" and "Open design file" move the versioned JSON between machines. The format (`model.ts`, `DOCUMENT_VERSION`) is ready for server persistence later.
 
 ## Commands

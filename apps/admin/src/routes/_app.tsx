@@ -19,6 +19,7 @@ import {
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/auth";
 import { titleFor } from "@/lib/navigation";
 
@@ -63,6 +64,7 @@ function AppLayout() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+          <ThemeToggle className="ml-auto" />
         </header>
         {fullBleed ? (
           <div className="flex h-[calc(100svh-3.5rem)] min-h-0 flex-col">

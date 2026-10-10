@@ -8,6 +8,7 @@ import {
 import { Button } from "@workspace/ui/components/button";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
 import stylesheet from "@/styles.css?url";
+import { themeScript } from "@/lib/theme";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -38,8 +39,10 @@ export const Route = createRootRoute({
 
 function RootDocument() {
   return (
-    <html lang="en">
+    // The theme script sets the `dark` class before hydration.
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <HeadContent />
       </head>
       <body>

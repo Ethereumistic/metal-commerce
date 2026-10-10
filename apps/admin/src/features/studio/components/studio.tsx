@@ -6,6 +6,8 @@ import { Canvas } from "./canvas";
 import { Inspector } from "./inspector";
 import { LayersPanel } from "./layers-panel";
 import { LibraryPanel } from "./library-panel";
+import { SheetInspector } from "./sheet-inspector";
+import { SheetView } from "./sheet-view";
 import { Toolbar } from "./toolbar";
 
 function isEditable(target: EventTarget | null) {
@@ -73,6 +75,7 @@ function useShortcuts() {
 
 export function Studio() {
   useShortcuts();
+  const mode = useStudio((state) => state.view.mode);
   return (
     <>
       <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6 text-center lg:hidden">
@@ -83,27 +86,33 @@ export function Studio() {
       <div className="hidden min-h-0 flex-1 flex-col lg:flex">
         <Toolbar />
         <div className="flex min-h-0 flex-1">
-          <aside className="flex w-64 shrink-0 flex-col border-r">
-            <ScrollArea className="min-h-0 basis-1/2 border-b">
-              <div className="p-3">
-                <LibraryPanel />
-              </div>
-            </ScrollArea>
-            <div className="flex min-h-0 flex-1 flex-col">
-              <h3 className="px-3 pt-3 pb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                Layers
-              </h3>
-              <ScrollArea className="min-h-0 flex-1">
-                <div className="px-2 pb-3">
-                  <LayersPanel />
+          {mode === "design" ? (
+            <>
+              <aside className="flex w-64 shrink-0 flex-col border-r">
+                <ScrollArea className="min-h-0 basis-1/2 border-b">
+                  <div className="p-3">
+                    <LibraryPanel />
+                  </div>
+                </ScrollArea>
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <h3 className="px-3 pt-3 pb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                    Layers
+                  </h3>
+                  <ScrollArea className="min-h-0 flex-1">
+                    <div className="px-2 pb-3">
+                      <LayersPanel />
+                    </div>
+                  </ScrollArea>
                 </div>
-              </ScrollArea>
-            </div>
-          </aside>
-          <Canvas />
+              </aside>
+              <Canvas />
+            </>
+          ) : (
+            <SheetView />
+          )}
           <aside className="w-76 shrink-0 border-l">
             <ScrollArea className="h-full">
-              <Inspector />
+              {mode === "design" ? <Inspector /> : <SheetInspector />}
             </ScrollArea>
           </aside>
         </div>

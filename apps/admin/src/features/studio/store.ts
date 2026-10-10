@@ -33,6 +33,8 @@ export type EditOptions = {
 };
 
 export type View = {
+  /** Edit the product, or preview it nested on the machine sheet. */
+  mode: "design" | "sheet";
   zoom: number | "fit";
   showGuides: boolean;
   snapping: boolean;
@@ -108,7 +110,7 @@ export const useStudio = create<StudioState>()(
       return {
         ...initial(),
         selectedId: null,
-        view: { zoom: "fit", showGuides: true, snapping: true },
+        view: { mode: "design", zoom: "fit", showGuides: true, snapping: true },
         history: emptyHistory(),
 
         setActive: (id) =>

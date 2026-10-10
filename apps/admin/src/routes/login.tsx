@@ -22,6 +22,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@workspace/ui/components/input-otp";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   getSession,
   passwordSignIn,
@@ -121,7 +122,8 @@ function Login() {
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-muted p-6 md:p-10">
+    <main className="relative flex min-h-svh items-center justify-center bg-muted p-6 md:p-10">
+      <ThemeToggle className="absolute top-4 right-4" />
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex items-center gap-2 self-center font-medium">
           <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
