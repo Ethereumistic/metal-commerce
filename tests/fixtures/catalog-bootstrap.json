@@ -229,9 +229,9 @@
       }
     ],
     "shop": {
-      "businessId": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+      "businessId": "metal-craft-fixture-business",
       "name": "MORIS FURNITURE",
-      "origin": "https://echoray.cloud",
+      "origin": "https://fixture.example.test",
       "settings": {
         "currency": "EUR",
         "deliveryTerms": "yes",
@@ -245,6 +245,6 @@
   },
   "generatedAt": 1791396787073.0,
   "status": "ok",
-  "storefrontId": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+  "storefrontId": "metal-craft-fixture",
   "version": 1.0
 }

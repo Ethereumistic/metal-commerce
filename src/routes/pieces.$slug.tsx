@@ -60,7 +60,7 @@ export const Route = createFileRoute("/pieces/$slug")({
   preloadStaleTime: 30_000,
   head: ({ loaderData }) => ({
     meta: [
-      { title: (loaderData?.product?.name ?? m.collection()) + " — MORIS" },
+      { title: (loaderData?.product?.name ?? m.collection()) + " — Metal Craft" },
       {
         name: "description",
         content: loaderData?.product?.description ?? m.collection_intro(),

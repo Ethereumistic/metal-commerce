@@ -14,7 +14,7 @@ export function localeForCountry(
 export function preferredLocale(request: Request): SupportedLocale {
   const cookie = request.headers
     .get("cookie")
-    ?.match(/(?:^|;\s*)MORIS_LOCALE=(en|fr|de)(?:;|$)/)?.[1];
+    ?.match(/(?:^|;\s*)METAL_CRAFT_LOCALE=(en|fr|de)(?:;|$)/)?.[1];
   if (cookie) return cookie as SupportedLocale;
   const country =
     (request as Request & { cf?: { country?: string } }).cf?.country ??

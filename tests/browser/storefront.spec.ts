@@ -40,7 +40,7 @@ test("switching language keeps the page and filters, and remembers the choice", 
   await expect(page.locator("h1")).toHaveText("Chaises.");
   expect(
     (await context.cookies()).some(
-      (cookie) => cookie.name === "MORIS_LOCALE" && cookie.value === "fr",
+      (cookie) => cookie.name === "METAL_CRAFT_LOCALE" && cookie.value === "fr",
     ),
   ).toBe(true);
   await page.goto("/");

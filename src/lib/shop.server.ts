@@ -112,7 +112,7 @@ function mapError(error: unknown, fallback: ShopErrorCode): ShopErrorCode {
 export function createShopGateway(request: Request) {
   const url = new URL(request.url);
   const secure = url.protocol === "https:";
-  const prefix = secure ? "__Host-moris-" : "moris-";
+  const prefix = secure ? "__Host-metal-craft-" : "metal-craft-";
   const headers = new Headers({
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "private, no-store",
@@ -605,7 +605,7 @@ export function createShopGateway(request: Request) {
     // Same-origin JSON with a custom header: cross-site forms cannot send this without CORS.
     if (
       request.headers.get("origin") !== url.origin ||
-      request.headers.get("x-moris-shop") !== "1" ||
+      request.headers.get("x-metal-craft-shop") !== "1" ||
       !request.headers.get("content-type")?.startsWith("application/json")
     )
       throw new GatewayError("unavailable");
@@ -676,7 +676,7 @@ export function createShopGateway(request: Request) {
         if (code === "unavailable")
           console.warn(
             JSON.stringify({
-              event: "moris_shop_error",
+              event: "metal_craft_shop_error",
               code: backendCode(error) ?? "UNKNOWN",
             }),
           );

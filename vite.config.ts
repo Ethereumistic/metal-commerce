@@ -12,7 +12,7 @@ export default defineConfig({
     paraglideVitePlugin({
       project: "./project.inlang",
       outdir: "./src/paraglide",
-      cookieName: "MORIS_LOCALE",
+      cookieName: "METAL_CRAFT_LOCALE",
       strategy: ["url", "cookie", "baseLocale"],
       urlPatterns: [
         {

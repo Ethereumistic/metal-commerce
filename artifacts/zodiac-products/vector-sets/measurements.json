@@ -1,0 +1,622 @@
+{
+  "canvas": 704,
+  "oldIconViewport": 260,
+  "iconViewport": 390,
+  "enlargement": 1.5,
+  "centeringTolerance": 0.01,
+  "paddingRule": "Same longest visible dimension and minimum edge padding for each corresponding icon/constellation pair. Original aspect ratios preserved.",
+  "records": [
+    {
+      "sign": "aries",
+      "icon": {
+        "file": "icons/aries.svg",
+        "source": "icons/zodiac-aries.svg",
+        "sourceSha256": "4a85e3b6cc78e444911a673d66c490fa805a0d341fbb480529793519d95de322",
+        "scale": 16.25,
+        "bounds": {
+          "x": 189.50001549720764,
+          "y": 189.5,
+          "width": 324.9999690055847,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.50001549720764,
+          "right": 189.50001549720764,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/aries.svg",
+        "source": "constellations/aries.svg",
+        "sourceSha256": "24d96928ad624638c2cf607cab4f9553e731f4cf90f1ed1c3f75b65229ac9ebe",
+        "scale": 0.8133831840114479,
+        "bounds": {
+          "x": 195.84715902460007,
+          "y": 189.50000000000003,
+          "width": 312.30568195079985,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 195.84715902460007,
+          "right": 195.8471590246001,
+          "top": 189.50000000000003,
+          "bottom": 189.5
+        }
+      }
+    },
+    {
+      "sign": "taurus",
+      "icon": {
+        "file": "icons/taurus.svg",
+        "source": "icons/zodiac-taurus.svg",
+        "sourceSha256": "ba103ca2e4f40f0195d5d2f189f2bf4f0dd290e8509c38659c0bd85ccecf154e",
+        "scale": 16.25,
+        "bounds": {
+          "x": 238.25,
+          "y": 189.5,
+          "width": 227.5,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 238.25,
+          "right": 238.25,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/taurus.svg",
+        "source": "constellations/taurus.svg",
+        "sourceSha256": "01c3715feb139d8d90f5ac80f2fec9d9d785f0306843b7118485e77bbb21bfca",
+        "scale": 0.5723473097376218,
+        "bounds": {
+          "x": 246.28403890732054,
+          "y": 189.5,
+          "width": 211.43192218535893,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 246.28403890732054,
+          "right": 246.2840389073205,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      }
+    },
+    {
+      "sign": "gemini",
+      "icon": {
+        "file": "icons/gemini.svg",
+        "source": "icons/zodiac-gemini.svg",
+        "sourceSha256": "b7bef397008519d27eebf2772e3486ac1e0ac8a50c88b05eee95f365e8dc29bf",
+        "scale": 16.25,
+        "bounds": {
+          "x": 189.5,
+          "y": 189.5,
+          "width": 325,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/gemini.svg",
+        "source": "constellations/gemini.svg",
+        "sourceSha256": "4ec53b41fe31ef8742f3f2bfa7a1e5d8244d290c3b4cd2577bc728456ec1bba3",
+        "scale": 0.6372706128583421,
+        "bounds": {
+          "x": 189.5,
+          "y": 229.69355682644786,
+          "width": 325,
+          "height": 244.61288634710425
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 229.69355682644786,
+          "bottom": 229.69355682644786
+        }
+      }
+    },
+    {
+      "sign": "cancer",
+      "icon": {
+        "file": "icons/cancer.svg",
+        "source": "icons/zodiac-cancer.svg",
+        "sourceSha256": "54242eb068fbf6a7764ab34b1e9a0159b0155c2cd26e14efd913cd7a1785bda0",
+        "scale": 16.25,
+        "bounds": {
+          "x": 188.91085815429688,
+          "y": 221.13885116577148,
+          "width": 326.17828369140625,
+          "height": 261.72229766845703
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 326.17828369140625,
+        "minimumPadding": 188.91085815429688,
+        "margins": {
+          "left": 188.91085815429688,
+          "right": 188.91085815429688,
+          "top": 221.13885116577148,
+          "bottom": 221.13885116577148
+        }
+      },
+      "constellation": {
+        "file": "constellations/cancer.svg",
+        "source": "constellations/cancer.svg",
+        "sourceSha256": "c3c32e5e57b83201e5666d2189300cb2c98f10127d0dbafce38e4a12338999ce",
+        "scale": 0.6201108054969701,
+        "bounds": {
+          "x": 188.91085815429688,
+          "y": 228.6322026528177,
+          "width": 326.17828369140625,
+          "height": 246.73559469436455
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 326.17828369140625,
+        "minimumPadding": 188.91085815429688,
+        "margins": {
+          "left": 188.91085815429688,
+          "right": 188.91085815429688,
+          "top": 228.6322026528177,
+          "bottom": 228.63220265281777
+        }
+      }
+    },
+    {
+      "sign": "leo",
+      "icon": {
+        "file": "icons/leo.svg",
+        "source": "icons/zodiac-leo.svg",
+        "sourceSha256": "e4443af7250c5e4b62566f180edffb639a57555b36cc4ab0234c0e3f1b4915d7",
+        "scale": 16.25,
+        "bounds": {
+          "x": 189.5,
+          "y": 189.5,
+          "width": 325,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/leo.svg",
+        "source": "constellations/leo.svg",
+        "sourceSha256": "0e3a9a6491ac476b107a679c43f202b8ec1e02c56394e72e2bfee41de72149e2",
+        "scale": 0.6424234498071693,
+        "bounds": {
+          "x": 189.5,
+          "y": 195.26095110714527,
+          "width": 325,
+          "height": 313.47809778570945
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 195.26095110714527,
+          "bottom": 195.26095110714527
+        }
+      }
+    },
+    {
+      "sign": "virgo",
+      "icon": {
+        "file": "icons/virgo.svg",
+        "source": "icons/zodiac-virgo.svg",
+        "sourceSha256": "d5edb177d367ae899bb24e0cc03b978f2fd317acee91adee916b694ea8bce5cd",
+        "scale": 16.25,
+        "bounds": {
+          "x": 197.625,
+          "y": 197.625,
+          "width": 308.75,
+          "height": 308.75
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.75,
+        "minimumPadding": 197.625,
+        "margins": {
+          "left": 197.625,
+          "right": 197.625,
+          "top": 197.625,
+          "bottom": 197.625
+        }
+      },
+      "constellation": {
+        "file": "constellations/virgo.svg",
+        "source": "constellations/virgo.svg",
+        "sourceSha256": "09755d7291cbc5a33c4677a0802369f1feccd77ffd4f9f307805148c311389ea",
+        "scale": 0.5615348162442542,
+        "bounds": {
+          "x": 197.625,
+          "y": 246.8825777161739,
+          "width": 308.75,
+          "height": 210.23484456765217
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.75,
+        "minimumPadding": 197.625,
+        "margins": {
+          "left": 197.625,
+          "right": 197.625,
+          "top": 246.8825777161739,
+          "bottom": 246.88257771617393
+        }
+      }
+    },
+    {
+      "sign": "libra",
+      "icon": {
+        "file": "icons/libra.svg",
+        "source": "icons/zodiac-libra.svg",
+        "sourceSha256": "6571ad56472edc247159a7d27c2392a12b2f7cfa0c6f19f250e442fb8252cb13",
+        "scale": 16.25,
+        "bounds": {
+          "x": 222,
+          "y": 197.5583620071411,
+          "width": 260,
+          "height": 308.8832759857178
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.8832759857178,
+        "minimumPadding": 197.5583620071411,
+        "margins": {
+          "left": 222,
+          "right": 222,
+          "top": 197.5583620071411,
+          "bottom": 197.5583620071411
+        }
+      },
+      "constellation": {
+        "file": "constellations/libra.svg",
+        "source": "constellations/libra.svg",
+        "sourceSha256": "c5602342e23f67aab7fac30ab124d2ceeaa1f9194f0b8865f7789500599f6bb2",
+        "scale": 0.6331567753271788,
+        "bounds": {
+          "x": 215.74036464530548,
+          "y": 197.5583620071411,
+          "width": 272.5192707093891,
+          "height": 308.8832759857178
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.8832759857178,
+        "minimumPadding": 197.5583620071411,
+        "margins": {
+          "left": 215.74036464530548,
+          "right": 215.74036464530542,
+          "top": 197.5583620071411,
+          "bottom": 197.5583620071411
+        }
+      }
+    },
+    {
+      "sign": "scorpio",
+      "icon": {
+        "file": "icons/scorpio.svg",
+        "source": "icons/zodiac-scorpio.svg",
+        "sourceSha256": "cc2a139a39d2db2052dc1dee6db75a6984e99ec1a329c088c54edc9d6f624fce",
+        "scale": 16.25,
+        "bounds": {
+          "x": 189.5,
+          "y": 189.5,
+          "width": 325,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/scorpio.svg",
+        "source": "constellations/scorpio.svg",
+        "sourceSha256": "4b6b983a1c3ba2fa974e996fa8919d7cae7e8390a64f25b527ffcd097ecdc6d0",
+        "scale": 0.5703735664072592,
+        "bounds": {
+          "x": 194.04199638889094,
+          "y": 189.5,
+          "width": 315.9160072222182,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 194.04199638889094,
+          "right": 194.04199638889088,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      }
+    },
+    {
+      "sign": "sagittarius",
+      "icon": {
+        "file": "icons/sagittarius.svg",
+        "source": "icons/zodiac-sagittarius.svg",
+        "sourceSha256": "8c67eeeb4aee46862526726b9f12405d284949d24ebe61aa31faa04a75b510e6",
+        "scale": 16.25,
+        "bounds": {
+          "x": 205.75,
+          "y": 205.75,
+          "width": 292.5,
+          "height": 292.5
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 292.5,
+        "minimumPadding": 205.75,
+        "margins": {
+          "left": 205.75,
+          "right": 205.75,
+          "top": 205.75,
+          "bottom": 205.75
+        }
+      },
+      "constellation": {
+        "file": "constellations/sagittarius.svg",
+        "source": "constellations/sagittarius.svg",
+        "sourceSha256": "f97ccc9d1c5c3e3970d7d182c765061016554b0406cd5104f62011539ac85dcb",
+        "scale": 0.5243220155027903,
+        "bounds": {
+          "x": 205.75,
+          "y": 220.75340534912786,
+          "width": 292.5,
+          "height": 262.4931893017442
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 292.5,
+        "minimumPadding": 205.75,
+        "margins": {
+          "left": 205.75,
+          "right": 205.75,
+          "top": 220.75340534912786,
+          "bottom": 220.7534053491279
+        }
+      }
+    },
+    {
+      "sign": "capricorn",
+      "icon": {
+        "file": "icons/capricorn.svg",
+        "source": "icons/zodiac-capricorn.svg",
+        "sourceSha256": "88f95e0428bf5a464cd77e33df3e638338ca8388376fcba991494d32f0911b73",
+        "scale": 16.25,
+        "bounds": {
+          "x": 213.875,
+          "y": 197.625,
+          "width": 276.25,
+          "height": 308.75
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.75,
+        "minimumPadding": 197.625,
+        "margins": {
+          "left": 213.875,
+          "right": 213.875,
+          "top": 197.625,
+          "bottom": 197.625
+        }
+      },
+      "constellation": {
+        "file": "constellations/capricorn.svg",
+        "source": "constellations/capricorn.svg",
+        "sourceSha256": "307c1d2c489b7ca424d5adbb05e6e48f3b4169cd1c69d60d27a082adc0ed89eb",
+        "scale": 0.5849296572180573,
+        "bounds": {
+          "x": 197.62499999999997,
+          "y": 259.0065200208692,
+          "width": 308.75,
+          "height": 185.9869599582616
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 308.75,
+        "minimumPadding": 197.625,
+        "margins": {
+          "left": 197.62499999999997,
+          "right": 197.625,
+          "top": 259.0065200208692,
+          "bottom": 259.00652002086923
+        }
+      }
+    },
+    {
+      "sign": "aquarius",
+      "icon": {
+        "file": "icons/aquarius.svg",
+        "source": "icons/zodiac-aquarius.svg",
+        "sourceSha256": "0c873d63e779a3af6bbd6b11715bbccdfba2e67e9cae74a7a0c13a859841f5de",
+        "scale": 16.25,
+        "bounds": {
+          "x": 189.5,
+          "y": 254.5,
+          "width": 325,
+          "height": 195
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 254.5,
+          "bottom": 254.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/aquarius.svg",
+        "source": "constellations/aquarius.svg",
+        "sourceSha256": "37f6455b7a7550e92800e05c34a7c69ca7ad5b97ffd6ae880f8dd4af1ea5ee6b",
+        "scale": 0.5362020465058202,
+        "bounds": {
+          "x": 189.5,
+          "y": 245.8868291747163,
+          "width": 325,
+          "height": 212.2263416505674
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 245.8868291747163,
+          "bottom": 245.8868291747163
+        }
+      }
+    },
+    {
+      "sign": "pisces",
+      "icon": {
+        "file": "icons/pisces.svg",
+        "source": "icons/zodiac-pisces.svg",
+        "sourceSha256": "da03a8476966e5f333b08d01cb2a77e4628b6216b5f39ed5e43603aa6ac74427",
+        "scale": 16.25,
+        "bounds": {
+          "x": 222,
+          "y": 189.5,
+          "width": 260,
+          "height": 325
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 222,
+          "right": 222,
+          "top": 189.5,
+          "bottom": 189.5
+        }
+      },
+      "constellation": {
+        "file": "constellations/pisces.svg",
+        "source": "constellations/pisces.svg",
+        "sourceSha256": "4269ad5931405bf045dc96c2df61eb8f9fcde3d6d63fc6bd51a5a9b13a69baa0",
+        "scale": 0.514448875580238,
+        "bounds": {
+          "x": 189.5,
+          "y": 229.69843038409567,
+          "width": 325,
+          "height": 244.60313923180865
+        },
+        "center": {
+          "x": 352,
+          "y": 352
+        },
+        "longEdge": 325,
+        "minimumPadding": 189.5,
+        "margins": {
+          "left": 189.5,
+          "right": 189.5,
+          "top": 229.69843038409567,
+          "bottom": 229.69843038409567
+        }
+      }
+    }
+  ]
+}

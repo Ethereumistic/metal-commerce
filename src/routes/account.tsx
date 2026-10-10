@@ -23,7 +23,7 @@ export const Route = createFileRoute("/account")({
     search.next === "checkout" ? { next: "checkout" } : {},
   head: () => ({
     meta: [
-      { title: m.account() + " — MORIS" },
+      { title: m.account() + " — Metal Craft" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -40,7 +40,7 @@ function AccountPage() {
     <SiteShell>
       <div className="page-container account-page" data-signed-in={account ? "true" : undefined}>
         <aside className="account-aside">
-          <p className="small-label">MORIS</p>
+          <p className="small-label">Metal Craft</p>
           <h1>{account ? m.account_welcome() : m.account_intro()}</h1>
           <p>{account ? m.account_signed_in_as({ email: account.email }) : m.account_aside()}</p>
           {account && <AccountActions />}

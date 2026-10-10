@@ -1,36 +1,36 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "moris",
+  "name": "metal-craft",
   "account_id": "ccb39f37d9a46c36f7ded1cc121968a8",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./src/server.ts",
-  "routes": [{ "pattern": "echoray.cloud", "custom_domain": true }],
+  "routes": [{ "pattern": "metal.echoray.cloud", "custom_domain": true }],
   "workers_dev": true,
   "observability": { "enabled": true },
   "vars": {
-    "STOREFRONT_ORIGIN": "https://echoray.cloud",
+    "STOREFRONT_ORIGIN": "https://metal.echoray.cloud",
     "STOREFRONT_CONVEX_URL": "https://convex.echoray.io",
     "STOREFRONT_CATALOG_ADAPTER": "gateway",
     "STOREFRONT_GATEWAY_URL": "https://commerce.echoray.io",
-    "STOREFRONT_PUBLIC_INTEGRATION_ID": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+    "STOREFRONT_PUBLIC_INTEGRATION_ID": "p172wsjnz491b5jj0cm3hh33sh8g15gp",
     "STOREFRONT_AUTH_ORIGIN": "https://dev.echoray.io",
-    "STOREFRONT_BUSINESS_ID": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+    "STOREFRONT_BUSINESS_ID": "ks7edx6n4kr4zz1396yqy4deq18g0tkc"
   },
-  // Isolated fixture transport for acceptance. Never deploy this environment.
+  // Isolated inherited fixture transport. Never deploy this environment.
   "env": {
     "catalog_test": {
-      "name": "moris-catalog-test",
+      "name": "metal-craft-catalog-test",
       "routes": [],
       "vars": {
-        "STOREFRONT_ORIGIN": "https://echoray.cloud",
+        "STOREFRONT_ORIGIN": "https://fixture.example.test",
         "STOREFRONT_CONVEX_URL": "https://convex.echoray.io",
         "STOREFRONT_CATALOG_ADAPTER": "gateway",
         "STOREFRONT_GATEWAY_URL": "http://127.0.0.1:4319",
-        "STOREFRONT_PUBLIC_INTEGRATION_ID": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+        "STOREFRONT_PUBLIC_INTEGRATION_ID": "metal-craft-fixture",
         "STOREFRONT_AUTH_ORIGIN": "https://dev.echoray.io",
-        "STOREFRONT_BUSINESS_ID": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
-      },
-    },
-  },
+        "STOREFRONT_BUSINESS_ID": "metal-craft-fixture-business"
+      }
+    }
+  }
 }

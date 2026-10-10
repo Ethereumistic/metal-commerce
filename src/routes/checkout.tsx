@@ -27,7 +27,7 @@ import { m } from "@/paraglide/messages";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: m.checkout_title() + " — MORIS" },
+      { title: m.checkout_title() + " — Metal Craft" },
       { name: "robots", content: "noindex" },
     ],
   }),

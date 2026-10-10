@@ -105,7 +105,7 @@ export const Route = createFileRoute("/collection")({
   preloadStaleTime: 15_000,
   head: () => ({
     meta: [
-      { title: m.collection() + " — MORIS" },
+      { title: m.collection() + " — Metal Craft" },
       { name: "description", content: m.collection_intro() },
     ],
   }),

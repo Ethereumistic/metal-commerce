@@ -195,7 +195,7 @@ export const useCart = create<CartStore>()(
       };
     },
     {
-      name: "moris-bag",
+      name: "metal-craft-bag",
       version: 1,
       storage: createJSONStorage(() => localStorage),
       // Persist only display data for an instant first paint; the server bag stays authoritative.

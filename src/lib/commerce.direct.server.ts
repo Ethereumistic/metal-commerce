@@ -196,7 +196,7 @@ export async function readCategoryCatalog(): Promise<CategoryCatalog> {
     throw new Error("Category pagination limit reached");
   } catch {
     // Keep internal backend errors and all server configuration out of the browser.
-    console.warn("MORIS category catalog unavailable");
+    console.warn("Metal Craft category catalog unavailable");
     return { status: "unavailable", categories: [] };
   }
 }
@@ -353,7 +353,7 @@ export async function readProductCatalog(): Promise<ProductCatalog> {
     }
     throw new Error("Product pagination limit reached");
   } catch {
-    console.warn("MORIS product catalog unavailable");
+    console.warn("Metal Craft product catalog unavailable");
     return { productStatus: "unavailable", products: [] };
   }
 }
@@ -377,7 +377,7 @@ export async function readProduct(
       product: result === null ? null : product(result, shop.currency),
     };
   } catch {
-    console.warn("MORIS product unavailable");
+    console.warn("Metal Craft product unavailable");
     return { status: "unavailable", product: null };
   }
 }

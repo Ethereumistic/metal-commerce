@@ -152,7 +152,7 @@ export async function shopCall<T>(
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
-        "X-Moris-Shop": "1",
+        "X-Metal-Craft-Shop": "1",
       },
       body: JSON.stringify({ operation, args }),
     });

@@ -3,7 +3,6 @@ import { ArrowUpRight, ArrowDown } from "lucide-react";
 import { SiteShell } from "./site-shell";
 import { Photo } from "./photo";
 import { PieceCard } from "./piece-card";
-import { OakStory } from "./oak-story";
 import { categoryLabel } from "@/lib/catalog";
 import { Route } from "@/routes/index";
 import { m } from "@/paraglide/messages";
@@ -42,7 +41,7 @@ export function HomePage() {
             <ArrowUpRight size={19} />
           </Link>
         </div>
-        <a className="hero-scroll" href="#oak-story">
+        <a className="hero-scroll" href="#collections">
           <span>{m.hero_note()}</span>
           <ArrowDown size={19} />
         </a>
@@ -85,7 +84,6 @@ export function HomePage() {
           ))}
         </div>
       </section>
-      <OakStory />
       <section className="section edit-section">
         <div className="section-heading">
           <div>

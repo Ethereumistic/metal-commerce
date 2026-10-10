@@ -23,7 +23,7 @@ function catalog() {
     onDiagnostics: ({ cache, environment, originMs }) => {
       console.info(
         JSON.stringify({
-          event: "moris_catalog",
+          event: "metal_craft_catalog",
           adapter: "gateway",
           cache,
           environment,
@@ -42,7 +42,7 @@ function failure(error: unknown) {
   const known = error instanceof CatalogError;
   const errorCode = known ? error.code : "UNAVAILABLE";
   console.warn(
-    JSON.stringify({ event: "moris_catalog_error", code: errorCode }),
+    JSON.stringify({ event: "metal_craft_catalog_error", code: errorCode }),
   );
   return {
     errorCode,
@@ -137,15 +137,6 @@ export async function readCategoryCatalog(
       cursor = next.data.cursor;
     }
     if (cursor) throw new Error("Collection page limit reached");
-    const order = [
-      "tables",
-      "chairs",
-      "desks",
-      "lamps",
-      "sideboards",
-      "mirrors",
-      "benches",
-    ];
     return {
       status: "ready",
       loadedAt: boot.diagnostics.loadedAt,
@@ -161,12 +152,7 @@ export async function readCategoryCatalog(
             image: media,
           };
         })
-        .sort(
-          (a, b) =>
-            (order.includes(a.id) ? order.indexOf(a.id) : 7) -
-              (order.includes(b.id) ? order.indexOf(b.id) : 7) ||
-            a.name.localeCompare(b.name),
-        ),
+        .sort((a, b) => a.name.localeCompare(b.name)),
     };
   } catch (error) {
     if (signal?.aborted) throw error;

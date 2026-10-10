@@ -248,8 +248,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className="announcement">{m.announcement()}</div>
       <header className="site-header">
         <div className="header-main">
-          <Link to="/" className="wordmark" aria-label="MORIS">
-            MORIS
+          <Link to="/" className="wordmark" aria-label="Metal Craft">
+            Metal Craft
           </Link>
           <nav className="category-nav" aria-label={m.collection()}>
             <Link to="/collection" search={{}} className="all-collection">
@@ -298,7 +298,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           id="mobile-navigation"
         >
           <SheetHeader>
-            <SheetTitle className="wordmark">MORIS</SheetTitle>
+            <SheetTitle className="wordmark">Metal Craft</SheetTitle>
             <SheetDescription className="sr-only">
               {m.collection()}
             </SheetDescription>
@@ -352,8 +352,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
         </div>
         <div className="footer-bottom">
-          <Link to="/" className="wordmark footer-wordmark" aria-label="MORIS">
-            MORIS
+          <Link to="/" className="wordmark footer-wordmark" aria-label="Metal Craft">
+            Metal Craft
           </Link>
           <div className="footer-links">
             <p>{m.explore()}</p>

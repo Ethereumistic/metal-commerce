@@ -50,18 +50,18 @@ test("a valid saved language choice takes priority over geography", () => {
     preferredLocale(
       request("/", {
         country: "FR",
-        cookie: "other=x; MORIS_LOCALE=de; another=y",
+        cookie: "other=x; METAL_CRAFT_LOCALE=de; another=y",
       }),
     ),
     "de",
   );
   assert.equal(
-    preferredLocale(request("/", { country: "DE", cookie: "MORIS_LOCALE=en" })),
+    preferredLocale(request("/", { country: "DE", cookie: "METAL_CRAFT_LOCALE=en" })),
     "en",
   );
   assert.equal(
     preferredLocale(
-      request("/", { country: "DE", cookie: "MORIS_LOCALE=unsupported" }),
+      request("/", { country: "DE", cookie: "METAL_CRAFT_LOCALE=unsupported" }),
     ),
     "de",
   );
@@ -84,7 +84,7 @@ test("explicit localized links always take precedence over geography and cookies
       localeRedirect(
         request("/" + locale + "/pieces/arc-lounge-chair", {
           country: "DE",
-          cookie: "MORIS_LOCALE=fr",
+          cookie: "METAL_CRAFT_LOCALE=fr",
         }),
       ),
       undefined,

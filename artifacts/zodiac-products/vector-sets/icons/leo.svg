@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="704" height="704" viewBox="0 0 704 704" role="img" aria-labelledby="title description">
+  <title id="title">Leo zodiac icon</title>
+  <desc id="description">Centered vector artwork on a matte black square. White areas represent the design openings. Original source proportions preserved.</desc>
+  <rect width="704" height="704" fill="#151515"/>
+  <g id="artwork-bounds"><g transform="translate(157 157) scale(16.25)">
+    <g fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 17a4 4 0 1 0 8 0"></path><path d="M3 16a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path><path d="M7 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M7 7c0 3 2 5 2 9"></path><path d="M15 7c0 4 -2 6 -2 10"></path></g>
+  </g></g>
+</svg>

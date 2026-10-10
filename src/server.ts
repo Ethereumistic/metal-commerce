@@ -20,7 +20,7 @@ export default {
     try {
       return noStore(await serve(request));
     } catch {
-      console.warn(JSON.stringify({ event: "moris_request_unavailable" }));
+      console.warn(JSON.stringify({ event: "metal_craft_request_unavailable" }));
       return noStore(
         new Response(
           request.method === "HEAD"

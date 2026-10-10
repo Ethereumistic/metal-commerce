@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<CatalogRouterContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MORIS — " + m.announcement() },
+      { title: "Metal Craft — " + m.announcement() },
       { name: "description", content: m.collection_intro() },
       { name: "theme-color", content: "#faf9f6" },
     ],
@@ -46,7 +46,7 @@ export const Route = createRootRouteWithContext<CatalogRouterContext>()({
   notFoundComponent: () => (
     <main className="not-found">
       <Link className="wordmark" to="/">
-        MORIS
+        Metal Craft
       </Link>
       <h1>{m.not_found()}</h1>
       <p>{m.not_found_body()}</p>
