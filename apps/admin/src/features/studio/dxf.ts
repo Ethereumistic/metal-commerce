@@ -1,7 +1,8 @@
 import * as ClipperNamespace from "clipper-lib";
 import svgpath from "svgpath";
 import { DxfWriter, LWPolylineFlags, Units, point2d, point3d } from "@tarikjabiri/dxf";
-import type { Artboard, Layer, StudioDocument } from "./model";
+import { getLoadedFont } from "./fonts";
+import type { Artboard, Bridges, Layer, StudioDocument } from "./model";
 import { layerMarkup } from "./geometry";
 import { nest } from "./sheet";
 import type { Sign } from "./signs";
@@ -328,17 +329,14 @@ function elementPathDataFromRect(w: number, h: number, r: number) {
   return `M${r} 0H${w - r}A${r} ${r} 0 0 1 ${w} ${r}V${h - r}A${r} ${r} 0 0 1 ${w - r} ${h}H${r}A${r} ${r} 0 0 1 0 ${h - r}V${r}A${r} ${r} 0 0 1 ${r} 0Z`;
 }
 
-/**
- * Cut contours for the product's artwork (openings), in artboard
- * coordinates (Y down). Requires the document's fonts to be loaded.
- */
-export function artworkContours(doc: StudioDocument, sign: Sign, options: DxfOptions): Ring[] {
+/** Openings (the areas the laser removes) as integer polygons, before bridging. */
+function openings(doc: StudioDocument, sign: Sign, tolerance: number): IntPaths {
   let result: IntPaths = [];
   for (const layer of doc.layers as Layer[]) {
     if (!layer.visible || layer.opacity === 0) continue;
     const markup = layerMarkup(doc, layer, sign);
     if (!markup) continue;
-    const area = layerArea(markup, options.tolerance);
+    const area = layerArea(markup, tolerance);
     if (!area.length) continue;
     // Artwork in the metal's own colour removes material from what is below it.
     result = sameColour(layer.color, doc.artboard.background)
@@ -346,14 +344,195 @@ export function artworkContours(doc: StudioDocument, sign: Sign, options: DxfOpt
       : union([...result, ...area]);
   }
   if (doc.artboard.clip && result.length)
-    result = boolean(
-      ClipperLib.ClipType.ctIntersection,
-      result,
-      artboardShape(doc.artboard, options.tolerance),
-    );
+    result = boolean(ClipperLib.ClipType.ctIntersection, result, artboardShape(doc.artboard, tolerance));
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Bridges
+
+/** Crossings (t > 0, and which ring) of the ray P + t·d with the edges of `rings`. */
+function rayHits(rings: Ring[], p: Point, d: Point) {
+  const hits: { t: number; ring: number }[] = [];
+  rings.forEach((ring, index) => {
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i]!;
+      const b = ring[(i + 1) % ring.length]!;
+      const ex = b.x - a.x;
+      const ey = b.y - a.y;
+      const denom = d.x * ey - d.y * ex;
+      if (Math.abs(denom) < 1e-12) continue;
+      const ax = a.x - p.x;
+      const ay = a.y - p.y;
+      const t = (ax * ey - ay * ex) / denom;
+      const u = (ax * d.y - ay * d.x) / denom;
+      if (t > 1e-9 && u >= 0 && u < 1) hits.push({ t, ring: index });
+    }
+  });
+  return hits.sort((x, y) => x.t - y.t);
+}
+
+/** A point strictly inside a simple polygon (the middle of its widest horizontal span). */
+function interiorPoint(ring: Ring): Point {
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of ring) {
+    minY = Math.min(minY, p.y);
+    maxY = Math.max(maxY, p.y);
+  }
+  let best: Point = ring[0]!;
+  let bestSpan = -1;
+  for (let k = 1; k < 16; k++) {
+    const y = minY + ((maxY - minY) * k) / 16;
+    const xs: number[] = [];
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i]!;
+      const b = ring[(i + 1) % ring.length]!;
+      if ((a.y <= y && b.y > y) || (b.y <= y && a.y > y))
+        xs.push(a.x + ((y - a.y) / (b.y - a.y)) * (b.x - a.x));
+    }
+    xs.sort((m, n) => m - n);
+    for (let i = 0; i + 1 < xs.length; i += 2) {
+      const span = xs[i + 1]! - xs[i]!;
+      if (span > bestSpan) {
+        bestSpan = span;
+        best = { x: (xs[i]! + xs[i + 1]!) / 2, y };
+      }
+    }
+  }
+  return best;
+}
+
+type Candidate = { d: Point; start: number; end: number; length: number };
+
+function directions(mode: Bridges["direction"]): Point[] {
+  if (mode === "vertical") return [{ x: 0, y: -1 }, { x: 0, y: 1 }];
+  if (mode === "horizontal") return [{ x: -1, y: 0 }, { x: 1, y: 0 }];
+  return Array.from({ length: 24 }, (_, k) => ({
+    x: Math.cos((k * Math.PI) / 12),
+    y: Math.sin((k * Math.PI) / 12),
+  }));
+}
+
+/**
+ * Bridge strips for every island. An island is a hole in an opening (metal
+ * enclosed by a cut). From a point inside it, a ray crosses the opening and
+ * re-enters metal; that span, `width` wide, is kept as metal.
+ */
+function bridgeStrips(paths: IntPaths, settings: Bridges) {
+  const tree = new ClipperLib.PolyTree();
+  const clipper = new ClipperLib.Clipper();
+  clipper.AddPaths(paths, ClipperLib.PolyType.ptSubject, true);
+  clipper.Execute(
+    ClipperLib.ClipType.ctUnion,
+    tree,
+    ClipperLib.PolyFillType.pftNonZero,
+    ClipperLib.PolyFillType.pftNonZero,
+  );
+  const strips: Ring[] = [];
+  let islands = 0;
+  const overlap = 0.05; // reach slightly into metal on both ends
+
+  const visit = (node: ClipperNamespace.PolyNode) => {
+    for (const child of node.Childs()) {
+      if (child.IsHole()) {
+        islands++;
+        const opening = node; // the outer contour this hole sits in
+        const siblings = opening.Childs();
+        const rings = [opening.Contour(), ...siblings.map((c) => c.Contour())].map(
+          (path) => fromInt([path])[0]!,
+        );
+        const own = siblings.indexOf(child) + 1;
+        const hole = fromInt([child.Contour()])[0]!;
+        const p = interiorPoint(hole);
+        const candidates: Candidate[] = [];
+        for (const d of directions(settings.direction)) {
+          const hits = rayHits(rings, p, d);
+          // First crossing leaves the island; the bridge runs until the ray meets
+          // *other* metal (outer edge or another island), so a non-convex island
+          // is never only bridged to itself.
+          const exit = hits[0];
+          const reach = hits.find((hit) => hit.ring !== own);
+          if (exit && reach)
+            candidates.push({ d, start: exit.t, end: reach.t, length: reach.t - exit.t });
+        }
+        candidates.sort((a, b) => a.length - b.length);
+        const chosen: Candidate[] = [];
+        for (const candidate of candidates) {
+          if (chosen.length >= settings.perIsland) break;
+          // A second bridge goes roughly opposite the first (at least 90° away).
+          if (chosen.some((c) => c.d.x * candidate.d.x + c.d.y * candidate.d.y > 1e-6)) continue;
+          chosen.push(candidate);
+        }
+        for (const { d, start, end } of chosen) {
+          const n = { x: -d.y * (settings.width / 2), y: d.x * (settings.width / 2) };
+          const a = { x: p.x + d.x * (start - overlap), y: p.y + d.y * (start - overlap) };
+          const b = { x: p.x + d.x * (end + overlap), y: p.y + d.y * (end + overlap) };
+          strips.push([
+            { x: a.x + n.x, y: a.y + n.y },
+            { x: b.x + n.x, y: b.y + n.y },
+            { x: b.x - n.x, y: b.y - n.y },
+            { x: a.x - n.x, y: a.y - n.y },
+          ]);
+        }
+      }
+      visit(child);
+    }
+  };
+  visit(tree);
+  return { strips, islands };
+}
+
+export type CutGeometry = {
+  /** Closed cut contours for the artwork, in artboard coordinates (Y down). */
+  rings: Ring[];
+  /** Bridge strips that were kept as metal (for previews). */
+  bridges: Ring[];
+  /** Islands found (enclosed metal), bridged or not. */
+  islands: number;
+};
+
+/** Cut contours for the product's artwork. Requires the document's fonts to be loaded. */
+export function cutGeometry(doc: StudioDocument, sign: Sign, options: DxfOptions): CutGeometry {
+  let paths = openings(doc, sign, options.tolerance);
+  const { strips, islands } = bridgeStrips(paths, doc.bridges);
+  const bridged = doc.bridges.enabled && doc.bridges.width > 0 && strips.length > 0;
+  if (bridged) paths = boolean(ClipperLib.ClipType.ctDifference, paths, strips.map(toInt));
   // Drop vertices closer than a fraction of the tolerance (keeps files lean).
-  return fromInt(ClipperLib.Clipper.CleanPolygons(result, Math.max(1, (options.tolerance * SCALE) / 4)))
-    .filter((ring) => ring.length > 2);
+  const rings = fromInt(
+    ClipperLib.Clipper.CleanPolygons(paths, Math.max(1, (options.tolerance * SCALE) / 4)),
+  ).filter((ring) => ring.length > 2);
+  return { rings, bridges: bridged ? strips : [], islands };
+}
+
+export function artworkContours(doc: StudioDocument, sign: Sign, options: DxfOptions): Ring[] {
+  return cutGeometry(doc, sign, options).rings;
+}
+
+/** Coarser tolerance for on-screen previews; DXF export uses the chosen accuracy. */
+export const PREVIEW_TOLERANCE = 0.05;
+const previewCache = new Map<string, CutGeometry>();
+
+/** Cached cut geometry for previews (canvas, SVG/PNG, sheet). */
+export function previewCut(doc: StudioDocument, sign: Sign): CutGeometry {
+  const fonts = doc.layers
+    .map((layer) => (layer.kind === "text" ? (getLoadedFont(layer.font) ? 1 : 0) : ""))
+    .join("");
+  const key = `${sign}|${fonts}|${JSON.stringify([doc.layers, doc.artboard, doc.bridges, Object.keys(doc.uploads)])}`;
+  let result = previewCache.get(key);
+  if (!result) {
+    result = cutGeometry(doc, sign, { tolerance: PREVIEW_TOLERANCE });
+    if (previewCache.size > 60) previewCache.clear();
+    previewCache.set(key, result);
+  }
+  return result;
+}
+
+/** Bridges as SVG path data (artboard coordinates). */
+export function bridgesPathData(rings: Ring[]) {
+  return rings
+    .map((ring) => `M${ring.map((p) => `${p.x.toFixed(3)} ${p.y.toFixed(3)}`).join("L")}Z`)
+    .join("");
 }
 
 // ---------------------------------------------------------------------------

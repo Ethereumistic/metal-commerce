@@ -46,6 +46,7 @@ Operators sign in with their **Echoray platform account**, either with an email 
   - `0`: everything the laser cuts, as the workshop expects.
     - Piece outlines: circles are true `CIRCLE` entities, and square grids with no gap use merged shared lines, so each edge is cut once.
     - Artwork openings as closed contours: strokes become their outlines, fills follow their fill rule, overlapping layers merge, and artwork in the background colour cuts back. Curves are flattened to ±0.02 mm by default.
+  - **Bridges:** islands are metal fully enclosed by a cut, such as the counter of A, O or Q, a ring's centre, or slivers between crossing lines. They are found from the actual geometry, so open counters (Cinzel's R and P) are left alone. Each island gets 1 or 2 strips of metal (width, direction and count are set in the design panel). Bridges show on the canvas, in SVG/PNG/sheet exports and in the DXF.
   - `SHEET`: sheet edge and safety margin for reference, not cut. AutoCAD colour 4 (cyan). Included in sheet exports by default.
   - Built with svgpath, clipper-lib and @tarikjabiri/dxf (`apps/admin/src/features/studio/dxf.ts`).
 - **Theme.** The admin has light, dark and system themes. The Studio canvas always stays light so artwork colours read true.

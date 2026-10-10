@@ -22,7 +22,7 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { Toggle } from "@workspace/ui/components/toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { assetFor, layerBox, layerSize, type Resolved } from "../geometry";
-import { useFontState, useResolvedLayers } from "../hooks";
+import { useCutPreview, useFontState, useResolvedLayers } from "../hooks";
 import {
   alignLayer,
   artboardRect,
@@ -76,6 +76,66 @@ function IconButton({
 
 // ---------------------------------------------------------------------------
 // Document & artboard
+
+function BridgesSection({ doc }: { doc: StudioDocument }) {
+  const edit = useStudio((state) => state.edit);
+  const { islands } = useCutPreview(doc);
+  const { bridges } = doc;
+  const set = (patch: Partial<StudioDocument["bridges"]>, key: string) =>
+    edit((draft) => void Object.assign(draft.bridges, patch), { coalesce: `bridges:${key}` });
+  return (
+    <Section title="Laser bridges">
+      <SwitchField
+        label="Bridge enclosed islands"
+        hint="Keeps thin strips of metal so enclosed parts (the inside of A, O, Q, rings) do not fall out."
+        checked={bridges.enabled}
+        onChange={(enabled) => set({ enabled }, "enabled")}
+      />
+      <p className={islands && !bridges.enabled ? "text-xs text-destructive" : "text-xs text-muted-foreground"}>
+        {islands === 0
+          ? "No enclosed islands in this design."
+          : bridges.enabled
+            ? `${islands} island${islands === 1 ? "" : "s"} bridged.`
+            : `${islands} island${islands === 1 ? "" : "s"} would fall out when cut.`}
+      </p>
+      {bridges.enabled && (
+        <>
+          <Row>
+            <Num
+              label="Width"
+              unit={doc.unit}
+              step={0.1}
+              min={0.1}
+              value={bridges.width}
+              onChange={(width) => set({ width }, "width")}
+            />
+            <Segmented
+              value={String(bridges.perIsland) as "1" | "2"}
+              options={[
+                { value: "1", label: "1 each" },
+                { value: "2", label: "2 each" },
+              ]}
+              onChange={(value) => set({ perIsland: value === "2" ? 2 : 1 }, "count")}
+            />
+          </Row>
+          <Segmented
+            value={bridges.direction}
+            options={[
+              { value: "vertical", label: "Vertical" },
+              { value: "horizontal", label: "Horizontal" },
+              { value: "shortest", label: "Shortest" },
+            ]}
+            onChange={(direction) => set({ direction }, "direction")}
+          />
+          <p className="-mt-1 text-xs text-muted-foreground">
+            Rule of thumb: about 1–1.5× the sheet thickness. Bridges appear on the canvas, in exports and in the
+            DXF.
+          </p>
+        </>
+      )}
+    </Section>
+  );
+}
 
 function DocumentInspector({ doc }: { doc: StudioDocument }) {
   const edit = useStudio((state) => state.edit);
@@ -180,6 +240,7 @@ function DocumentInspector({ doc }: { doc: StudioDocument }) {
           onChange={(clip) => setArtboard({ clip }, "clip")}
         />
       </Section>
+      <BridgesSection doc={doc} />
     </>
   );
 }

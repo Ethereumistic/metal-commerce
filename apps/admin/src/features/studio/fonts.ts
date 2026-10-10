@@ -103,6 +103,31 @@ function transformCommands(
   });
 }
 
+/** Fixed-precision number for SVG path data ("-0" and trailing zeros removed). */
+function num(value: number) {
+  if (!Number.isFinite(value)) throw new Error("Non-finite coordinate in text outline");
+  const fixed = value.toFixed(3).replace(/\.?0+$/, "");
+  return fixed === "-0" ? "0" : fixed;
+}
+
+/**
+ * Serialises outline commands to SVG path data. opentype.js 2.0's own
+ * `toPathData` can emit "NaN" for some coordinates (a rounding-cache bug),
+ * which silently truncates the path in browsers — so we never use it.
+ */
+function pathData(commands: PathCommand[]) {
+  let d = "";
+  for (const c of commands) {
+    if (c.type === "M") d += `M${num(c.x)} ${num(c.y)}`;
+    else if (c.type === "L") d += `L${num(c.x)} ${num(c.y)}`;
+    else if (c.type === "Q") d += `Q${num(c.x1)} ${num(c.y1)} ${num(c.x)} ${num(c.y)}`;
+    else if (c.type === "C")
+      d += `C${num(c.x1)} ${num(c.y1)} ${num(c.x2)} ${num(c.y2)} ${num(c.x)} ${num(c.y)}`;
+    else if (c.type === "Z") d += "Z";
+  }
+  return d;
+}
+
 export function layoutText(
   font: Font,
   text: string,
@@ -158,7 +183,7 @@ export function layoutText(
   const box = path.getBoundingBox();
   if (!Number.isFinite(box.x1) || box.x2 - box.x1 <= 0) return null;
   return {
-    d: path.toPathData(3),
+    d: pathData(path.commands),
     bounds: { x: box.x1, y: box.y1, width: box.x2 - box.x1, height: box.y2 - box.y1 },
     missing,
   };

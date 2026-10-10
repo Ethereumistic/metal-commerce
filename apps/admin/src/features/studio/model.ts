@@ -3,7 +3,7 @@ import type { Sign } from "./signs";
 // The studio document is plain, versioned JSON so it can move from browser
 // storage to a database later without a format change.
 
-export const DOCUMENT_VERSION = 2;
+export const DOCUMENT_VERSION = 3;
 
 export type Unit = "px" | "mm";
 
@@ -33,6 +33,26 @@ export type Sheet = {
   anchor: "bottom-left" | "top-left" | "center";
   /** Every piece shows the design sign, or the 12 signs repeat in order. */
   fill: "same" | "cycle";
+};
+
+/**
+ * Islands are metal enclosed by a cut (the counter of an A or O, a ring's
+ * centre); bridges are strips of metal left uncut so they do not fall out.
+ */
+export type Bridges = {
+  enabled: boolean;
+  /** Strip width in design units (mm). Typically 1–1.5× sheet thickness. */
+  width: number;
+  perIsland: 1 | 2;
+  /** Vertical / horizontal pick the shorter side of that axis; shortest tries every angle. */
+  direction: "vertical" | "horizontal" | "shortest";
+};
+
+export const DEFAULT_BRIDGES: Bridges = {
+  enabled: true,
+  width: 2.5,
+  perIsland: 1,
+  direction: "vertical",
 };
 
 export const MACHINE_PRESETS = [
@@ -139,6 +159,7 @@ export type StudioDocument = {
   /** The product: its outline and size (mm when `unit` is "mm"). */
   artboard: Artboard;
   sheet: Sheet;
+  bridges: Bridges;
   /** Bottom to top. */
   layers: Layer[];
   uploads: Record<string, Upload>;
@@ -244,6 +265,7 @@ export function createDocument(
       padding: 32,
     },
     sheet: { ...DEFAULT_SHEET },
+    bridges: { ...DEFAULT_BRIDGES },
     layers: [],
     uploads: {},
   };
@@ -286,7 +308,7 @@ export function createFromTemplate(template: Template, sign: Sign = "aries") {
 export function parseDocument(value: unknown): StudioDocument {
   if (!value || typeof value !== "object") throw new Error("Not a design file");
   const doc = value as Omit<Partial<StudioDocument>, "version"> & { version?: number };
-  if (doc.version !== 1 && doc.version !== DOCUMENT_VERSION)
+  if (doc.version !== 1 && doc.version !== 2 && doc.version !== DOCUMENT_VERSION)
     throw new Error(`Unsupported design version: ${String(doc.version)}`);
   if (
     typeof doc.id !== "string" ||
@@ -295,11 +317,12 @@ export function parseDocument(value: unknown): StudioDocument {
     typeof doc.name !== "string"
   )
     throw new Error("Design file is incomplete");
-  // v1 → v2: designs gained machine-sheet settings.
+  // v1 → v2: machine-sheet settings. v2 → v3: laser bridges.
   return {
     ...doc,
     version: DOCUMENT_VERSION,
     sheet: { ...DEFAULT_SHEET, ...doc.sheet },
+    bridges: { ...DEFAULT_BRIDGES, ...doc.bridges },
     uploads: doc.uploads ?? {},
   } as StudioDocument;
 }

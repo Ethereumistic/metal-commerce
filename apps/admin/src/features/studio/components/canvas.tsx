@@ -8,7 +8,7 @@ import {
   layerTransform,
   type Resolved,
 } from "../geometry";
-import { useResolvedLayers } from "../hooks";
+import { useCutPreview, useResolvedLayers } from "../hooks";
 import { round, scaleLayer, snapBox, snapTargets, type Guide } from "../layout";
 import type { Layer } from "../model";
 import { useActiveDocument, useStudio } from "../store";
@@ -59,6 +59,7 @@ export function Canvas() {
   const view = useStudio((state) => state.view);
   const { select, updateLayer, checkpoint, setView } = useStudio.getState();
   const resolved = useResolvedLayers(doc);
+  const cut = useCutPreview(doc);
   const { artboard } = doc;
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -330,6 +331,10 @@ export function Canvas() {
                   <LayerView key={layer.id} layer={layer} resolved={r} />
                 ) : null;
               })}
+              {/* Laser bridges: metal kept across cuts so islands stay attached. */}
+              {cut.bridges && (
+                <path d={cut.bridges} fill={artboard.background} pointerEvents="none" />
+              )}
             </g>
 
             {/* Editor overlay — never exported. */}

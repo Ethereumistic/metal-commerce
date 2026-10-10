@@ -1,6 +1,6 @@
 import { strToU8, zipSync } from "fflate";
 import { ensureFont } from "./fonts";
-import { productDxf, sheetDxf } from "./dxf";
+import { bridgesPathData, previewCut, productDxf, sheetDxf } from "./dxf";
 import { artboardShapeMarkup, layerMarkup } from "./geometry";
 import type { StudioDocument } from "./model";
 import { nest } from "./sheet";
@@ -33,10 +33,17 @@ export function renderArtwork(
   const background = options.background ?? artboard.backgroundVisible;
   const clipId = `${options.idPrefix ?? ""}artboard-clip`;
 
-  const layers = doc.layers
+  let layers = doc.layers
     .filter((layer) => layer.visible)
     .map((layer) => layerMarkup(doc, layer, sign))
     .join("");
+
+  // Bridges: metal left across cuts so enclosed islands stay attached.
+  if (doc.bridges.enabled) {
+    const { bridges } = previewCut(doc, sign);
+    if (bridges.length)
+      layers += `<path fill="${escapeAttribute(artboard.background)}" d="${bridgesPathData(bridges)}"/>`;
+  }
 
   const clip = artboard.clip
     ? `<defs><clipPath id="${clipId}">${artboardShapeMarkup(artboard, "")}</clipPath></defs>`
