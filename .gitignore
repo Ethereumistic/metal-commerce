@@ -2,13 +2,14 @@ node_modules/
 dist/
 .tanstack/
 .wrangler/
+.turbo/
 .env*
 .dev.vars*
 test-results/
 playwright-report/
-src/paraglide/
-project.inlang/cache/
-project.inlang/.gitignore
+**/src/paraglide/
+**/project.inlang/cache/
+**/project.inlang/.gitignore
 worker-configuration.d.ts
 !.env.example
 .design/

@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "metal-admin",
+  "account_id": "ccb39f37d9a46c36f7ded1cc121968a8",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/server.ts",
+  "routes": [{ "pattern": "metal-admin.echoray.cloud", "custom_domain": true }],
+  "workers_dev": false,
+  "observability": { "enabled": true },
+  "vars": {
+    // Echoray core (Convex). Operators sign in with their Echoray platform account.
+    "ADMIN_CONVEX_URL": "https://convex.echoray.io",
+    // Only active members of this Echoray business may enter the admin.
+    "ADMIN_BUSINESS_ID": "ks7edx6n4kr4zz1396yqy4deq18g0tkc",
+    "ADMIN_DASHBOARD_URL": "https://dev.echoray.io/dashboard/ks7edx6n4kr4zz1396yqy4deq18g0tkc"
+  }
+}

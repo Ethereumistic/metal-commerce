@@ -1,0 +1,51 @@
+{
+  "name": "@metal/store",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0 --port 3000",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 3000",
+    "typecheck": "tsc --noEmit",
+    "deploy": "vite build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "test:locale": "node --test tests/locale.test.ts",
+    "test:e2e": "playwright test",
+    "format": "prettier --write src messages tests *.ts *.json *.jsonc",
+    "test:catalog": "playwright test --config playwright.catalog.config.ts"
+  },
+  "dependencies": {
+    "@base-ui/react": "catalog:",
+    "@echoray/api-client": "file:vendor/echoray-api-client-1.0.0.tgz",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "@workspace/ui": "workspace:*",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "convex": "catalog:",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwind-merge": "catalog:",
+    "tw-animate-css": "catalog:",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@cloudflare/vite-plugin": "catalog:",
+    "@inlang/paraglide-js": "^2.25.4",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/vite": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "prettier": "^3.9.9",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "wrangler": "catalog:"
+  }
+}

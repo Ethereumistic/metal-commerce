@@ -1,39 +1,46 @@
 # Metal Craft
 
-Metal Craft storefront, forked from `furniture-commerce`, built with TanStack Start, React, Tailwind CSS and Base UI. Production hosting uses a separate Cloudflare Worker.
+pnpm + Turborepo monorepo for the Metal Craft shop on the Echoray platform. Both apps are TanStack Start and deploy as separate Cloudflare Workers.
 
-- Website: https://metal.echoray.cloud
-- Worker: `metal-craft`
-- Business: `ks7edx6n4kr4zz1396yqy4deq18g0tkc`
-- Dashboard: https://dev.echoray.io/dashboard/ks7edx6n4kr4zz1396yqy4deq18g0tkc
-- Active storefront integration: `p172wsjnz491b5jj0cm3hh33sh8g15gp`
+| Path | Package | Purpose | Production |
+| --- | --- | --- | --- |
+| `apps/store` | `@metal/store` | Customer storefront ([README](apps/store/README.md)) | https://metal.echoray.cloud (Worker `metal-craft`) |
+| `apps/admin` | `@metal/admin` | Back office for business operators | https://metal-admin.echoray.cloud (Worker `metal-admin`) |
+| `packages/ui` | `@workspace/ui` | Shared shadcn/ui components, hooks and theme | — |
 
-Public catalog reads use `@echoray/api-client/public-catalog` through `https://commerce.echoray.io`. Bootstrap checks the configured business and origin. Private shopper operations use the same-origin `/api/shop` gateway and protected Worker bindings. Credentials are never part of browser configuration.
+## Shared UI
 
-## Setup and deployment
+`packages/ui` is the single home for shadcn/ui primitives. It uses the `base-nova` style, built on **Base UI** (`@base-ui/react`). Don't add Radix, `asChild` or `Slot`; compose with Base UI's `render` prop. Import components as `@workspace/ui/components/<name>`.
 
-```sh
-npm ci
-cp .env.example .env
-npm run dev
-```
-
-`VITE_SITE_URL=https://metal.echoray.cloud` must be set before a production build to generate canonical and alternate-language URLs. Runtime settings live in `wrangler.jsonc`.
+Add components from an app directory. The shadcn CLI reads that app's `components.json` and writes into `packages/ui`:
 
 ```sh
-npm run deploy
+cd apps/admin
+pnpm dlx shadcn@latest add <component>
 ```
 
-The protected `STOREFRONT_INTEGRATION_ID`, `STOREFRONT_INTEGRATION_SECRET` and `STOREFRONT_DOMAIN_CHALLENGE` bindings were installed on `metal-craft`. Use Cloudflare secret commands for any future changes; never commit credentials, put them in `VITE_*`, or reuse credentials from the furniture store. Deployment preserves existing Worker secrets.
+The CLI may ask to overwrite components that already exist; answer no unless you want to replace them. Afterwards, check that new files import `cn` from `@workspace/ui/lib/utils`. The CLI has previously rewritten this import to the unrelated npm package `cn`.
 
-The `catalog_test` environment uses isolated fixture data and must never be deployed. English, French and German routes are preserved. Language selection uses `METAL_CRAFT_LOCALE`, and cart/session storage is scoped to Metal Craft.
+The admin imports `@workspace/ui/globals.css`, which holds the stock shadcn neutral theme. The storefront keeps its own brand tokens in `apps/store/src/styles.css` and uses `@source` to scan `packages/ui`. Shared components take text through props (for example `closeLabel` on `DialogContent` and `SheetContent`), so each app supplies its own translations.
 
-## Current readiness
+## Admin authentication
 
-The domain challenge is deployed and the storefront integration is active. Shop settings use external website content and the existing EUR currency, tax and support settings. The empty catalog is published. No products or collections were invented or imported from MORIS.
+Operators sign in with their **Echoray platform account**, either with an email code or a password, against Echoray core (`https://convex.echoray.io`). The Worker runs the sign-in on the server and keeps the Echoray tokens in `HttpOnly` cookies. On every page load it checks `businesses.get` for `ADMIN_BUSINESS_ID` (`ks7edx6n4kr4zz1396yqy4deq18g0tkc`).
 
-Product discovery currently returns `UNAVAILABLE: Discovery migration in progress.` The platform initializes an empty business’s discovery index when its first real product is saved. The website keeps this error visible instead of falling back to another shop or copied furniture data.
+- An account that isn't an active member of that business is signed out again right away.
+- Membership is managed in the Echoray dashboard, not in this repo.
+- OAuth sign-in is not offered. Echoray core only allows OAuth redirects back to allowlisted origins (`convex/auth.ts` in echoray.io), and this origin isn't on that list.
 
-The inherited cart, shopper account and checkout review code is present. The private authentication configuration endpoint successfully resolves the Metal Craft integration. Actual sign-in, cart, orders and payments were not exercised. Checkout still needs real products, approved policy references, delivery rules and a payment-provider connection. The inherited checkout page has no enabled payment submission.
+## Commands
 
-See [the setup record](docs/metal-craft-setup-2026-10-10.md) for deployment evidence and remaining steps. Older MORIS documents and assets are historical foundation material, not Metal Craft operational facts.
+```sh
+pnpm install
+pnpm dev:store         # http://localhost:3000
+pnpm dev:admin         # http://localhost:3001
+pnpm build
+pnpm typecheck
+VITE_SITE_URL=https://metal.echoray.cloud pnpm deploy:store
+pnpm deploy:admin
+```
+
+Worker secrets are installed on Cloudflare and are kept across deploys. See `apps/store/README.md` for the storefront's protected bindings.

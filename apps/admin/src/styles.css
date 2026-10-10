@@ -1,0 +1,15 @@
+@import "@fontsource-variable/geist";
+@import "@workspace/ui/globals.css";
+
+/* globals.css scans packages/ui; scan the admin's own sources too. */
+@source "./";
+
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    @apply font-sans antialiased;
+  }
+}
