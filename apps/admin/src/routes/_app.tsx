@@ -1,4 +1,10 @@
-import { createFileRoute, Outlet, redirect, useLocation } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useLocation,
+  useMatches,
+} from "@tanstack/react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,6 +39,9 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const { session } = Route.useRouteContext();
   const { pathname } = useLocation();
+  const fullBleed = useMatches({
+    select: (matches) => matches.some((match) => match.staticData.fullBleed),
+  });
   return (
     <SidebarProvider>
       <AppSidebar session={session} />
@@ -55,9 +64,15 @@ function AppLayout() {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
-          <Outlet />
-        </div>
+        {fullBleed ? (
+          <div className="flex h-[calc(100svh-3.5rem)] min-h-0 flex-col">
+            <Outlet />
+          </div>
+        ) : (
+          <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
+            <Outlet />
+          </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   );

@@ -7,6 +7,7 @@ pnpm + Turborepo monorepo for the Metal Craft shop on the Echoray platform. Both
 | `apps/store` | `@metal/store` | Customer storefront ([README](apps/store/README.md)) | https://metal.echoray.cloud (Worker `metal-craft`) |
 | `apps/admin` | `@metal/admin` | Back office for business operators | https://metal-admin.echoray.cloud (Worker `metal-admin`) |
 | `packages/ui` | `@workspace/ui` | Shared shadcn/ui components, hooks and theme | — |
+| `artifacts/` | — | Product design sources (zodiac icons, constellations, vector sets). The admin Studio reads its library from here. | — |
 
 ## Shared UI
 
@@ -30,6 +31,17 @@ Operators sign in with their **Echoray platform account**, either with an email 
 - An account that isn't an active member of that business is signed out again right away.
 - Membership is managed in the Echoray dashboard, not in this repo.
 - OAuth sign-in is not offered. Echoray core only allows OAuth redirects back to allowlisted origins (`convex/auth.ts` in echoray.io), and this origin isn't on that list.
+
+## Admin design studio
+
+`/studio` in the admin is a vector composition workspace for product artwork (`apps/admin/src/features/studio`).
+
+- **Library.** The 12 Tabler zodiac icons and 12 constellation drawings come from `artifacts/zodiac-products`. You can also add text, circles, rings, rectangles and frames, or import an SVG. Imported SVGs are cleaned: scripts, event handlers and external references are removed.
+- **Precise placement.** X/Y is the centre of the layer's *visible* artwork, stroke included. Size is its longest visible side. Alignment works against the artboard or another layer, with an edge margin. "Fit inside margin" scales to the safe padding (ellipse-aware for circles). Live readouts show the distance to each edge. Snapping covers edges, centres and padding; hold Alt to bypass. Arrow keys nudge by 1, Shift+arrow by 10 and Alt+arrow by 0.1.
+- **Text.** Any Google Font, loaded through the Fontsource CDN. Text is converted to vector outlines with opentype.js. You can set letter spacing, case, kerning, arc text and the `{sign}`/`{dates}` tokens.
+- **Design sign.** Layers set to "Follow design sign", and tokens in text, change with the design's sign. Export → "All 12 signs" produces a ZIP of every sign.
+- **Export.** SVG output is vector-only, with no fonts, scripts or external links, and uses mm units when the design is set to millimetres. PNG output is at a chosen pixel width.
+- **Storage.** Designs live in this browser's localStorage, not the database. "Save design file" and "Open design file" move the versioned JSON between machines. The format (`model.ts`, `DOCUMENT_VERSION`) is ready for server persistence later.
 
 ## Commands
 

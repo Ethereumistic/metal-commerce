@@ -20,6 +20,7 @@ import { Route as AppOrdersRouteImport } from './routes/_app/orders'
 import { Route as AppProductionRouteImport } from './routes/_app/production'
 import { Route as AppProductsRouteImport } from './routes/_app/products'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppStudioRouteImport } from './routes/_app/studio'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -75,6 +76,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppStudioRoute = AppStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/production': typeof AppProductionRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
+  '/studio': typeof AppStudioRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/production': typeof AppProductionRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
+  '/studio': typeof AppStudioRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/_app/production': typeof AppProductionRoute
   '/_app/products': typeof AppProductsRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/studio': typeof AppStudioRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/production'
     | '/products'
     | '/settings'
+    | '/studio'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/production'
     | '/products'
     | '/settings'
+    | '/studio'
     | '/'
   id:
     | '__root__'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_app/production'
     | '/_app/products'
     | '/_app/settings'
+    | '/_app/studio'
     | '/_app/'
   fileRoutesById: FileRoutesById
 }
@@ -238,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/studio': {
+      id: '/_app/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof AppStudioRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -250,6 +269,7 @@ interface AppRouteChildren {
   AppProductionRoute: typeof AppProductionRoute
   AppProductsRoute: typeof AppProductsRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppStudioRoute: typeof AppStudioRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -262,6 +282,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppProductionRoute: AppProductionRoute,
   AppProductsRoute: AppProductsRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppStudioRoute: AppStudioRoute,
   AppIndexRoute: AppIndexRoute,
 }
 

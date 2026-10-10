@@ -5,6 +5,7 @@ import {
   Factory,
   FolderTree,
   LayoutDashboard,
+  PenTool,
   Package,
   ShoppingCart,
   Users,
@@ -25,6 +26,10 @@ export const navigation: NavGroup[] = [
       { title: "Collections", to: "/collections", icon: FolderTree },
       { title: "Customers", to: "/customers", icon: Users },
     ],
+  },
+  {
+    label: "Design",
+    items: [{ title: "Studio", to: "/studio", icon: PenTool }],
   },
   {
     label: "Operations",

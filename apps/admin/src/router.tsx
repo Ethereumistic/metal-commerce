@@ -13,4 +13,8 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof getRouter>;
   }
+  interface StaticDataRouteOption {
+    /** Render the page edge-to-edge without the default padding (editors). */
+    fullBleed?: boolean;
+  }
 }
