@@ -233,3 +233,22 @@ export function ColorField({
     </div>
   );
 }
+
+const TOLERANCES = ["0.01", "0.02", "0.05", "0.1"];
+
+/** Curve accuracy for DXF polylines (max deviation from the true curve). */
+export function ToleranceField({ value, onChange }: { value: number; onChange: (value: number) => void }) {
+  return (
+    <Labelled label="DXF curve accuracy">
+      <SelectField
+        value={String(value)}
+        options={TOLERANCES.map((tolerance) => ({
+          value: tolerance,
+          label: `±${tolerance} mm${tolerance === "0.02" ? " (recommended)" : ""}`,
+        }))}
+        onChange={(next) => onChange(Number(next))}
+        aria-label="DXF curve accuracy"
+      />
+    </Labelled>
+  );
+}

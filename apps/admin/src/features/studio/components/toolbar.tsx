@@ -45,6 +45,7 @@ import {
 } from "@workspace/ui/components/popover";
 import { Separator } from "@workspace/ui/components/separator";
 import { Toggle } from "@workspace/ui/components/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
@@ -52,6 +53,7 @@ import {
 } from "@workspace/ui/components/tooltip";
 import type { Template } from "../model";
 import {
+  DXF_TOLERANCE,
   exportDocument,
   exportProject,
   usesSign,
@@ -59,7 +61,7 @@ import {
 } from "../render";
 import { SIGNS, SIGN_LABELS } from "../signs";
 import { useActiveDocument, useStudio } from "../store";
-import { Labelled, Num, Segmented, SelectField, SwitchField } from "./fields";
+import { Labelled, Num, Segmented, SelectField, SwitchField, ToleranceField } from "./fields";
 
 const TEMPLATES: { value: Template; label: string }[] = [
   { value: "blank", label: "Blank" },
@@ -231,13 +233,13 @@ function DesignsMenu() {
 
 function ExportPopover() {
   const doc = useActiveDocument();
-  const [format, setFormat] = useState<"svg" | "png" | "both">("svg");
+  const [formats, setFormats] = useState<ExportFormat[]>(["svg"]);
+  const [tolerance, setTolerance] = useState(DXF_TOLERANCE);
   const [scope, setScope] = useState<"current" | "all">("current");
   const [pngWidth, setPngWidth] = useState(2048);
   const [background, setBackground] = useState(doc.artboard.backgroundVisible);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const formats: ExportFormat[] = format === "both" ? ["svg", "png"] : [format];
   const fileCount = formats.length * (scope === "all" ? SIGNS.length : 1);
 
   async function run() {
@@ -249,6 +251,7 @@ function ExportPopover() {
         pngWidth,
         background,
         signs: scope,
+        tolerance,
       });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Export failed.");
@@ -268,18 +271,24 @@ function ExportPopover() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80">
         <div className="flex flex-col gap-3">
-          <Labelled label="Format">
-            <Segmented
-              value={format}
-              options={[
-                { value: "svg", label: "SVG" },
-                { value: "png", label: "PNG" },
-                { value: "both", label: "Both" },
-              ]}
-              onChange={setFormat}
-            />
+          <Labelled label="Formats">
+            <ToggleGroup
+              multiple
+              variant="outline"
+              size="sm"
+              spacing={0}
+              value={formats}
+              onValueChange={(values) => {
+                if (values.length) setFormats(values as ExportFormat[]);
+              }}
+              className="w-full"
+            >
+              <ToggleGroupItem value="svg" className="flex-1">SVG</ToggleGroupItem>
+              <ToggleGroupItem value="png" className="flex-1">PNG</ToggleGroupItem>
+              <ToggleGroupItem value="dxf" className="flex-1">DXF (laser)</ToggleGroupItem>
+            </ToggleGroup>
           </Labelled>
-          {format !== "svg" && (
+          {formats.includes("png") && (
             <Num
               label="PNG width"
               unit="px"
@@ -290,6 +299,15 @@ function ExportPopover() {
               digits={0}
               onChange={(value) => setPngWidth(Math.round(value))}
             />
+          )}
+          {formats.includes("dxf") && (
+            <>
+              <ToleranceField value={tolerance} onChange={setTolerance} />
+              <p className="-mt-1 text-xs text-muted-foreground">
+                DXF holds closed cut contours: the product outline on layer CUT_OUTLINE and merged artwork openings
+                on CUT_INNER, in {doc.unit === "mm" ? "millimetres" : "unitless design units"}.
+              </p>
+            </>
           )}
           <Labelled label="Signs">
             <Segmented

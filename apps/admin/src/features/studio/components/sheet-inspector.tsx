@@ -3,10 +3,11 @@ import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import { DEFAULT_PRODUCT_SIZE, MACHINE_PRESETS, type Sheet } from "../model";
-import { exportSheet, type ExportFormat } from "../render";
+import { canCommonLine } from "../dxf";
+import { DXF_TOLERANCE, exportSheet, type ExportFormat } from "../render";
 import { nest, resizeProduct, sizeForColumns } from "../sheet";
 import { useActiveDocument, useStudio } from "../store";
-import { Labelled, Num, Row, Section, Segmented, SelectField, SwitchField } from "./fields";
+import { Labelled, Num, Row, Section, Segmented, SelectField, SwitchField, ToleranceField } from "./fields";
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -25,6 +26,9 @@ export function SheetInspector() {
   const [artwork, setArtwork] = useState(true);
   const [pngWidth, setPngWidth] = useState(3000);
   const [busy, setBusy] = useState<ExportFormat | null>(null);
+  const [tolerance, setTolerance] = useState(DXF_TOLERANCE);
+  const [commonLine, setCommonLine] = useState(true);
+  const [reference, setReference] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { sheet, artboard } = doc;
   const layout = nest(sheet, artboard);
@@ -42,7 +46,7 @@ export function SheetInspector() {
     setBusy(format);
     setError(null);
     try {
-      await exportSheet(doc, format, { artwork, pngWidth });
+      await exportSheet(doc, format, { artwork, pngWidth, tolerance, commonLine, reference });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Export failed.");
     } finally {
@@ -201,17 +205,35 @@ export function SheetInspector() {
           onChange={setArtwork}
         />
         <Num label="PNG width" unit="px" value={pngWidth} min={256} max={12000} step={100} digits={0} onChange={(value) => setPngWidth(Math.round(value))} />
+        <Button onClick={() => download("dxf")} disabled={!!busy || !layout.count}>
+          {busy === "dxf" ? <Loader2 className="animate-spin" /> : <Download />} DXF for the laser
+        </Button>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={() => download("svg")} disabled={!!busy || !layout.count}>
+          <Button variant="outline" onClick={() => download("svg")} disabled={!!busy || !layout.count}>
             {busy === "svg" ? <Loader2 className="animate-spin" /> : <Download />} SVG (mm)
           </Button>
           <Button variant="outline" onClick={() => download("png")} disabled={!!busy || !layout.count}>
             {busy === "png" ? <Loader2 className="animate-spin" /> : <Download />} PNG
           </Button>
         </div>
+        <ToleranceField value={tolerance} onChange={setTolerance} />
+        {canCommonLine(doc) && (
+          <SwitchField
+            label="Cut shared edges once"
+            hint="With no gap, neighbouring squares share edges. Each grid line is written as one line, so it is cut once."
+            checked={commonLine}
+            onChange={setCommonLine}
+          />
+        )}
+        <SwitchField
+          label="Reference layers"
+          hint="Adds the sheet edge (REF_SHEET) and safety margin (REF_MARGIN). Turn these layers off before cutting."
+          checked={reference}
+          onChange={setReference}
+        />
         <p className="text-xs text-muted-foreground">
-          The SVG is drawn at real size ({sheet.width} × {sheet.height} mm) with outlined text. The safety margin guide is
-          not included.
+          DXF is real size in mm, origin at the sheet's bottom-left. Piece outlines are on CUT_OUTLINE; artwork
+          openings, as merged closed contours, on CUT_INNER. SVG and PNG are for viewing. The SVG omits the margin guide.
         </p>
         {error && <p className="text-xs text-destructive">{error}</p>}
       </Section>

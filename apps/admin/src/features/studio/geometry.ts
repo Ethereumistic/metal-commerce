@@ -218,3 +218,16 @@ export function artboardShapeMarkup(artboard: Artboard, attributes: string) {
     ? `<ellipse cx="${width / 2}" cy="${height / 2}" rx="${width / 2}" ry="${height / 2}"${attributes}/>`
     : `<rect width="${width}" height="${height}" rx="${Math.min(artboard.cornerRadius, width / 2, height / 2)}"${attributes}/>`;
 }
+
+/** One layer, positioned in artboard coordinates. */
+export function layerMarkup(doc: StudioDocument, layer: Layer, sign: Sign) {
+  const resolved = resolveLayer(layer, doc, sign);
+  if (!resolved) return "";
+  const attributes: Record<string, string | number> = {
+    transform: layerTransform(layer, resolved),
+    color: layer.color,
+  };
+  if (layer.opacity < 1) attributes.opacity = layer.opacity;
+  return `<g${attributesToString(attributes)}>${resolved.markup}</g>`;
+}
+

@@ -1,10 +1,11 @@
 import { strToU8, zipSync } from "fflate";
 import { ensureFont } from "./fonts";
-import { artboardShapeMarkup, layerTransform, resolveLayer } from "./geometry";
+import { productDxf, sheetDxf } from "./dxf";
+import { artboardShapeMarkup, layerMarkup } from "./geometry";
 import type { StudioDocument } from "./model";
 import { nest } from "./sheet";
 import { SIGNS, type Sign } from "./signs";
-import { attributesToString, escapeAttribute } from "./svg";
+import { escapeAttribute } from "./svg";
 
 export type RenderOptions = {
   sign?: Sign;
@@ -34,16 +35,7 @@ export function renderArtwork(
 
   const layers = doc.layers
     .filter((layer) => layer.visible)
-    .map((layer) => {
-      const resolved = resolveLayer(layer, doc, sign);
-      if (!resolved) return "";
-      const attributes: Record<string, string | number> = {
-        transform: layerTransform(layer, resolved),
-        color: layer.color,
-      };
-      if (layer.opacity < 1) attributes.opacity = layer.opacity;
-      return `<g${attributesToString(attributes)}>${resolved.markup}</g>`;
-    })
+    .map((layer) => layerMarkup(doc, layer, sign))
     .join("");
 
   const clip = artboard.clip
@@ -161,7 +153,10 @@ export function slug(value: string) {
   );
 }
 
-export type ExportFormat = "svg" | "png";
+export type ExportFormat = "svg" | "png" | "dxf";
+
+/** Default DXF curve tolerance in design units (mm): far below laser kerf. */
+export const DXF_TOLERANCE = 0.02;
 
 export type ExportRequest = {
   formats: ExportFormat[];
@@ -169,6 +164,8 @@ export type ExportRequest = {
   pngWidth: number;
   background: boolean;
   signs: "current" | "all";
+  /** DXF curve tolerance in design units. */
+  tolerance?: number;
 };
 
 /** Whether any layer changes with the document sign (makes "all signs" meaningful). */
@@ -198,6 +195,13 @@ async function renderFiles(doc: StudioDocument, request: ExportRequest, sign: Si
     const svg = renderSvg(doc, { sign, background: request.background, pixelWidth: width });
     files.push({ name: `${name}.png`, data: await rasterize(svg, width, height) });
   }
+  if (request.formats.includes("dxf"))
+    files.push({
+      name: `${name}.dxf`,
+      data: new Blob([productDxf(doc, sign, { tolerance: request.tolerance ?? DXF_TOLERANCE })], {
+        type: "application/dxf",
+      }),
+    });
   return files;
 }
 
@@ -229,10 +233,25 @@ export function exportProject(doc: StudioDocument) {
 export async function exportSheet(
   doc: StudioDocument,
   format: ExportFormat,
-  options: { artwork: boolean; pngWidth: number },
+  options: {
+    artwork: boolean;
+    pngWidth: number;
+    tolerance?: number;
+    commonLine?: boolean;
+    reference?: boolean;
+  },
 ) {
   await prepareFonts(doc);
   const name = `${slug(doc.name)}-sheet-${doc.sheet.width}x${doc.sheet.height}`;
+  if (format === "dxf") {
+    const { dxf } = sheetDxf(doc, (index) => signForSlot(doc, index), {
+      tolerance: options.tolerance ?? DXF_TOLERANCE,
+      commonLine: options.commonLine ?? true,
+      reference: options.reference ?? false,
+      artwork: options.artwork,
+    });
+    return download(new Blob([dxf], { type: "application/dxf" }), `${name}.dxf`);
+  }
   if (format === "svg")
     return download(
       new Blob([renderSheetSvg(doc, { artwork: options.artwork })], { type: "image/svg+xml" }),
