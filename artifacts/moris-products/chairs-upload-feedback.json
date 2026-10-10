@@ -1,0 +1,132 @@
+[
+  {
+    "chair": "frame",
+    "view": 2,
+    "feedback": [
+      "+\t\t\t\t215 button Remove uploaded image 1",
+      "+\t\t\t\t218 button Remove uploaded image 2",
+      "~\t\t\t199 switch Description: Optimize image to lossless WebP; turn off to upload the original, Value: 1",
+      "~\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (716 KiB)."
+    ]
+  },
+  {
+    "chair": "frame",
+    "view": 3,
+    "feedback": [
+      "+\t\t\t\t215 button Remove uploaded image 1",
+      "+\t\t\t\t218 button Remove uploaded image 2",
+      "+\t\t\t\t221 button Remove uploaded image 3",
+      "~\t\t\t199 switch Description: Optimize image to lossless WebP; turn off to upload the original, Value: 1",
+      "~\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (697 KiB)."
+    ]
+  },
+  {
+    "chair": "frame",
+    "view": 4,
+    "feedback": [
+      "+\t\t\t\t215 button Remove uploaded image 1",
+      "+\t\t\t\t218 button Remove uploaded image 2",
+      "+\t\t\t\t221 button Remove uploaded image 3",
+      "+\t\t\t\t224 button Remove uploaded image 4",
+      "~\t\t\t199 switch Description: Optimize image to lossless WebP; turn off to upload the original, Value: 1",
+      "~\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (809 KiB)."
+    ]
+  },
+  {
+    "chair": "frame",
+    "view": 5,
+    "feedback": [
+      "+\t\t\t\t215 button Remove uploaded image 1",
+      "+\t\t\t\t218 button Remove uploaded image 2",
+      "+\t\t\t\t221 button Remove uploaded image 3",
+      "+\t\t\t\t224 button Remove uploaded image 4",
+      "+\t\t\t\t227 button Remove uploaded image 5",
+      "~\t\t\t199 switch Description: Optimize image to lossless WebP; turn off to upload the original, Value: 1",
+      "~\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (732 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 39% (617 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (762 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (743 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (672 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (854 KiB)."
+    ]
+  },
+  {
+    "product": "Arm",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (854 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 38% (671 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (975 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (752 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (822 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (837 KiB)."
+    ]
+  },
+  {
+    "product": "Rest",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (829 KiB)."
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "purge": {
+    "success": true,
+    "results": [
+      {
+        "storefrontId": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+        "catalog": {
+          "success": true,
+          "errors": []
+        },
+        "media": {
+          "success": true,
+          "errors": []
+        }
+      }
+    ]
+  },
+  "reads": [
+    {
+      "status": 200,
+      "cache": "MISS",
+      "generatedAt": 1791399276410,
+      "business": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+      "categories": 7
+    },
+    {
+      "status": 200,
+      "cache": "HIT",
+      "generatedAt": 1791399276410,
+      "business": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+      "categories": 7
+    }
+  ]
+}

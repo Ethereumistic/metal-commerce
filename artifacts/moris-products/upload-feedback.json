@@ -1,0 +1,632 @@
+[
+  {
+    "product": "Line",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 42% (557 KiB)."
+    ]
+  },
+  {
+    "product": "Line",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (931 KiB)."
+    ]
+  },
+  {
+    "product": "Line",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (675 KiB)."
+    ]
+  },
+  {
+    "product": "Line",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (668 KiB)."
+    ]
+  },
+  {
+    "product": "Line",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (895 KiB)."
+    ]
+  },
+  {
+    "product": "Line",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (866 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 39% (546 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (981 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (786 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (663 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (856 KiB)."
+    ]
+  },
+  {
+    "product": "Study",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (807 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 41% (577 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (862 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (741 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (702 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (863 KiB)."
+    ]
+  },
+  {
+    "product": "Partner",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (785 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 42% (710 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (862 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (743 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 39% (996 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (872 KiB)."
+    ]
+  },
+  {
+    "product": "Stem",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (708 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 42% (524 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (915 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (860 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 37% (795 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (910 KiB)."
+    ]
+  },
+  {
+    "product": "Beam",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (725 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 41% (811 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (926 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (797 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (970 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (842 KiB)."
+    ]
+  },
+  {
+    "product": "Block",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (783 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 38% (628 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (801 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (714 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (786 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (805 KiB)."
+    ]
+  },
+  {
+    "product": "Edge",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (748 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 43% (567 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (780 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (728 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (703 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (851 KiB)."
+    ]
+  },
+  {
+    "product": "Pillar",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (755 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 40% (675 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (867 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 38% (801 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (757 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (832 KiB)."
+    ]
+  },
+  {
+    "product": "Halo",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (781 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 40% (673 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (1001 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (1028 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (830 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (944 KiB)."
+    ]
+  },
+  {
+    "product": "Rail",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (787 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (765 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (901 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (887 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (920 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (949 KiB)."
+    ]
+  },
+  {
+    "product": "Grove",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (870 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 39% (624 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (906 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (851 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (949 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (965 KiB)."
+    ]
+  },
+  {
+    "product": "Long",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (853 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 1,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 41% (538 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 2,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (930 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 3,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (778 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 4,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (801 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 5,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (1041 KiB)."
+    ]
+  },
+  {
+    "product": "Span",
+    "view": 6,
+    "feedback": [
+      "\t\t\t207 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (819 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 41% (572 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (980 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 34% (870 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (781 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 36% (990 KiB)."
+    ]
+  },
+  {
+    "product": "Entry",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (780 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 1,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 37% (635 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 2,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (870 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 3,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (818 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 4,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 32% (768 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 5,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 35% (1012 KiB)."
+    ]
+  },
+  {
+    "product": "Settle",
+    "view": 6,
+    "feedback": [
+      "\t\t\t210 text Lossless WebP uploaded. Dimensions preserved. Saved 33% (905 KiB)."
+    ]
+  }
+]

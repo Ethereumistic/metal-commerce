@@ -1,0 +1,62 @@
+[
+  {
+    "kind": "replaced",
+    "category": "Desks",
+    "status": 404
+  },
+  {
+    "kind": "replaced",
+    "category": "Lamps",
+    "status": 404
+  },
+  {
+    "kind": "replaced",
+    "category": "Mirrors",
+    "status": 404
+  },
+  {
+    "kind": "replaced",
+    "category": "Sideboards",
+    "status": 404
+  },
+  {
+    "kind": "replaced",
+    "category": "Tables",
+    "status": 404
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE sculptural bench in century-old reclaimed oak on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE sculptural dining chair in century-old reclaimed oak on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE writing desk in century-old reclaimed oak on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE sculptural reclaimed-oak lamp with ivory linen shade on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE arched mirror framed in century-old reclaimed oak on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE sideboard in century-old reclaimed oak on a white background",
+    "status": 200
+  },
+  {
+    "kind": "current",
+    "alt": "MORIS FURNITURE dining table in century-old reclaimed oak with butterfly joinery on a white background",
+    "status": 200
+  }
+]

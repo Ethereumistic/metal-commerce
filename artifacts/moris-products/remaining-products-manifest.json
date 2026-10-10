@@ -1,0 +1,864 @@
+{
+  "business": "MORIS FURNITURE",
+  "products": [
+    {
+      "slug": "line",
+      "name": "Line",
+      "category": "Desks",
+      "price": 2400,
+      "dimensions": "140 × 65 × 75 cm (W × D × H)",
+      "headline": "Space for a clear thought.",
+      "design": "A rectangular writing desk 140cm wide, 65cm deep, 75cm high. A 32mm solid board-built oak top with softly eased square corners. Four slender square tapered oak legs support a traditional apron. One shallow centered drawer in the front apron with a small recessed finger pull. No other drawers, no metal, no live edges. A simple realistic cabinetmaker-built writing desk.",
+      "description": "A quiet writing desk in solid reclaimed oak. A board-built top rests on four tapered legs and a traditional apron frame, with one shallow drawer for everyday essentials. The softly eased edge keeps the form precise while giving century-old timber room to show its character.\n\n140 × 65 × 75 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Board-built oak top; four tapered legs, apron frame and one shallow central drawer",
+      "extras": [
+        [
+          "Storage",
+          "One shallow central drawer"
+        ]
+      ],
+      "details": [
+        "Close-up of the softly eased front edge of the desk top, reclaimed oak grain and the shallow central drawer finger pull.",
+        "Close-up of one tapered leg meeting the apron under the top, traditional timber joinery."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "140 × 65 × 75 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Board-built oak top; four tapered legs, apron frame and one shallow central drawer"
+        ],
+        [
+          "Storage",
+          "One shallow central drawer"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "study",
+      "name": "Study",
+      "category": "Desks",
+      "price": 3400,
+      "dimensions": "160 × 75 × 75 cm (W × D × H)",
+      "headline": "A place to settle into work.",
+      "design": "A rectangular writing desk 160cm wide, 75cm deep, 75cm high, straight 35mm board-built oak top eased edges. On the LEFT one integrated three-drawer pedestal 40cm wide, each drawer has a small recessed finger pull. Pedestal raised 12cm from floor on two solid block feet. On the RIGHT two tapered square oak legs. Generous unobstructed knee space in the center. Exactly three drawers, no shelves, no metal legs. Solid reclaimed oak.",
+      "description": "A generous desk with useful storage and an unhurried profile. Three drawers sit to one side beneath a broad reclaimed-oak top, leaving the working space open. Tapered legs and a raised pedestal keep the cabinet grounded without making it feel heavy.\n\n160 × 75 × 75 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Board-built oak top; left three-drawer pedestal and two tapered right legs",
+      "extras": [
+        [
+          "Storage",
+          "Three drawers in a raised left pedestal"
+        ]
+      ],
+      "details": [
+        "Close-up of the three drawer fronts and their recessed finger pulls, aged oak grain.",
+        "Close-up of the right tapered leg and 35mm tabletop corner, eased edge and timber joint."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "160 × 75 × 75 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Board-built oak top; left three-drawer pedestal and two tapered right legs"
+        ],
+        [
+          "Storage",
+          "Three drawers in a raised left pedestal"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "partner",
+      "name": "Partner",
+      "category": "Desks",
+      "price": 4200,
+      "dimensions": "180 × 80 × 75 cm (W × D × H)",
+      "headline": "Room for your next chapter.",
+      "design": "An executive writing desk 180cm wide, 80cm deep, 75cm high. Straight 40mm board-built reclaimed oak rectangular top with softly rounded 15mm corner radius. Two substantial transverse oak panel legs near each end, positioned away from central knee space. Two separate shallow drawers in the front apron, left and right, each with recessed finger pull. No back panel, open under desk, no extra shelves. Realistic solid oak panel construction, two drawers only.",
+      "description": "An expansive writing desk with a calm architectural stance. Two oak panel supports carry a substantial board-built top, while two shallow drawers keep the surface clear. Open space below and gently rounded corners soften the desk’s confident proportions.\n\n180 × 80 × 75 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "40 mm board-built top; two oak panel supports and two shallow apron drawers",
+      "extras": [
+        [
+          "Storage",
+          "Two shallow apron drawers"
+        ]
+      ],
+      "details": [
+        "Close-up of the thick eased tabletop corner and a shallow apron drawer finger pull.",
+        "Close-up of the oak panel support meeting the underside of the top, natural grain and traditional timber connection."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "180 × 80 × 75 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "40 mm board-built top; two oak panel supports and two shallow apron drawers"
+        ],
+        [
+          "Storage",
+          "Two shallow apron drawers"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "stem",
+      "name": "Stem",
+      "category": "Lamps",
+      "price": 650,
+      "dimensions": "35 × 35 × 60 cm (W × D × H)",
+      "headline": "A softer kind of presence.",
+      "design": "A realistic tabletop lamp 60cm overall height, 35cm diameter shade. Turned cylindrical reclaimed oak stem 9cm diameter with visible old oak grain, sitting on a flat circular oak base 22cm diameter 4cm thick. Ivory natural linen drum shade 35cm wide and 24cm high above the oak stem. Proportions realistic, ordinary E27 LED bulb inside shade hidden. Simple discreet beige fabric power cord from base. No impossible lighting, no floating shade.",
+      "description": "A table lamp with a simple turned-oak stem and a warm linen shade. A circular base gives the piece a quiet footing, while the grain of reclaimed oak adds depth to its restrained silhouette. Made for a bedside table, console or reading corner.\n\n35 × 35 × 60 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Turned oak stem and circular oak base with ivory linen drum shade",
+      "extras": [
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "details": [
+        "Close-up of the turned oak stem entering the round base, reclaimed wood grain, sound knots and smooth matte oil.",
+        "Close-up of the ivory linen shade seam, fine woven linen and its neatly finished lower edge, with oak stem partly visible."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "35 × 35 × 60 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; linen shade"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Turned oak stem and circular oak base with ivory linen drum shade"
+        ],
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "beam",
+      "name": "Beam",
+      "category": "Lamps",
+      "price": 1450,
+      "dimensions": "45 × 45 × 156 cm (W × D × H)",
+      "headline": "Light, given a little stature.",
+      "design": "A realistic freestanding floor lamp 156cm overall height. Straight substantial square reclaimed oak upright 8cm wide, fixed centrally to a broad heavy square oak base 38cm by38cm, 6cm thick. Ivory linen drum shade 45cm diameter and 30cm high mounted conventionally at the top, E27 LED fitting hidden inside. Stable base, no cantilever, discreet beige fabric power cord from rear of base. Natural aged oak matte finish. No curves or branches.",
+      "description": "A floor lamp with a clear vertical line and a broad, grounded base. The reclaimed-oak upright brings quiet structure to a room, balanced by an ivory linen shade. Its simple geometry sits comfortably beside a sofa or armchair.\n\n45 × 45 × 156 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Square oak upright on a broad square base with ivory linen drum shade",
+      "extras": [
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "details": [
+        "Close-up of the square oak upright and substantial base joint, aged oak grain and eased corners.",
+        "Close-up of the linen drum shade edge and its relation to the straight oak upright, finely woven linen texture."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "45 × 45 × 156 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; linen shade"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Square oak upright on a broad square base with ivory linen drum shade"
+        ],
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "block",
+      "name": "Block",
+      "category": "Lamps",
+      "price": 850,
+      "dimensions": "32 × 24 × 48 cm (W × D × H)",
+      "headline": "Small scale. Deep character.",
+      "design": "A realistic tabletop lamp 48cm overall height. Rectangular solid reclaimed oak block base 16cm wide, 12cm deep, 23cm high with softly eased corners, old oak knots and grain. A rectangular ivory natural linen shade 32cm wide,24cm deep,22cm high conventionally mounted above with concealed single E27 LED lamp fitting. Stable block, discrete beige fabric cord rear lower base, no exposed bulbs, no floating components.",
+      "description": "A compact lamp shaped around a solid block of reclaimed oak. A rectangular linen shade echoes the base’s proportions, softening the timber’s grain with a gentle glow. The small footprint works well on a shelf, bedside table or console.\n\n32 × 24 × 48 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Solid oak block base with ivory rectangular linen shade",
+      "extras": [
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "details": [
+        "Close-up of one softly eased upper corner of the solid oak block base, sound old knots and natural grain.",
+        "Close-up of the rectangular linen shade corner and stitched edge with the oak block partially visible beneath."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "32 × 24 × 48 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; linen shade"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Solid oak block base with ivory rectangular linen shade"
+        ],
+        [
+          "Shade",
+          "Ivory natural linen"
+        ],
+        [
+          "Light source",
+          "One E27 LED bulb, not included"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "edge",
+      "name": "Edge",
+      "category": "Mirrors",
+      "price": 750,
+      "dimensions": "80 × 4 × 110 cm (W × D × H)",
+      "headline": "A quiet frame for the everyday.",
+      "design": "A rectangular portrait wall mirror 80cm wide110cm high4cm deep. Flat 6cm wide reclaimed oak frame on all four sides, precisely mitred corners, softly eased outer edges. Real reflective flat mirror glass inset in oak frame, clean neutral reflection of white studio background. No bevels or carvings, no extra furniture. Realistic oak frame construction.",
+      "description": "A rectangular wall mirror framed in century-old reclaimed oak. The flat frame and softly eased edges keep the outline quiet, with mitred corners giving the timber a precise finish. A considered piece for an entryway, bedroom or living space.\n\n80 × 4 × 110 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Flat reclaimed-oak frame with mitred corners and inset mirror glass",
+      "extras": [
+        [
+          "Frame width",
+          "6 cm"
+        ],
+        [
+          "Installation",
+          "Wall mounting; fixings must suit the wall substrate"
+        ]
+      ],
+      "details": [
+        "Close-up of the upper mitred oak frame corner, precise joint and aged grain alongside the inset reflective glass.",
+        "Close-up of the lower frame edge in profile showing the 4cm depth, eased oak edge and glass inset."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "80 × 4 × 110 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; mirror glass"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Flat reclaimed-oak frame with mitred corners and inset mirror glass"
+        ],
+        [
+          "Frame width",
+          "6 cm"
+        ],
+        [
+          "Installation",
+          "Wall mounting; fixings must suit the wall substrate"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "pillar",
+      "name": "Pillar",
+      "category": "Mirrors",
+      "price": 1650,
+      "dimensions": "70 × 5 × 180 cm (W × D × H)",
+      "headline": "A little more light. A wider view.",
+      "design": "A full-length rectangular portrait floor mirror 70cm wide180cm high5cm deep. 7cm wide flat solid reclaimed oak frame all four sides with mitred square corners and softly eased outer edges. Flat reflective mirror glass inset. Shown standing securely leaned slightly against a neutral invisible studio backing, base touches white floor. No arched top, no carvings, no freestanding easel. Physically realistic.",
+      "description": "A full-length mirror with a generous reclaimed-oak frame. The tall rectangular form brings light and depth to a room, while the timber’s grain gives the outline a warm, grounded presence. Designed to stand against a wall with a suitable safety restraint.\n\n70 × 5 × 180 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Full-length inset mirror glass in a flat oak frame with mitred corners",
+      "extras": [
+        [
+          "Frame width",
+          "7 cm"
+        ],
+        [
+          "Installation",
+          "Wall leaning with a suitable anti-tip restraint"
+        ]
+      ],
+      "details": [
+        "Close-up of the upper oak frame mitre and old oak grain with a neutral mirror reflection.",
+        "Close-up of the lower frame corner where the tall mirror meets the floor, 5cm depth and eased edges."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "70 × 5 × 180 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; mirror glass"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Full-length inset mirror glass in a flat oak frame with mitred corners"
+        ],
+        [
+          "Frame width",
+          "7 cm"
+        ],
+        [
+          "Installation",
+          "Wall leaning with a suitable anti-tip restraint"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "halo",
+      "name": "Halo",
+      "category": "Mirrors",
+      "price": 1150,
+      "dimensions": "90 × 5 × 90 cm (W × D × H)",
+      "headline": "Light, held in a circle.",
+      "design": "A circular wall mirror 90cm outer diameter5cm deep. A simple flat annular reclaimed oak frame 7cm radial width, crafted from joined oak segments with subtle realistic joints, machined smooth circular outer and inner edges. Flat round reflective glass inset. Natural aged oak grain, no impossible one-piece bending, no embellishment or carving, clean neutral white reflection. Realistic circular cabinetmaker construction.",
+      "description": "A round mirror with a broad, simple oak frame. Joined reclaimed-oak segments form a precise circle, preserving the grain’s natural variation around the glass. Its softened outline brings an easy rhythm to an entryway, bedroom or living space.\n\n90 × 5 × 90 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Joined oak frame segments formed into a smooth circle with inset mirror glass",
+      "extras": [
+        [
+          "Frame width",
+          "7 cm"
+        ],
+        [
+          "Installation",
+          "Wall mounting; fixings must suit the wall substrate"
+        ]
+      ],
+      "details": [
+        "Close-up of the circular oak frame and one subtle segment joint, real grain and mirror glass inset.",
+        "Close-up from the side of the lower circular frame showing 5cm depth and the eased inner edge."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "90 × 5 × 90 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old; mirror glass"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Joined oak frame segments formed into a smooth circle with inset mirror glass"
+        ],
+        [
+          "Frame width",
+          "7 cm"
+        ],
+        [
+          "Installation",
+          "Wall mounting; fixings must suit the wall substrate"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "rail",
+      "name": "Rail",
+      "category": "Sideboards",
+      "price": 3900,
+      "dimensions": "160 × 45 × 78 cm (W × D × H)",
+      "headline": "A place for what matters.",
+      "design": "A rectangular solid reclaimed oak sideboard160cm wide45cm deep78cm high. Exactly THREE equal flush hinged doors on the front, subtle vertical gaps and small recessed finger pulls along top of each door. Straight flat oak top and sides, softly eased edges. Cabinet elevated on four short square tapered legs18cm tall. Interior shelves behind closed doors notvisible. No drawers, no metal legs, no handles attached, no slatted fronts, realistic cabinet construction.",
+      "description": "A three-door sideboard with a quiet, balanced front. Reclaimed-oak panels bring the grain into focus, while short tapered legs lift the cabinet lightly from the floor. Shelved storage keeps everyday objects close and the surface clear.\n\n160 × 45 × 78 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Three flush hinged oak doors, shelved interior and four short tapered legs",
+      "extras": [
+        [
+          "Storage",
+          "Three doors with one adjustable shelf in each section"
+        ]
+      ],
+      "details": [
+        "Close-up of the meeting line between two flush doors, recessed top finger pull and reclaimed oak grain.",
+        "Close-up of a short tapered leg where it meets the lower cabinet rail, eased edge and sound timber joinery."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "160 × 45 × 78 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Three flush hinged oak doors, shelved interior and four short tapered legs"
+        ],
+        [
+          "Storage",
+          "Three doors with one adjustable shelf in each section"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "grove",
+      "name": "Grove",
+      "category": "Sideboards",
+      "price": 3200,
+      "dimensions": "120 × 45 × 90 cm (W × D × H)",
+      "headline": "Useful space. Quiet expression.",
+      "design": "A compact solid reclaimed oak sideboard120cm wide45cm deep90cm high. Exactly TWO shallow side-by-side drawers across top front, and exactly TWO equal hinged doors beneath. All fronts flush flat oak with recessed edge finger pulls, no applied handles. Oak rectangular top straight sides softly eased edges. Cabinet supported by recessed oak plinth8cm high giving stable grounded base. No legs. Shelves behind doors notvisible. Realistic cabinetmaker furniture.",
+      "description": "A compact sideboard with two drawers above a pair of doors. Its grounded oak plinth and clean panel fronts give the piece an assured, useful presence. Century-old boards bring individual grain and markings to storage made for everyday life.\n\n120 × 45 × 90 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Two shallow drawers above two hinged doors on a recessed oak plinth",
+      "extras": [
+        [
+          "Storage",
+          "Two drawers and two doors with an adjustable interior shelf"
+        ]
+      ],
+      "details": [
+        "Close-up of one upper drawer corner and recessed finger pull, aged grain and precise cabinet gaps.",
+        "Close-up of the bottom door edge and recessed oak plinth, grain and softly eased cabinet corner."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "120 × 45 × 90 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Two shallow drawers above two hinged doors on a recessed oak plinth"
+        ],
+        [
+          "Storage",
+          "Two drawers and two doors with an adjustable interior shelf"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "long",
+      "name": "Long",
+      "category": "Sideboards",
+      "price": 5200,
+      "dimensions": "200 × 45 × 80 cm (W × D × H)",
+      "headline": "A long line of character.",
+      "design": "A long low solid reclaimed oak sideboard200cm wide45cm deep80cm high. Exactly FOUR equal flush flat hinged oak doors across front, narrow gaps, recessed finger pulls along top edge, no applied handles. Straight substantial rectangular top40mm thick softly eased corners. Cabinet stands on recessed continuous oak plinth10cm high, no legs. Shelved internal sections notvisible. Simple architectural wide cabinet, no drawers or extra slats, realistically manufacturable.",
+      "description": "A long, low sideboard with four generous doors and a continuous oak plinth. The uninterrupted top offers room for a few considered objects, while the flat fronts let reclaimed timber carry the detail. A substantial piece with a calm architectural line.\n\n200 × 45 × 80 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Four flush hinged doors, shelved interior and a recessed continuous oak plinth",
+      "extras": [
+        [
+          "Storage",
+          "Four doors with an adjustable shelf in each section"
+        ]
+      ],
+      "details": [
+        "Close-up of the substantial 40mm top corner and top edge finger pull of one flat door.",
+        "Close-up of two door meeting edges above the recessed continuous oak plinth, aged grain and precise gaps."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "200 × 45 × 80 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Four flush hinged doors, shelved interior and a recessed continuous oak plinth"
+        ],
+        [
+          "Storage",
+          "Four doors with an adjustable shelf in each section"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "span",
+      "name": "Span",
+      "category": "Benches",
+      "price": 1800,
+      "dimensions": "180 × 38 × 45 cm (W × D × H)",
+      "headline": "Room to gather, simply.",
+      "design": "A backless solid reclaimed oak bench180cm long38cm deep45cm high. Straight 40mm board-built rectangular seat with gently eased corners. Four square tapered oak legs, two at each end, connected by traditional apron underneath seat and a single low longitudinal stretcher between transverse end rails. Realistic strong timber construction, no cantilever, no upholstery, no back or arms, natural aged oak.",
+      "description": "A generous backless bench with a clear, familiar construction. Four tapered legs and a low stretcher support a substantial reclaimed-oak seat. Its long, simple profile works beside a dining table or along an open hallway.\n\n180 × 38 × 45 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "40 mm board-built seat; four tapered legs, apron frame and low connecting stretcher",
+      "extras": [
+        [
+          "Seat height",
+          "45 cm"
+        ]
+      ],
+      "details": [
+        "Close-up of the thick seat edge and one tapered leg-to-apron joint, old oak grain and eased corners.",
+        "Close-up of the low longitudinal stretcher meeting an end rail, timber joinery and sound historic knots."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "180 × 38 × 45 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "40 mm board-built seat; four tapered legs, apron frame and low connecting stretcher"
+        ],
+        [
+          "Seat height",
+          "45 cm"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "entry",
+      "name": "Entry",
+      "category": "Benches",
+      "price": 1100,
+      "dimensions": "110 × 35 × 45 cm (W × D × H)",
+      "headline": "An easy place to pause.",
+      "design": "A compact entryway backless solid reclaimed oak bench110cm wide35cm deep45cm high. Straight 35mm board-built seat gently eased corners, supported by two substantial transverse oak panel legs, one at each end. A low practical shoe shelf consisting of parallel horizontal oak slats running lengthwise between panel supports,10cm above floor. No back or arms, no drawers, no metal, stable realistic panel construction.",
+      "description": "A compact oak bench for the small rituals of coming and going. Two panel supports carry a solid seat, with a low slatted shelf for shoes below. Softly eased edges and reclaimed grain give this practical piece a quiet warmth.\n\n110 × 35 × 45 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Board-built seat on two oak panel supports with a low slatted shoe shelf",
+      "extras": [
+        [
+          "Seat height",
+          "45 cm"
+        ],
+        [
+          "Storage",
+          "Low slatted shoe shelf"
+        ]
+      ],
+      "details": [
+        "Close-up of the seat corner and the transverse oak panel support, board grain and eased edges.",
+        "Close-up of the low slatted shoe shelf meeting the panel support, real oak joinery and parallel shelf slats."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "110 × 35 × 45 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Board-built seat on two oak panel supports with a low slatted shoe shelf"
+        ],
+        [
+          "Seat height",
+          "45 cm"
+        ],
+        [
+          "Storage",
+          "Low slatted shoe shelf"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    },
+    {
+      "slug": "settle",
+      "name": "Settle",
+      "category": "Benches",
+      "price": 2400,
+      "dimensions": "160 × 52 × 82 cm (W × D × H)",
+      "headline": "A moment worth sharing.",
+      "design": "A two-person solid reclaimed oak bench160cm wide52cm deep82cm high, seat height45cm,arm height65cm. Four substantial square oak legs, traditional apron frame, broad slatted oak seat. Exactly THREE horizontal back boards between gently inclined rear posts. Straight solid oak arms meeting rearposts and continuous front leg posts. Four-legged realistic joinery with low cross rails, stable buildable wooden bench, no cushions, no metal, no additional vertical back slats.",
+      "description": "A two-person bench with an open back and welcoming proportions. Three horizontal oak boards, a slatted seat and straight arms keep the construction honest and clear. Reclaimed timber adds depth to a piece made for a hallway, dining space or quiet corner.\n\n160 × 52 × 82 cm. Available in Natural or Smoked matte oil. Each piece carries its own grain, sound knots and traces of a former life; the gallery shows Natural oak.",
+      "construction": "Slatted oak seat and three back boards; four legs, apron frame and straight arms",
+      "extras": [
+        [
+          "Seat height",
+          "45 cm"
+        ],
+        [
+          "Arm height",
+          "65 cm"
+        ]
+      ],
+      "details": [
+        "Close-up of the slatted oak seat meeting the front arm post and apron, traditional timber joints.",
+        "Close-up of a straight arm rail joining the rear post beneath the three horizontal back boards, aged oak grain."
+      ],
+      "specifications": [
+        [
+          "Dimensions",
+          "160 × 52 × 82 cm (W × D × H)"
+        ],
+        [
+          "Material",
+          "Solid reclaimed oak, 100+ years old"
+        ],
+        [
+          "Finish",
+          "Natural or Smoked matte oil"
+        ],
+        [
+          "Construction",
+          "Slatted oak seat and three back boards; four legs, apron frame and straight arms"
+        ],
+        [
+          "Seat height",
+          "45 cm"
+        ],
+        [
+          "Arm height",
+          "65 cm"
+        ]
+      ],
+      "faqs": [
+        [
+          "How long does production take?",
+          "Each piece is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time."
+        ],
+        [
+          "Will my piece look exactly like the images?",
+          "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so every finished piece has its own character. Smoked matte oil gives the same design a deeper brown tone."
+        ]
+      ]
+    }
+  ]
+}

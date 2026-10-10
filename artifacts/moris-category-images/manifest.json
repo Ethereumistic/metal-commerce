@@ -1,0 +1,27 @@
+{
+  "business": "MORIS FURNITURE",
+  "businessId": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+  "created": "2026-10-06",
+  "style": "Luxury furniture in century-old reclaimed oak; white studio backgrounds",
+  "images": {
+    "benches": "benches.png",
+    "chairs": "chairs.png",
+    "desks": "desks.png",
+    "lamps": "lamps.png",
+    "mirrors": "mirrors.png",
+    "sideboards": "sideboards.png",
+    "tables": "tables.png"
+  },
+  "savedCategories": [
+    "Benches",
+    "Chairs",
+    "Desks",
+    "Lamps",
+    "Mirrors",
+    "Sideboards",
+    "Tables"
+  ],
+  "pendingCategories": [],
+  "cleanupDeployed": true,
+  "oldUploadsGone": true
+}

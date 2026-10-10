@@ -1,0 +1,1461 @@
+{
+  "data": {
+    "cursor": null,
+    "kind": "products",
+    "page": [
+      {
+        "collection": "Chairs",
+        "currency": "EUR",
+        "id": "m17fktm8s6eh4wqvmxpczwfn0s8ftp80",
+        "images": [
+          {
+            "alt": "Arm",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg218cwr8yjwkxsn9sp68aqs9d8fte9p",
+            "originalUrl": "https://convex.echoray.io/api/storage/1c37f59c-63c9-4aac-bc1f-b7be3b23ea5f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f",
+            "width": 1254.0
+          },
+          {
+            "alt": "Arm",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v",
+            "originalUrl": "https://convex.echoray.io/api/storage/7e39cdd9-e4c7-481e-95b1-bde27f48fc6d?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 125000.0,
+        "minAmount": 125000.0,
+        "name": "Arm",
+        "optionLabel": "Natural",
+        "slug": "arm"
+      },
+      {
+        "collection": "Lamps",
+        "currency": "EUR",
+        "id": "m17edv0shaw3fq71ncjkf3mm4s8fvata",
+        "images": [
+          {
+            "alt": "Beam",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg28pc565c33z3j2ep3sp10cax8fv35v/3c4330d84c674083184342ff0fa6ecb0df895f117e57190877c078aee8e76af7/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg28pc565c33z3j2ep3sp10cax8fv35v/3c4330d84c674083184342ff0fa6ecb0df895f117e57190877c078aee8e76af7/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg28pc565c33z3j2ep3sp10cax8fv35v/3c4330d84c674083184342ff0fa6ecb0df895f117e57190877c078aee8e76af7/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg28pc565c33z3j2ep3sp10cax8fv35v",
+            "originalUrl": "https://convex.echoray.io/api/storage/4da7bd7d-ba30-440f-a55a-499127e998d2?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "3c4330d84c674083184342ff0fa6ecb0df895f117e57190877c078aee8e76af7",
+            "width": 1254.0
+          },
+          {
+            "alt": "Beam",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg26btqr0fwrha4qzxeefem1558fv780/c362924258e65d92f9b233c8b53c1b8dd28beaa02e8fb6c3131a944fc80500bb/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg26btqr0fwrha4qzxeefem1558fv780/c362924258e65d92f9b233c8b53c1b8dd28beaa02e8fb6c3131a944fc80500bb/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg26btqr0fwrha4qzxeefem1558fv780/c362924258e65d92f9b233c8b53c1b8dd28beaa02e8fb6c3131a944fc80500bb/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg26btqr0fwrha4qzxeefem1558fv780",
+            "originalUrl": "https://convex.echoray.io/api/storage/5769079b-1227-4742-b7d2-11e3d69c44f4?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "c362924258e65d92f9b233c8b53c1b8dd28beaa02e8fb6c3131a944fc80500bb",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 145000.0,
+        "minAmount": 145000.0,
+        "name": "Beam",
+        "optionLabel": "Natural",
+        "slug": "beam"
+      },
+      {
+        "collection": "Lamps",
+        "currency": "EUR",
+        "id": "m17972cq7b0x3jyxwxkanbvr018fv03s",
+        "images": [
+          {
+            "alt": "Block",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2acmm0c7jkwpj234e8h1z2m98ftkfx/117d4cf25e602cd0916245e5fdaea95df618b38ca58bbefa43da88a8017dbda1/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2acmm0c7jkwpj234e8h1z2m98ftkfx/117d4cf25e602cd0916245e5fdaea95df618b38ca58bbefa43da88a8017dbda1/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2acmm0c7jkwpj234e8h1z2m98ftkfx/117d4cf25e602cd0916245e5fdaea95df618b38ca58bbefa43da88a8017dbda1/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2acmm0c7jkwpj234e8h1z2m98ftkfx",
+            "originalUrl": "https://convex.echoray.io/api/storage/ed8a87e1-2297-41d8-a97d-cf890366a6e4?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "117d4cf25e602cd0916245e5fdaea95df618b38ca58bbefa43da88a8017dbda1",
+            "width": 1254.0
+          },
+          {
+            "alt": "Block",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg29ws8q191wm5aevdgmh9xdwx8ftg55/c8e6e17f8fc46566a09eae75b3c7960834387f775d74dcf9d584e4974904cdb2/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg29ws8q191wm5aevdgmh9xdwx8ftg55/c8e6e17f8fc46566a09eae75b3c7960834387f775d74dcf9d584e4974904cdb2/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg29ws8q191wm5aevdgmh9xdwx8ftg55/c8e6e17f8fc46566a09eae75b3c7960834387f775d74dcf9d584e4974904cdb2/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg29ws8q191wm5aevdgmh9xdwx8ftg55",
+            "originalUrl": "https://convex.echoray.io/api/storage/5c96618f-ed71-47a0-9a4f-01d97a02cd77?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "c8e6e17f8fc46566a09eae75b3c7960834387f775d74dcf9d584e4974904cdb2",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 85000.0,
+        "minAmount": 85000.0,
+        "name": "Block",
+        "optionLabel": "Natural",
+        "slug": "block"
+      },
+      {
+        "collection": "Mirrors",
+        "currency": "EUR",
+        "id": "m176ja9npfspg12wawazzxhr5h8ftddp",
+        "images": [
+          {
+            "alt": "Edge",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2fa73qrx9x2x5zzbwbh4pv9h8fvxmt/076cb67f0318fa12b8b116f062c5ed39d914ee5b1a6181ed497598096a5f352d/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2fa73qrx9x2x5zzbwbh4pv9h8fvxmt/076cb67f0318fa12b8b116f062c5ed39d914ee5b1a6181ed497598096a5f352d/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2fa73qrx9x2x5zzbwbh4pv9h8fvxmt/076cb67f0318fa12b8b116f062c5ed39d914ee5b1a6181ed497598096a5f352d/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2fa73qrx9x2x5zzbwbh4pv9h8fvxmt",
+            "originalUrl": "https://convex.echoray.io/api/storage/e6d271a8-debd-4d69-be21-a2d2e36541b8?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "076cb67f0318fa12b8b116f062c5ed39d914ee5b1a6181ed497598096a5f352d",
+            "width": 1254.0
+          },
+          {
+            "alt": "Edge",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2et5x391cw5zan28gksv3eq98fvk2p/70269e9a8d2728166d0703ac3b8386e71741739bb2daa2eacaa9f342f9673bc5/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2et5x391cw5zan28gksv3eq98fvk2p/70269e9a8d2728166d0703ac3b8386e71741739bb2daa2eacaa9f342f9673bc5/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2et5x391cw5zan28gksv3eq98fvk2p/70269e9a8d2728166d0703ac3b8386e71741739bb2daa2eacaa9f342f9673bc5/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2et5x391cw5zan28gksv3eq98fvk2p",
+            "originalUrl": "https://convex.echoray.io/api/storage/8a00b36e-49b5-489a-898f-96f29e781ba5?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "70269e9a8d2728166d0703ac3b8386e71741739bb2daa2eacaa9f342f9673bc5",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 75000.0,
+        "minAmount": 75000.0,
+        "name": "Edge",
+        "optionLabel": "Natural",
+        "slug": "edge"
+      },
+      {
+        "collection": "Benches",
+        "currency": "EUR",
+        "id": "m178k6g4fqvxjbp9xwk9vgk4158fv1wv",
+        "images": [
+          {
+            "alt": "Entry",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg21h8jwayx8jn7ra8jnbwrcvs8fv4qz/e8e7b611897c0317420978d5b0c09d345974db407d041fa76da92ce153a508ff/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg21h8jwayx8jn7ra8jnbwrcvs8fv4qz/e8e7b611897c0317420978d5b0c09d345974db407d041fa76da92ce153a508ff/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg21h8jwayx8jn7ra8jnbwrcvs8fv4qz/e8e7b611897c0317420978d5b0c09d345974db407d041fa76da92ce153a508ff/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg21h8jwayx8jn7ra8jnbwrcvs8fv4qz",
+            "originalUrl": "https://convex.echoray.io/api/storage/6cf33546-3589-40ce-a608-df910a2aa7f8?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "e8e7b611897c0317420978d5b0c09d345974db407d041fa76da92ce153a508ff",
+            "width": 1254.0
+          },
+          {
+            "alt": "Entry",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2fx265sraw3b9mvkp22a84n98ftzdz/5bb8f3357890472f1b0fab7e205caf89e63241072d37990cae104a1f176ede88/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2fx265sraw3b9mvkp22a84n98ftzdz/5bb8f3357890472f1b0fab7e205caf89e63241072d37990cae104a1f176ede88/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2fx265sraw3b9mvkp22a84n98ftzdz/5bb8f3357890472f1b0fab7e205caf89e63241072d37990cae104a1f176ede88/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2fx265sraw3b9mvkp22a84n98ftzdz",
+            "originalUrl": "https://convex.echoray.io/api/storage/ba7e3775-abd6-4758-a36a-e677af33f355?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "5bb8f3357890472f1b0fab7e205caf89e63241072d37990cae104a1f176ede88",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 110000.0,
+        "minAmount": 110000.0,
+        "name": "Entry",
+        "optionLabel": "Natural",
+        "slug": "entry"
+      },
+      {
+        "collection": "Chairs",
+        "currency": "EUR",
+        "id": "m174eq8b27aghtvpjgj8ae0s2x8fvqm8",
+        "images": [
+          {
+            "alt": "Frame",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg260kqk8c0b3jwbnzfed536dh8fvc9p",
+            "originalUrl": "https://convex.echoray.io/api/storage/57edf7df-313a-4f42-b81a-921d06719f2f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993",
+            "width": 1254.0
+          },
+          {
+            "alt": "Frame",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2bbzcag465bwmb5f6nn61e0x8fv9vq",
+            "originalUrl": "https://convex.echoray.io/api/storage/4c8551fe-b062-46b9-9ce2-33c3c786f53a?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 85000.0,
+        "minAmount": 85000.0,
+        "name": "Frame",
+        "optionLabel": "Natural",
+        "slug": "frame"
+      },
+      {
+        "collection": "Sideboards",
+        "currency": "EUR",
+        "id": "m1702m2phxc0qf0drc2p0nztas8ftv20",
+        "images": [
+          {
+            "alt": "Grove",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2730mbt7z5e3k6y6bhvyfqm98ftf3v/83635009a43c92e7a160a81dca8dac97b99dc9ca88a76a5422457809ab97eb22/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2730mbt7z5e3k6y6bhvyfqm98ftf3v/83635009a43c92e7a160a81dca8dac97b99dc9ca88a76a5422457809ab97eb22/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2730mbt7z5e3k6y6bhvyfqm98ftf3v/83635009a43c92e7a160a81dca8dac97b99dc9ca88a76a5422457809ab97eb22/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2730mbt7z5e3k6y6bhvyfqm98ftf3v",
+            "originalUrl": "https://convex.echoray.io/api/storage/6f811825-f947-4e90-8a74-84560461e442?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "83635009a43c92e7a160a81dca8dac97b99dc9ca88a76a5422457809ab97eb22",
+            "width": 1254.0
+          },
+          {
+            "alt": "Grove",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2ekz7v6x2m8jchycbkjrtj4x8fv1g8/02d015e16332c2a213f2318edf8ad09fdfbdad03c576da92743c3ba752180502/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2ekz7v6x2m8jchycbkjrtj4x8fv1g8/02d015e16332c2a213f2318edf8ad09fdfbdad03c576da92743c3ba752180502/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2ekz7v6x2m8jchycbkjrtj4x8fv1g8/02d015e16332c2a213f2318edf8ad09fdfbdad03c576da92743c3ba752180502/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2ekz7v6x2m8jchycbkjrtj4x8fv1g8",
+            "originalUrl": "https://convex.echoray.io/api/storage/db7bd5ba-95c8-4bd3-b0c6-1e3d381d2a69?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "02d015e16332c2a213f2318edf8ad09fdfbdad03c576da92743c3ba752180502",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 320000.0,
+        "minAmount": 320000.0,
+        "name": "Grove",
+        "optionLabel": "Natural",
+        "slug": "grove"
+      },
+      {
+        "collection": "Mirrors",
+        "currency": "EUR",
+        "id": "m1725yw59mmnaxfa4emvr6gt658fvx0a",
+        "images": [
+          {
+            "alt": "Halo",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg21bgmk8zwe9qqbhnfdssgr6s8ftfh9/aab250a9bdc4d2e64536fddf91b324fe2bb26a41ef29eb5204af66a22d290274/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg21bgmk8zwe9qqbhnfdssgr6s8ftfh9/aab250a9bdc4d2e64536fddf91b324fe2bb26a41ef29eb5204af66a22d290274/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg21bgmk8zwe9qqbhnfdssgr6s8ftfh9/aab250a9bdc4d2e64536fddf91b324fe2bb26a41ef29eb5204af66a22d290274/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg21bgmk8zwe9qqbhnfdssgr6s8ftfh9",
+            "originalUrl": "https://convex.echoray.io/api/storage/282ea8a4-d1af-4d09-919f-fb416744fa10?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "aab250a9bdc4d2e64536fddf91b324fe2bb26a41ef29eb5204af66a22d290274",
+            "width": 1254.0
+          },
+          {
+            "alt": "Halo",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2bj8q56azt1wjrrgy4p58mgx8fv0xb/c1f6c60f2d18f49e11bac7076d298c448ca5aa8a3afe0fb3c267a6bb92f38cbe/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2bj8q56azt1wjrrgy4p58mgx8fv0xb/c1f6c60f2d18f49e11bac7076d298c448ca5aa8a3afe0fb3c267a6bb92f38cbe/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2bj8q56azt1wjrrgy4p58mgx8fv0xb/c1f6c60f2d18f49e11bac7076d298c448ca5aa8a3afe0fb3c267a6bb92f38cbe/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2bj8q56azt1wjrrgy4p58mgx8fv0xb",
+            "originalUrl": "https://convex.echoray.io/api/storage/37645315-79ac-498d-a9bc-383ec217aad1?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "c1f6c60f2d18f49e11bac7076d298c448ca5aa8a3afe0fb3c267a6bb92f38cbe",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 115000.0,
+        "minAmount": 115000.0,
+        "name": "Halo",
+        "optionLabel": "Natural",
+        "slug": "halo"
+      },
+      {
+        "collection": "Desks",
+        "currency": "EUR",
+        "id": "m170k1r250mryqt1m8ecz0ad0n8fvb9e",
+        "images": [
+          {
+            "alt": "Line",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg25m6j384hzgg7s1z1cfs7t858fvw0j/592641d77fe563f01d24556c8e1a9cdf814792790bc716034f39c48759dcd6c0/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg25m6j384hzgg7s1z1cfs7t858fvw0j/592641d77fe563f01d24556c8e1a9cdf814792790bc716034f39c48759dcd6c0/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg25m6j384hzgg7s1z1cfs7t858fvw0j/592641d77fe563f01d24556c8e1a9cdf814792790bc716034f39c48759dcd6c0/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg25m6j384hzgg7s1z1cfs7t858fvw0j",
+            "originalUrl": "https://convex.echoray.io/api/storage/c87ef4cf-ea3d-4bca-827e-34cdf58e3cf1?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "592641d77fe563f01d24556c8e1a9cdf814792790bc716034f39c48759dcd6c0",
+            "width": 1254.0
+          },
+          {
+            "alt": "Line",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2c4r2bry5fnmbnpjgvyrzfks8fvvth/a0f077f3d7be87c3edf747a78958dc9f0371175308da1b10fdf9cacdec85b297/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2c4r2bry5fnmbnpjgvyrzfks8fvvth/a0f077f3d7be87c3edf747a78958dc9f0371175308da1b10fdf9cacdec85b297/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2c4r2bry5fnmbnpjgvyrzfks8fvvth/a0f077f3d7be87c3edf747a78958dc9f0371175308da1b10fdf9cacdec85b297/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2c4r2bry5fnmbnpjgvyrzfks8fvvth",
+            "originalUrl": "https://convex.echoray.io/api/storage/12549911-cfa1-4aeb-8bd5-8f82d1f1b788?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "a0f077f3d7be87c3edf747a78958dc9f0371175308da1b10fdf9cacdec85b297",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 240000.0,
+        "minAmount": 240000.0,
+        "name": "Line",
+        "optionLabel": "Natural",
+        "slug": "line"
+      },
+      {
+        "collection": "Sideboards",
+        "currency": "EUR",
+        "id": "m170eychy6yx1c0ssksnh19w6h8fv7w4",
+        "images": [
+          {
+            "alt": "Long",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg247vvm58x2338gcrzndp4cx58fvze9/a232fa2c53e70c20fa1facd79c2ae672f06777805e5a84c2678489bd47bd71dc/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg247vvm58x2338gcrzndp4cx58fvze9/a232fa2c53e70c20fa1facd79c2ae672f06777805e5a84c2678489bd47bd71dc/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg247vvm58x2338gcrzndp4cx58fvze9/a232fa2c53e70c20fa1facd79c2ae672f06777805e5a84c2678489bd47bd71dc/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg247vvm58x2338gcrzndp4cx58fvze9",
+            "originalUrl": "https://convex.echoray.io/api/storage/7f01ced1-4252-4151-be77-51a058e894ce?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "a232fa2c53e70c20fa1facd79c2ae672f06777805e5a84c2678489bd47bd71dc",
+            "width": 1254.0
+          },
+          {
+            "alt": "Long",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg26t9m261n2wz96sepcjfftzx8fvrvh/1fd339f66d8742b5141a569b487a9e99c94ed95cf136b2c5be6fa8b1f8d02358/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg26t9m261n2wz96sepcjfftzx8fvrvh/1fd339f66d8742b5141a569b487a9e99c94ed95cf136b2c5be6fa8b1f8d02358/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg26t9m261n2wz96sepcjfftzx8fvrvh/1fd339f66d8742b5141a569b487a9e99c94ed95cf136b2c5be6fa8b1f8d02358/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg26t9m261n2wz96sepcjfftzx8fvrvh",
+            "originalUrl": "https://convex.echoray.io/api/storage/7042df09-665b-4644-9993-84cd0e4cc5ef?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "1fd339f66d8742b5141a569b487a9e99c94ed95cf136b2c5be6fa8b1f8d02358",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 520000.0,
+        "minAmount": 520000.0,
+        "name": "Long",
+        "optionLabel": "Natural",
+        "slug": "long"
+      },
+      {
+        "collection": "Tables",
+        "currency": "EUR",
+        "id": "m17fvf96rmv164kbwph1px0s458fsx8n",
+        "images": [
+          {
+            "alt": "Low",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg23606g5s9tyw6qzn63b73jg58frwx7/d1fb76b0dc7a31cb0445c3763aa0577ddadb75c377dddaa9bf0714a1d6206005/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg23606g5s9tyw6qzn63b73jg58frwx7/d1fb76b0dc7a31cb0445c3763aa0577ddadb75c377dddaa9bf0714a1d6206005/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg23606g5s9tyw6qzn63b73jg58frwx7/d1fb76b0dc7a31cb0445c3763aa0577ddadb75c377dddaa9bf0714a1d6206005/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg23606g5s9tyw6qzn63b73jg58frwx7",
+            "originalUrl": "https://convex.echoray.io/api/storage/25c08d38-adf7-4c71-9ab7-32f8fa4402dd?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "d1fb76b0dc7a31cb0445c3763aa0577ddadb75c377dddaa9bf0714a1d6206005",
+            "width": 1254.0
+          },
+          {
+            "alt": "Low",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg276vdq6bvt1wwa5kfn4sg9b58fsvjn/9fb713d13504854c74ab610ccd3e0891621534294ffe9d34b9d6694b806bbbc0/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg276vdq6bvt1wwa5kfn4sg9b58fsvjn/9fb713d13504854c74ab610ccd3e0891621534294ffe9d34b9d6694b806bbbc0/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg276vdq6bvt1wwa5kfn4sg9b58fsvjn/9fb713d13504854c74ab610ccd3e0891621534294ffe9d34b9d6694b806bbbc0/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg276vdq6bvt1wwa5kfn4sg9b58fsvjn",
+            "originalUrl": "https://convex.echoray.io/api/storage/2c2622ff-5ac7-462a-abdd-eb1caa4a44a3?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "9fb713d13504854c74ab610ccd3e0891621534294ffe9d34b9d6694b806bbbc0",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 300000.0,
+        "minAmount": 300000.0,
+        "name": "Low",
+        "optionLabel": "Natural",
+        "slug": "low"
+      },
+      {
+        "collection": "Desks",
+        "currency": "EUR",
+        "id": "m171j5sgbw0snpyvenxcbnhvkd8fvays",
+        "images": [
+          {
+            "alt": "Partner",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2db106bn6r698knekmnc09ah8ftpm1/23914e8252930aa2da94e63b0a996dc2433ccc7f91e328c64694f8d0e9fb4c93/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2db106bn6r698knekmnc09ah8ftpm1/23914e8252930aa2da94e63b0a996dc2433ccc7f91e328c64694f8d0e9fb4c93/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2db106bn6r698knekmnc09ah8ftpm1/23914e8252930aa2da94e63b0a996dc2433ccc7f91e328c64694f8d0e9fb4c93/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2db106bn6r698knekmnc09ah8ftpm1",
+            "originalUrl": "https://convex.echoray.io/api/storage/66dc6827-8778-41c8-98a5-fe4fec7b77b5?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "23914e8252930aa2da94e63b0a996dc2433ccc7f91e328c64694f8d0e9fb4c93",
+            "width": 1254.0
+          },
+          {
+            "alt": "Partner",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg22xpjbcyjf0hct1qew54e1yh8ft354/6680ea27150d76e3c2ea9608ddb08fcaf379b34e35c8df74fb9b7639172121cc/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg22xpjbcyjf0hct1qew54e1yh8ft354/6680ea27150d76e3c2ea9608ddb08fcaf379b34e35c8df74fb9b7639172121cc/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg22xpjbcyjf0hct1qew54e1yh8ft354/6680ea27150d76e3c2ea9608ddb08fcaf379b34e35c8df74fb9b7639172121cc/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg22xpjbcyjf0hct1qew54e1yh8ft354",
+            "originalUrl": "https://convex.echoray.io/api/storage/0dfea4b8-de4a-4623-9890-cd9f80b2c14f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "6680ea27150d76e3c2ea9608ddb08fcaf379b34e35c8df74fb9b7639172121cc",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 420000.0,
+        "minAmount": 420000.0,
+        "name": "Partner",
+        "optionLabel": "Natural",
+        "slug": "partner"
+      },
+      {
+        "collection": "Mirrors",
+        "currency": "EUR",
+        "id": "m1742sgb83tft6ayb08bxfh0zd8fv52h",
+        "images": [
+          {
+            "alt": "Pillar",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg28j8619y24y2accpq47th8sn8ft0wa/fb77539258bfb774998b0c67c88883676dfa39ec0c0b8cbaffff887838945666/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg28j8619y24y2accpq47th8sn8ft0wa/fb77539258bfb774998b0c67c88883676dfa39ec0c0b8cbaffff887838945666/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg28j8619y24y2accpq47th8sn8ft0wa/fb77539258bfb774998b0c67c88883676dfa39ec0c0b8cbaffff887838945666/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg28j8619y24y2accpq47th8sn8ft0wa",
+            "originalUrl": "https://convex.echoray.io/api/storage/5fd8fc44-cc23-45f0-a4da-09286f04b7ae?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "fb77539258bfb774998b0c67c88883676dfa39ec0c0b8cbaffff887838945666",
+            "width": 1254.0
+          },
+          {
+            "alt": "Pillar",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2e34zy5dbgxeywtz5ck4pezh8ftk2b/90e704c9fb68e4e67745e2685fd5da0b4bb65e3b12d8c08b20aebf3eab428510/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2e34zy5dbgxeywtz5ck4pezh8ftk2b/90e704c9fb68e4e67745e2685fd5da0b4bb65e3b12d8c08b20aebf3eab428510/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2e34zy5dbgxeywtz5ck4pezh8ftk2b/90e704c9fb68e4e67745e2685fd5da0b4bb65e3b12d8c08b20aebf3eab428510/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2e34zy5dbgxeywtz5ck4pezh8ftk2b",
+            "originalUrl": "https://convex.echoray.io/api/storage/ff122698-1065-49eb-9740-f7d6ea37d8b9?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "90e704c9fb68e4e67745e2685fd5da0b4bb65e3b12d8c08b20aebf3eab428510",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 165000.0,
+        "minAmount": 165000.0,
+        "name": "Pillar",
+        "optionLabel": "Natural",
+        "slug": "pillar"
+      },
+      {
+        "collection": "Sideboards",
+        "currency": "EUR",
+        "id": "m174000wjch7n2d4y67y3kfdf98fv26r",
+        "images": [
+          {
+            "alt": "Rail",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg28svv8y1hek6900f7bs4akgs8fver4/81f39371f4f7513959b984c4a845170094483fbe252575ec1b0679126386d71e/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg28svv8y1hek6900f7bs4akgs8fver4/81f39371f4f7513959b984c4a845170094483fbe252575ec1b0679126386d71e/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg28svv8y1hek6900f7bs4akgs8fver4/81f39371f4f7513959b984c4a845170094483fbe252575ec1b0679126386d71e/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg28svv8y1hek6900f7bs4akgs8fver4",
+            "originalUrl": "https://convex.echoray.io/api/storage/624a87b6-0e97-48a3-9cb8-72d18b923e8c?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "81f39371f4f7513959b984c4a845170094483fbe252575ec1b0679126386d71e",
+            "width": 1254.0
+          },
+          {
+            "alt": "Rail",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg28hdhj1hnpzmnrbdkqm0t9gx8fvq0x/49e68cde694c9aa6b090d3f9ae8856712c405650f765e55eee54eaae1cbc244f/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg28hdhj1hnpzmnrbdkqm0t9gx8fvq0x/49e68cde694c9aa6b090d3f9ae8856712c405650f765e55eee54eaae1cbc244f/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg28hdhj1hnpzmnrbdkqm0t9gx8fvq0x/49e68cde694c9aa6b090d3f9ae8856712c405650f765e55eee54eaae1cbc244f/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg28hdhj1hnpzmnrbdkqm0t9gx8fvq0x",
+            "originalUrl": "https://convex.echoray.io/api/storage/f90d8906-9245-4044-8489-eaa6077cab41?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "49e68cde694c9aa6b090d3f9ae8856712c405650f765e55eee54eaae1cbc244f",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 390000.0,
+        "minAmount": 390000.0,
+        "name": "Rail",
+        "optionLabel": "Natural",
+        "slug": "rail"
+      },
+      {
+        "collection": "Chairs",
+        "currency": "EUR",
+        "id": "m175zn7bxnar9hs42m96nx7fzx8ftz8v",
+        "images": [
+          {
+            "alt": "Rest",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg21av8f4r1my6ff3yh8tygnk98ftxbe",
+            "originalUrl": "https://convex.echoray.io/api/storage/0caca625-89fa-45ad-8abb-31df4ee12110?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7",
+            "width": 1254.0
+          },
+          {
+            "alt": "Rest",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg257gx836nfp7gwyebady4m6n8fv4sh",
+            "originalUrl": "https://convex.echoray.io/api/storage/5340376f-161f-471a-99de-54af2a151a59?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 190000.0,
+        "minAmount": 190000.0,
+        "name": "Rest",
+        "optionLabel": "Natural",
+        "slug": "rest"
+      },
+      {
+        "collection": "Tables",
+        "currency": "EUR",
+        "id": "m17a4mtnt710fms4qeqpwscfqn8fs7pj",
+        "images": [
+          {
+            "alt": "Round",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg24143btk2qjdv9hkm355rte58fs8dy/ea96febc9f30757c3065db4e42f280d3d85e5c1f35a35a7562b79094f67c7a35/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg24143btk2qjdv9hkm355rte58fs8dy/ea96febc9f30757c3065db4e42f280d3d85e5c1f35a35a7562b79094f67c7a35/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg24143btk2qjdv9hkm355rte58fs8dy/ea96febc9f30757c3065db4e42f280d3d85e5c1f35a35a7562b79094f67c7a35/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg24143btk2qjdv9hkm355rte58fs8dy",
+            "originalUrl": "https://convex.echoray.io/api/storage/3bb54cc0-7a22-45fc-b488-7fa7a2bc5ff3?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "ea96febc9f30757c3065db4e42f280d3d85e5c1f35a35a7562b79094f67c7a35",
+            "width": 1254.0
+          },
+          {
+            "alt": "Round",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg202cq8atttfg9mt669zdj6kh8frgkv/6fb70d4bb235824faa1a397cb542099750e3fe7c3c9d0bb0636b4c8902139e67/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg202cq8atttfg9mt669zdj6kh8frgkv/6fb70d4bb235824faa1a397cb542099750e3fe7c3c9d0bb0636b4c8902139e67/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg202cq8atttfg9mt669zdj6kh8frgkv/6fb70d4bb235824faa1a397cb542099750e3fe7c3c9d0bb0636b4c8902139e67/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg202cq8atttfg9mt669zdj6kh8frgkv",
+            "originalUrl": "https://convex.echoray.io/api/storage/89960ff2-f74a-4485-89b6-8efffc8dd644?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "6fb70d4bb235824faa1a397cb542099750e3fe7c3c9d0bb0636b4c8902139e67",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 390000.0,
+        "minAmount": 390000.0,
+        "name": "Round",
+        "optionLabel": "Natural",
+        "slug": "round"
+      },
+      {
+        "collection": "Benches",
+        "currency": "EUR",
+        "id": "m1759pegjf7w6q0mr9knekej6s8fv8mg",
+        "images": [
+          {
+            "alt": "Settle",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg22b004c4g58xgb3rxy74d9x98ftk7z/5af6f4b236dd68bf23c3a47e8ed73ed6ad5dddbb93d37c4a3f88990b999d50b2/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg22b004c4g58xgb3rxy74d9x98ftk7z/5af6f4b236dd68bf23c3a47e8ed73ed6ad5dddbb93d37c4a3f88990b999d50b2/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg22b004c4g58xgb3rxy74d9x98ftk7z/5af6f4b236dd68bf23c3a47e8ed73ed6ad5dddbb93d37c4a3f88990b999d50b2/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg22b004c4g58xgb3rxy74d9x98ftk7z",
+            "originalUrl": "https://convex.echoray.io/api/storage/353ad1b2-4429-4a8c-b176-662b01535934?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "5af6f4b236dd68bf23c3a47e8ed73ed6ad5dddbb93d37c4a3f88990b999d50b2",
+            "width": 1254.0
+          },
+          {
+            "alt": "Settle",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2ejyf8cxha6n2h77776qmfmd8ftmhw/ba7281ed27aff21a6da10c91b1bb6b67591bd50d24b3b18cc035beb6b782ec91/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2ejyf8cxha6n2h77776qmfmd8ftmhw/ba7281ed27aff21a6da10c91b1bb6b67591bd50d24b3b18cc035beb6b782ec91/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2ejyf8cxha6n2h77776qmfmd8ftmhw/ba7281ed27aff21a6da10c91b1bb6b67591bd50d24b3b18cc035beb6b782ec91/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2ejyf8cxha6n2h77776qmfmd8ftmhw",
+            "originalUrl": "https://convex.echoray.io/api/storage/a5e194e0-ac88-401b-b0cc-332d3d714bcb?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "ba7281ed27aff21a6da10c91b1bb6b67591bd50d24b3b18cc035beb6b782ec91",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 240000.0,
+        "minAmount": 240000.0,
+        "name": "Settle",
+        "optionLabel": "Natural",
+        "slug": "settle"
+      },
+      {
+        "collection": "Benches",
+        "currency": "EUR",
+        "id": "m176j915cs64qqthw858mnqkbs8ftdv9",
+        "images": [
+          {
+            "alt": "Span",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg26af8gx0exma7ff9c6zr9dc18fth10/8fa1af18128bd0f9cdd1fb887179aab7391b85d7121cdf0a8430e47dbebbf393/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg26af8gx0exma7ff9c6zr9dc18fth10/8fa1af18128bd0f9cdd1fb887179aab7391b85d7121cdf0a8430e47dbebbf393/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg26af8gx0exma7ff9c6zr9dc18fth10/8fa1af18128bd0f9cdd1fb887179aab7391b85d7121cdf0a8430e47dbebbf393/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg26af8gx0exma7ff9c6zr9dc18fth10",
+            "originalUrl": "https://convex.echoray.io/api/storage/d3c28625-583d-41a6-9184-ec1d190e9b38?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "8fa1af18128bd0f9cdd1fb887179aab7391b85d7121cdf0a8430e47dbebbf393",
+            "width": 1254.0
+          },
+          {
+            "alt": "Span",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2bdg0dkeshd30f3ygpt5v7a58ftttj/05fb80975338bfd9409268324965a0bf9ffe830f9e84185d538bce441fecadc2/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2bdg0dkeshd30f3ygpt5v7a58ftttj/05fb80975338bfd9409268324965a0bf9ffe830f9e84185d538bce441fecadc2/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2bdg0dkeshd30f3ygpt5v7a58ftttj/05fb80975338bfd9409268324965a0bf9ffe830f9e84185d538bce441fecadc2/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2bdg0dkeshd30f3ygpt5v7a58ftttj",
+            "originalUrl": "https://convex.echoray.io/api/storage/728d23ed-0e55-494d-8a39-716e4a6a9672?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "05fb80975338bfd9409268324965a0bf9ffe830f9e84185d538bce441fecadc2",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 180000.0,
+        "minAmount": 180000.0,
+        "name": "Span",
+        "optionLabel": "Natural",
+        "slug": "span"
+      },
+      {
+        "collection": "Lamps",
+        "currency": "EUR",
+        "id": "m17a8bhyzpa9m0wjejryf242qh8fvqed",
+        "images": [
+          {
+            "alt": "Stem",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg25gckmkd056rpbm86ak4k3t18ftrhp/8a091e3b1eefe7365b06c6bf8f74c0b25bf4d604ea001640e3818d078737cae2/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg25gckmkd056rpbm86ak4k3t18ftrhp/8a091e3b1eefe7365b06c6bf8f74c0b25bf4d604ea001640e3818d078737cae2/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg25gckmkd056rpbm86ak4k3t18ftrhp/8a091e3b1eefe7365b06c6bf8f74c0b25bf4d604ea001640e3818d078737cae2/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg25gckmkd056rpbm86ak4k3t18ftrhp",
+            "originalUrl": "https://convex.echoray.io/api/storage/614ae2f6-439b-42e1-a2f1-350280d706db?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "8a091e3b1eefe7365b06c6bf8f74c0b25bf4d604ea001640e3818d078737cae2",
+            "width": 1254.0
+          },
+          {
+            "alt": "Stem",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2bf3t7a8cysk1syfqprvx8058ftf3p/3331ae1b11c9610faac49806eaf1bdb43a6f8cbb6a561bf09051107e6f0f4642/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2bf3t7a8cysk1syfqprvx8058ftf3p/3331ae1b11c9610faac49806eaf1bdb43a6f8cbb6a561bf09051107e6f0f4642/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2bf3t7a8cysk1syfqprvx8058ftf3p/3331ae1b11c9610faac49806eaf1bdb43a6f8cbb6a561bf09051107e6f0f4642/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2bf3t7a8cysk1syfqprvx8058ftf3p",
+            "originalUrl": "https://convex.echoray.io/api/storage/5eb67674-c490-45ad-acd9-5e3dc3ecfee4?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "3331ae1b11c9610faac49806eaf1bdb43a6f8cbb6a561bf09051107e6f0f4642",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 65000.0,
+        "minAmount": 65000.0,
+        "name": "Stem",
+        "optionLabel": "Natural",
+        "slug": "stem"
+      },
+      {
+        "collection": "Desks",
+        "currency": "EUR",
+        "id": "m17eehv9r5y0r7eyh9w3azb44x8ftndz",
+        "images": [
+          {
+            "alt": "Study",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg2f4q48t1g1kh1tb9qya3kvh98fvjx9/5bfd43f9138feb3f14d165cffe09b7c8e592a7e7696e2882c84bf7b6f7656cc4/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg2f4q48t1g1kh1tb9qya3kvh98fvjx9/5bfd43f9138feb3f14d165cffe09b7c8e592a7e7696e2882c84bf7b6f7656cc4/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg2f4q48t1g1kh1tb9qya3kvh98fvjx9/5bfd43f9138feb3f14d165cffe09b7c8e592a7e7696e2882c84bf7b6f7656cc4/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg2f4q48t1g1kh1tb9qya3kvh98fvjx9",
+            "originalUrl": "https://convex.echoray.io/api/storage/cc517d10-ac50-496b-b947-7e1adcc6b489?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "5bfd43f9138feb3f14d165cffe09b7c8e592a7e7696e2882c84bf7b6f7656cc4",
+            "width": 1254.0
+          },
+          {
+            "alt": "Study",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg254w3zgxm09yt2hjawvkyd3h8ft12p/132ef3c670a4612a3b4ddac09cec6c237f126ea5a729fb117c83e36a195b1d52/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg254w3zgxm09yt2hjawvkyd3h8ft12p/132ef3c670a4612a3b4ddac09cec6c237f126ea5a729fb117c83e36a195b1d52/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg254w3zgxm09yt2hjawvkyd3h8ft12p/132ef3c670a4612a3b4ddac09cec6c237f126ea5a729fb117c83e36a195b1d52/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg254w3zgxm09yt2hjawvkyd3h8ft12p",
+            "originalUrl": "https://convex.echoray.io/api/storage/5d50af7e-aed5-4615-b9e1-c62830d87f9d?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "132ef3c670a4612a3b4ddac09cec6c237f126ea5a729fb117c83e36a195b1d52",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 340000.0,
+        "minAmount": 340000.0,
+        "name": "Study",
+        "optionLabel": "Natural",
+        "slug": "study"
+      },
+      {
+        "collection": "Tables",
+        "currency": "EUR",
+        "id": "m17dyb3scjgr6njme10ksm7kvd8fryys",
+        "images": [
+          {
+            "alt": "Trestle",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg28gvfnthg70zm18s4jh4sesx8fsg6d/04a07b38176e43b1e1895bd25778139360de13307454c7ee81d545e8d3b43cfc/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg28gvfnthg70zm18s4jh4sesx8fsg6d/04a07b38176e43b1e1895bd25778139360de13307454c7ee81d545e8d3b43cfc/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg28gvfnthg70zm18s4jh4sesx8fsg6d/04a07b38176e43b1e1895bd25778139360de13307454c7ee81d545e8d3b43cfc/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg28gvfnthg70zm18s4jh4sesx8fsg6d",
+            "originalUrl": "https://convex.echoray.io/api/storage/503308a9-7950-4d93-bd80-a765743efb58?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "04a07b38176e43b1e1895bd25778139360de13307454c7ee81d545e8d3b43cfc",
+            "width": 1254.0
+          },
+          {
+            "alt": "Trestle",
+            "derivatives": [
+              {
+                "height": 256.0,
+                "path": "media/kg24j805jk261vec02brfseazd8fs4xd/d3be78f6d5a73e8a69908967da9279e92d6b34f9dae11b0996b36f7918885c78/thumbnail",
+                "preset": "thumbnail",
+                "width": 256.0
+              },
+              {
+                "height": 640.0,
+                "path": "media/kg24j805jk261vec02brfseazd8fs4xd/d3be78f6d5a73e8a69908967da9279e92d6b34f9dae11b0996b36f7918885c78/card",
+                "preset": "card",
+                "width": 640.0
+              },
+              {
+                "height": 1254.0,
+                "path": "media/kg24j805jk261vec02brfseazd8fs4xd/d3be78f6d5a73e8a69908967da9279e92d6b34f9dae11b0996b36f7918885c78/detail",
+                "preset": "detail",
+                "width": 1254.0
+              }
+            ],
+            "height": 1254.0,
+            "mediaId": "kg24j805jk261vec02brfseazd8fs4xd",
+            "originalUrl": "https://convex.echoray.io/api/storage/e36000d7-6a6f-4ada-b4c4-e31abe164471?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+            "version": "d3be78f6d5a73e8a69908967da9279e92d6b34f9dae11b0996b36f7918885c78",
+            "width": 1254.0
+          }
+        ],
+        "material": "wood",
+        "maxAmount": 480000.0,
+        "minAmount": 480000.0,
+        "name": "Trestle",
+        "optionLabel": "Natural",
+        "slug": "trestle"
+      }
+    ]
+  },
+  "generatedAt": 1791396887575.0,
+  "status": "ok",
+  "storefrontId": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+  "version": 1.0
+}

@@ -1,0 +1,27 @@
+{
+  "gateway": {
+    "events": 44,
+    "runtimeExceptions": 0,
+    "statuses": {
+      "200": 30
+    },
+    "cache": {
+      "HIT": 23,
+      "EXPIRED": 4,
+      "UNKNOWN": 1,
+      "MISS": 2
+    },
+    "failures": []
+  },
+  "storefront": {
+    "events": 20,
+    "runtimeExceptions": 0,
+    "statuses": {},
+    "cache": {
+      "HIT": 11,
+      "EXPIRED": 8,
+      "MISS": 1
+    },
+    "failures": []
+  }
+}

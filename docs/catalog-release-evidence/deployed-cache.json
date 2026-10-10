@@ -1,0 +1,450 @@
+[
+  {
+    "id": "synthetictenant00",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "EXPIRED",
+    "stamp": 1791398689247,
+    "bytes": 417,
+    "ms": 167,
+    "at": 1791398689327
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398689247,
+    "bytes": 417,
+    "ms": 13,
+    "at": 1791398689340
+  },
+  {
+    "id": "synthetictenant01",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398689424,
+    "bytes": 417,
+    "ms": 219,
+    "at": 1791398689559
+  },
+  {
+    "id": "synthetictenant01",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398689424,
+    "bytes": 417,
+    "ms": 14,
+    "at": 1791398689573
+  },
+  {
+    "id": "synthetictenant02",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398689699,
+    "bytes": 417,
+    "ms": 256,
+    "at": 1791398689829
+  },
+  {
+    "id": "synthetictenant02",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398689699,
+    "bytes": 417,
+    "ms": 12,
+    "at": 1791398689841
+  },
+  {
+    "id": "synthetictenant03",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398689918,
+    "bytes": 417,
+    "ms": 165,
+    "at": 1791398690006
+  },
+  {
+    "id": "synthetictenant03",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398689918,
+    "bytes": 417,
+    "ms": 12,
+    "at": 1791398690018
+  },
+  {
+    "id": "synthetictenant04",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690052,
+    "bytes": 417,
+    "ms": 75,
+    "at": 1791398690093
+  },
+  {
+    "id": "synthetictenant04",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690052,
+    "bytes": 417,
+    "ms": 13,
+    "at": 1791398690106
+  },
+  {
+    "id": "synthetictenant05",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690171,
+    "bytes": 417,
+    "ms": 151,
+    "at": 1791398690257
+  },
+  {
+    "id": "synthetictenant05",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690171,
+    "bytes": 417,
+    "ms": 10,
+    "at": 1791398690267
+  },
+  {
+    "id": "synthetictenant06",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690348,
+    "bytes": 417,
+    "ms": 195,
+    "at": 1791398690462
+  },
+  {
+    "id": "synthetictenant06",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690348,
+    "bytes": 417,
+    "ms": 11,
+    "at": 1791398690473
+  },
+  {
+    "id": "synthetictenant07",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690501,
+    "bytes": 417,
+    "ms": 63,
+    "at": 1791398690536
+  },
+  {
+    "id": "synthetictenant07",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690501,
+    "bytes": 417,
+    "ms": 12,
+    "at": 1791398690548
+  },
+  {
+    "id": "synthetictenant08",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690622,
+    "bytes": 417,
+    "ms": 150,
+    "at": 1791398690698
+  },
+  {
+    "id": "synthetictenant08",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690622,
+    "bytes": 417,
+    "ms": 11,
+    "at": 1791398690709
+  },
+  {
+    "id": "synthetictenant09",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690789,
+    "bytes": 417,
+    "ms": 191,
+    "at": 1791398690900
+  },
+  {
+    "id": "synthetictenant09",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690789,
+    "bytes": 417,
+    "ms": 13,
+    "at": 1791398690913
+  },
+  {
+    "id": "synthetictenant10",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398690951,
+    "bytes": 417,
+    "ms": 70,
+    "at": 1791398690983
+  },
+  {
+    "id": "synthetictenant10",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398690951,
+    "bytes": 417,
+    "ms": 14,
+    "at": 1791398690997
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products?search=redirect",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 167,
+    "at": 1791398691164
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products?search=oversize",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 198,
+    "at": 1791398691362
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products?search=scope",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 151,
+    "at": 1791398691513
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products?search=slow",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 97,
+    "ms": 5048,
+    "at": 1791398696561
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products/missing-piece",
+    "status": 404,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 88,
+    "ms": 86,
+    "at": 1791398696647
+  },
+  {
+    "id": "synthetictenant00",
+    "path": "products/missing-piece",
+    "status": 404,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 88,
+    "ms": 34,
+    "at": 1791398696681
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398696707,
+    "bytes": 423,
+    "ms": 56,
+    "at": 1791398696737
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "products?search=expiry",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398696764,
+    "bytes": 143,
+    "ms": 60,
+    "at": 1791398696797
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "availability?productId=syntheticproduct00",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398696830,
+    "bytes": 137,
+    "ms": 60,
+    "at": 1791398696857
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "media/syntheticmedia000/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/card",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 0,
+    "bytes": 42,
+    "ms": 79,
+    "at": 1791398696936
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398696707,
+    "bytes": 423,
+    "ms": 9,
+    "at": 1791398696945
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "products?search=expiry",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398696764,
+    "bytes": 143,
+    "ms": 8,
+    "at": 1791398696953
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "availability?productId=syntheticproduct00",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398696830,
+    "bytes": 137,
+    "ms": 8,
+    "at": 1791398696961
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "media/syntheticmedia000/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/card",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 0,
+    "bytes": 42,
+    "ms": 6,
+    "at": 1791398696967
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "availability?productId=syntheticproduct00",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 62,
+    "at": 1791398710248
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 1791398696707,
+    "bytes": 423,
+    "ms": 28,
+    "at": 1791398710276
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "products?search=expiry",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 63,
+    "at": 1791398714360
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "media/syntheticmedia000/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/card",
+    "status": 200,
+    "cache": "HIT",
+    "stamp": 0,
+    "bytes": 42,
+    "ms": 20,
+    "at": 1791398714380
+  },
+  {
+    "purge": {
+      "success": true,
+      "results": [
+        {
+          "storefrontId": "expiry1791398708681",
+          "catalog": {
+            "success": true,
+            "errors": []
+          },
+          "media": {
+            "success": true,
+            "errors": []
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "expiry1791398708681",
+    "path": "media/syntheticmedia000/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/card",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 61,
+    "at": 1791398715745
+  },
+  {
+    "id": "expiry1791398725745",
+    "path": "bootstrap",
+    "status": 200,
+    "cache": "MISS",
+    "stamp": 1791398715775,
+    "bytes": 423,
+    "ms": 60,
+    "at": 1791398715805
+  },
+  {
+    "id": "expiry1791398725745",
+    "path": "bootstrap",
+    "status": 503,
+    "cache": "BYPASS",
+    "stamp": 0,
+    "bytes": 103,
+    "ms": 66,
+    "at": 1791398747373
+  }
+]

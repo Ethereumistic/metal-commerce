@@ -1,0 +1,377 @@
+{
+  "productStatus": "ready",
+  "total": 21,
+  "categoryCounts": {
+    "benches": 3,
+    "chairs": 3,
+    "desks": 3,
+    "lamps": 3,
+    "mirrors": 3,
+    "sideboards": 3,
+    "tables": 3
+  },
+  "newProducts": [
+    {
+      "name": "Beam",
+      "category": "lamps",
+      "priceEUR": 1450.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "45 × 45 × 156 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Block",
+      "category": "lamps",
+      "priceEUR": 850.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "32 × 24 × 48 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Edge",
+      "category": "mirrors",
+      "priceEUR": 750.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "80 × 4 × 110 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Entry",
+      "category": "benches",
+      "priceEUR": 1100.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "110 × 35 × 45 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Grove",
+      "category": "sideboards",
+      "priceEUR": 3200.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "120 × 45 × 90 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Halo",
+      "category": "mirrors",
+      "priceEUR": 1150.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "90 × 5 × 90 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Line",
+      "category": "desks",
+      "priceEUR": 2400.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "140 × 65 × 75 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Long",
+      "category": "sideboards",
+      "priceEUR": 5200.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "200 × 45 × 80 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Partner",
+      "category": "desks",
+      "priceEUR": 4200.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "180 × 80 × 75 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Pillar",
+      "category": "mirrors",
+      "priceEUR": 1650.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "70 × 5 × 180 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Rail",
+      "category": "sideboards",
+      "priceEUR": 3900.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "160 × 45 × 78 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Settle",
+      "category": "benches",
+      "priceEUR": 2400.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "160 × 52 × 82 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Span",
+      "category": "benches",
+      "priceEUR": 1800.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "180 × 38 × 45 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Stem",
+      "category": "lamps",
+      "priceEUR": 650.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "35 × 35 × 60 cm (W × D × H)",
+      "expectedPriceMatches": true
+    },
+    {
+      "name": "Study",
+      "category": "desks",
+      "priceEUR": 3400.0,
+      "images": 6,
+      "uniqueImages": 6,
+      "finishes": [
+        "Natural",
+        "Smoked"
+      ],
+      "leadTimes": [
+        [
+          30,
+          60
+        ],
+        [
+          30,
+          60
+        ]
+      ],
+      "faqs": 2,
+      "dimensions": "160 × 75 × 75 cm (W × D × H)",
+      "expectedPriceMatches": true
+    }
+  ],
+  "newImageCount": 90,
+  "missingSlugs": []
+}

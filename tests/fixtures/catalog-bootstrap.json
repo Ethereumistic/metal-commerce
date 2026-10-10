@@ -1,0 +1,250 @@
+{
+  "data": {
+    "cursor": null,
+    "kind": "bootstrap",
+    "page": [
+      {
+        "description": "A moment to pause. Versatile seating with a sense of calm and character.",
+        "image": {
+          "alt": "MORIS FURNITURE sculptural bench in century-old reclaimed oak on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg286r7acx59e239jdt2ajtdt58fr1v5/ffe41a95cd6499289bbfd02846ebd7e136b417b87da890820adfe239ccb2a87a/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg286r7acx59e239jdt2ajtdt58fr1v5/ffe41a95cd6499289bbfd02846ebd7e136b417b87da890820adfe239ccb2a87a/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg286r7acx59e239jdt2ajtdt58fr1v5/ffe41a95cd6499289bbfd02846ebd7e136b417b87da890820adfe239ccb2a87a/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg286r7acx59e239jdt2ajtdt58fr1v5",
+          "originalUrl": "https://convex.echoray.io/api/storage/45f3ddd4-103e-451b-be6c-3aafafedf6a5?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "ffe41a95cd6499289bbfd02846ebd7e136b417b87da890820adfe239ccb2a87a",
+          "width": 1254.0
+        },
+        "name": "Benches"
+      },
+      {
+        "description": "Sculptural lines, inviting proportions. A seat for every part of your day.",
+        "image": {
+          "alt": "MORIS FURNITURE sculptural dining chair in century-old reclaimed oak on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg23m3ry11pwd1jgt4h6cc1yp98fsqf7/afad047b8d7deeb289edb5280bfa54fc86c55067e24dd7580000eb7e604b29eb/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg23m3ry11pwd1jgt4h6cc1yp98fsqf7/afad047b8d7deeb289edb5280bfa54fc86c55067e24dd7580000eb7e604b29eb/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg23m3ry11pwd1jgt4h6cc1yp98fsqf7/afad047b8d7deeb289edb5280bfa54fc86c55067e24dd7580000eb7e604b29eb/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg23m3ry11pwd1jgt4h6cc1yp98fsqf7",
+          "originalUrl": "https://convex.echoray.io/api/storage/5b154f63-e432-4990-bae9-e6a80bf27cb0?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "afad047b8d7deeb289edb5280bfa54fc86c55067e24dd7580000eb7e604b29eb",
+          "width": 1254.0
+        },
+        "name": "Chairs"
+      },
+      {
+        "description": "Room to think. Considered workspaces for a little everyday clarity.",
+        "image": {
+          "alt": "MORIS FURNITURE writing desk in century-old reclaimed oak on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg2ax300ab138bxxgk8k85k4398frxt0/27ad2c07b9f72c953d0c0d65df36137645f098077fead3b2d90f94574e3b61a4/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg2ax300ab138bxxgk8k85k4398frxt0/27ad2c07b9f72c953d0c0d65df36137645f098077fead3b2d90f94574e3b61a4/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg2ax300ab138bxxgk8k85k4398frxt0/27ad2c07b9f72c953d0c0d65df36137645f098077fead3b2d90f94574e3b61a4/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg2ax300ab138bxxgk8k85k4398frxt0",
+          "originalUrl": "https://convex.echoray.io/api/storage/c2f37846-b5db-47d3-b710-2111df72b8a6?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "27ad2c07b9f72c953d0c0d65df36137645f098077fead3b2d90f94574e3b61a4",
+          "width": 1254.0
+        },
+        "name": "Desks"
+      },
+      {
+        "description": "Light with presence. Refined silhouettes that shape the atmosphere of a room.",
+        "image": {
+          "alt": "MORIS FURNITURE sculptural reclaimed-oak lamp with ivory linen shade on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg26bs3k31p7krfpmmkmaepfbn8fswr5/113b8526e9ac524e9d8e810d1c3701187c63dd109ed07ec034d50514e272f194/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg26bs3k31p7krfpmmkmaepfbn8fswr5/113b8526e9ac524e9d8e810d1c3701187c63dd109ed07ec034d50514e272f194/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg26bs3k31p7krfpmmkmaepfbn8fswr5/113b8526e9ac524e9d8e810d1c3701187c63dd109ed07ec034d50514e272f194/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg26bs3k31p7krfpmmkmaepfbn8fswr5",
+          "originalUrl": "https://convex.echoray.io/api/storage/727685f8-84f5-4a8a-a311-ee22e426b82d?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "113b8526e9ac524e9d8e810d1c3701187c63dd109ed07ec034d50514e272f194",
+          "width": 1254.0
+        },
+        "name": "Lamps"
+      },
+      {
+        "description": "Another perspective. Thoughtful forms that invite light and open up a space.",
+        "image": {
+          "alt": "MORIS FURNITURE arched mirror framed in century-old reclaimed oak on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg28zqcee6jp8twm0pmdcc5rvd8fs9eb/a4f760653d7d139a6b97552cd1efd2a2f155468b95ab6b1dcbecc3e1ba0aa94a/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg28zqcee6jp8twm0pmdcc5rvd8fs9eb/a4f760653d7d139a6b97552cd1efd2a2f155468b95ab6b1dcbecc3e1ba0aa94a/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg28zqcee6jp8twm0pmdcc5rvd8fs9eb/a4f760653d7d139a6b97552cd1efd2a2f155468b95ab6b1dcbecc3e1ba0aa94a/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg28zqcee6jp8twm0pmdcc5rvd8fs9eb",
+          "originalUrl": "https://convex.echoray.io/api/storage/308ef6b7-5e53-46b5-8c02-0ea0ab145c57?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "a4f760653d7d139a6b97552cd1efd2a2f155468b95ab6b1dcbecc3e1ba0aa94a",
+          "width": 1254.0
+        },
+        "name": "Mirrors"
+      },
+      {
+        "description": "Quietly expressive storage. A balance of beautiful surfaces and useful space.",
+        "image": {
+          "alt": "MORIS FURNITURE sideboard in century-old reclaimed oak on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg2ahahq1hj2zjsnf7dvhp9kzh8fra3y/731780220fdab63d764b6b37e6cae1fde22385f8615b85ec7d1ee114017c5c3a/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg2ahahq1hj2zjsnf7dvhp9kzh8fra3y/731780220fdab63d764b6b37e6cae1fde22385f8615b85ec7d1ee114017c5c3a/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg2ahahq1hj2zjsnf7dvhp9kzh8fra3y/731780220fdab63d764b6b37e6cae1fde22385f8615b85ec7d1ee114017c5c3a/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg2ahahq1hj2zjsnf7dvhp9kzh8fra3y",
+          "originalUrl": "https://convex.echoray.io/api/storage/d8ddd99b-44b4-48ba-a811-b107be7d8b0b?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "731780220fdab63d764b6b37e6cae1fde22385f8615b85ec7d1ee114017c5c3a",
+          "width": 1254.0
+        },
+        "name": "Sideboards"
+      },
+      {
+        "description": "A place to gather. Expressive tables that bring people and spaces together.",
+        "image": {
+          "alt": "MORIS FURNITURE dining table in century-old reclaimed oak with butterfly joinery on a white background",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg23bmynefvs0mx0shtb1zpzm98fr9d8/9fe422a49116e9b2ffc823818258045e92b74f55ed000264ac5f9ceffa3f462d/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg23bmynefvs0mx0shtb1zpzm98fr9d8/9fe422a49116e9b2ffc823818258045e92b74f55ed000264ac5f9ceffa3f462d/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg23bmynefvs0mx0shtb1zpzm98fr9d8/9fe422a49116e9b2ffc823818258045e92b74f55ed000264ac5f9ceffa3f462d/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg23bmynefvs0mx0shtb1zpzm98fr9d8",
+          "originalUrl": "https://convex.echoray.io/api/storage/9a209bf7-0817-4445-a17e-0afced1efee6?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "9fe422a49116e9b2ffc823818258045e92b74f55ed000264ac5f9ceffa3f462d",
+          "width": 1254.0
+        },
+        "name": "Tables"
+      }
+    ],
+    "shop": {
+      "businessId": "ks78yp26ch3085wpavqdwas6gs8fkdqa",
+      "name": "MORIS FURNITURE",
+      "origin": "https://echoray.cloud",
+      "settings": {
+        "currency": "EUR",
+        "deliveryTerms": "yes",
+        "frontendContent": "external",
+        "locale": "en-GB",
+        "policyVersion": "1",
+        "returnsTerms": "yes",
+        "supportEmail": "badjarovv@gmail.com"
+      }
+    }
+  },
+  "generatedAt": 1791396787073.0,
+  "status": "ok",
+  "storefrontId": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+  "version": 1.0
+}

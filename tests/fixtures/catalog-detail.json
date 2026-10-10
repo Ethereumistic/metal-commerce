@@ -1,0 +1,461 @@
+{
+  "data": {
+    "kind": "detail",
+    "product": {
+      "collection": "Chairs",
+      "currency": "EUR",
+      "defaultVariant": "default",
+      "description": "A dining armchair in solid reclaimed oak, shaped for unhurried meals and quiet corners. Straight oak arms rest on continuous front posts and meet the rear stiles; a board-built seat, traditional apron frame and broad back board keep the construction clear and grounded. Softly eased edges bring a gentle touch to the timber’s enduring grain.\n\n58 × 56 × 80 cm, with a 46 cm seat height and 66 cm arm height. Available in Natural or Smoked matte oil. Selected century-old boards carry their own grain, sound knots and historic markings; the gallery shows Natural oak.",
+      "gallery": [
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg218cwr8yjwkxsn9sp68aqs9d8fte9p",
+          "originalUrl": "https://convex.echoray.io/api/storage/1c37f59c-63c9-4aac-bc1f-b7be3b23ea5f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v",
+          "originalUrl": "https://convex.echoray.io/api/storage/7e39cdd9-e4c7-481e-95b1-bde27f48fc6d?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg29jvg6fjr49qz9hheg85br4n8fvma9/276f7c942de20ac15f557e137586b15a3ba5c177405959fe58b79519cb1c3f72/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg29jvg6fjr49qz9hheg85br4n8fvma9/276f7c942de20ac15f557e137586b15a3ba5c177405959fe58b79519cb1c3f72/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg29jvg6fjr49qz9hheg85br4n8fvma9/276f7c942de20ac15f557e137586b15a3ba5c177405959fe58b79519cb1c3f72/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg29jvg6fjr49qz9hheg85br4n8fvma9",
+          "originalUrl": "https://convex.echoray.io/api/storage/c7eb29be-03e2-49f9-b17a-6d781591c186?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "276f7c942de20ac15f557e137586b15a3ba5c177405959fe58b79519cb1c3f72",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg25dj6b1zxxc659dtbxs6gp898ftjky/e7f65fccc005772a0b2dcf727afce68fc2605e94432c76ee0174bd30aad68d29/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg25dj6b1zxxc659dtbxs6gp898ftjky/e7f65fccc005772a0b2dcf727afce68fc2605e94432c76ee0174bd30aad68d29/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg25dj6b1zxxc659dtbxs6gp898ftjky/e7f65fccc005772a0b2dcf727afce68fc2605e94432c76ee0174bd30aad68d29/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg25dj6b1zxxc659dtbxs6gp898ftjky",
+          "originalUrl": "https://convex.echoray.io/api/storage/6edc99b2-0d3a-4230-9c17-e9808e06b328?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "e7f65fccc005772a0b2dcf727afce68fc2605e94432c76ee0174bd30aad68d29",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg277zvbn7bdy95y2cgnbmkdg58ftmza/14396deeddbffc0272f9c80460b8a109115c8acbbaa1e8ace2fde24e05fb1652/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg277zvbn7bdy95y2cgnbmkdg58ftmza/14396deeddbffc0272f9c80460b8a109115c8acbbaa1e8ace2fde24e05fb1652/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg277zvbn7bdy95y2cgnbmkdg58ftmza/14396deeddbffc0272f9c80460b8a109115c8acbbaa1e8ace2fde24e05fb1652/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg277zvbn7bdy95y2cgnbmkdg58ftmza",
+          "originalUrl": "https://convex.echoray.io/api/storage/5a073e95-846f-4555-bca7-4f390b0f6b08?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "14396deeddbffc0272f9c80460b8a109115c8acbbaa1e8ace2fde24e05fb1652",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg2ff67d8hmv2jhatnrnjyf9x58ft98h/4eb7e54a2abe61c8a2e77a8f2988240fa09cd7ddff31e5990e03b8de6f523b75/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg2ff67d8hmv2jhatnrnjyf9x58ft98h/4eb7e54a2abe61c8a2e77a8f2988240fa09cd7ddff31e5990e03b8de6f523b75/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg2ff67d8hmv2jhatnrnjyf9x58ft98h/4eb7e54a2abe61c8a2e77a8f2988240fa09cd7ddff31e5990e03b8de6f523b75/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg2ff67d8hmv2jhatnrnjyf9x58ft98h",
+          "originalUrl": "https://convex.echoray.io/api/storage/226d05bc-6392-4d3f-a373-a74cd5e27d83?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "4eb7e54a2abe61c8a2e77a8f2988240fa09cd7ddff31e5990e03b8de6f523b75",
+          "width": 1254.0
+        }
+      ],
+      "id": "m17fktm8s6eh4wqvmxpczwfn0s8ftp80",
+      "images": [
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg218cwr8yjwkxsn9sp68aqs9d8fte9p/b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg218cwr8yjwkxsn9sp68aqs9d8fte9p",
+          "originalUrl": "https://convex.echoray.io/api/storage/1c37f59c-63c9-4aac-bc1f-b7be3b23ea5f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "b3ff09480713bc892cb49aa84d8e01a5bef40ad68fa75ca0739dac3937952f8f",
+          "width": 1254.0
+        },
+        {
+          "alt": "Arm",
+          "derivatives": [
+            {
+              "height": 256.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/thumbnail",
+              "preset": "thumbnail",
+              "width": 256.0
+            },
+            {
+              "height": 640.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/card",
+              "preset": "card",
+              "width": 640.0
+            },
+            {
+              "height": 1254.0,
+              "path": "media/kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v/792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64/detail",
+              "preset": "detail",
+              "width": 1254.0
+            }
+          ],
+          "height": 1254.0,
+          "mediaId": "kg2dwhdgfa1nnx6r9hk1vpt3h18ftp3v",
+          "originalUrl": "https://convex.echoray.io/api/storage/7e39cdd9-e4c7-481e-95b1-bde27f48fc6d?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+          "version": "792065fd2c79bb7d6c0b282bd4d720967bf6b67a1ffb8b68d507b3af6a97bd64",
+          "width": 1254.0
+        }
+      ],
+      "material": "wood",
+      "maxAmount": 125000.0,
+      "minAmount": 125000.0,
+      "name": "Arm",
+      "optionLabel": "Natural",
+      "options": [],
+      "page": {
+        "faqs": [
+          {
+            "answer": "Each chair is made to order. Please allow approximately 30–60 days for production. Delivery is arranged separately; the production window does not include transport time.",
+            "question": "How long does production take?"
+          },
+          {
+            "answer": "The gallery shows the design in Natural oak. Reclaimed boards vary in grain, sound knots and historic markings, so each finished chair has its own character. Smoked matte oil gives the same design a deeper brown tone.",
+            "question": "Will my chair look exactly like the images?"
+          }
+        ],
+        "headline": "A little room to linger.",
+        "labels": [
+          "reclaimed oak",
+          "dining armchair"
+        ],
+        "photos": []
+      },
+      "related": [
+        {
+          "collection": "Chairs",
+          "currency": "EUR",
+          "id": "m174eq8b27aghtvpjgj8ae0s2x8fvqm8",
+          "images": [
+            {
+              "alt": "Frame",
+              "derivatives": [
+                {
+                  "height": 256.0,
+                  "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/thumbnail",
+                  "preset": "thumbnail",
+                  "width": 256.0
+                },
+                {
+                  "height": 640.0,
+                  "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/card",
+                  "preset": "card",
+                  "width": 640.0
+                },
+                {
+                  "height": 1254.0,
+                  "path": "media/kg260kqk8c0b3jwbnzfed536dh8fvc9p/4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993/detail",
+                  "preset": "detail",
+                  "width": 1254.0
+                }
+              ],
+              "height": 1254.0,
+              "mediaId": "kg260kqk8c0b3jwbnzfed536dh8fvc9p",
+              "originalUrl": "https://convex.echoray.io/api/storage/57edf7df-313a-4f42-b81a-921d06719f2f?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+              "version": "4393295b08bdbac4be8b92d4d9bd101f1240e4f58084668447a1c8fbb9656993",
+              "width": 1254.0
+            },
+            {
+              "alt": "Frame",
+              "derivatives": [
+                {
+                  "height": 256.0,
+                  "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/thumbnail",
+                  "preset": "thumbnail",
+                  "width": 256.0
+                },
+                {
+                  "height": 640.0,
+                  "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/card",
+                  "preset": "card",
+                  "width": 640.0
+                },
+                {
+                  "height": 1254.0,
+                  "path": "media/kg2bbzcag465bwmb5f6nn61e0x8fv9vq/7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629/detail",
+                  "preset": "detail",
+                  "width": 1254.0
+                }
+              ],
+              "height": 1254.0,
+              "mediaId": "kg2bbzcag465bwmb5f6nn61e0x8fv9vq",
+              "originalUrl": "https://convex.echoray.io/api/storage/4c8551fe-b062-46b9-9ce2-33c3c786f53a?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+              "version": "7a29dc78a2864254648854c18954c29106da4ed17b78b7b80f5139daa2354629",
+              "width": 1254.0
+            }
+          ],
+          "material": "wood",
+          "maxAmount": 85000.0,
+          "minAmount": 85000.0,
+          "name": "Frame",
+          "optionLabel": "Natural",
+          "slug": "frame"
+        },
+        {
+          "collection": "Chairs",
+          "currency": "EUR",
+          "id": "m175zn7bxnar9hs42m96nx7fzx8ftz8v",
+          "images": [
+            {
+              "alt": "Rest",
+              "derivatives": [
+                {
+                  "height": 256.0,
+                  "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/thumbnail",
+                  "preset": "thumbnail",
+                  "width": 256.0
+                },
+                {
+                  "height": 640.0,
+                  "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/card",
+                  "preset": "card",
+                  "width": 640.0
+                },
+                {
+                  "height": 1254.0,
+                  "path": "media/kg21av8f4r1my6ff3yh8tygnk98ftxbe/5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7/detail",
+                  "preset": "detail",
+                  "width": 1254.0
+                }
+              ],
+              "height": 1254.0,
+              "mediaId": "kg21av8f4r1my6ff3yh8tygnk98ftxbe",
+              "originalUrl": "https://convex.echoray.io/api/storage/0caca625-89fa-45ad-8abb-31df4ee12110?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+              "version": "5aec1c431aa33c258386b00c65361da6afd9888e0aeec093272efb31461e4bb7",
+              "width": 1254.0
+            },
+            {
+              "alt": "Rest",
+              "derivatives": [
+                {
+                  "height": 256.0,
+                  "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/thumbnail",
+                  "preset": "thumbnail",
+                  "width": 256.0
+                },
+                {
+                  "height": 640.0,
+                  "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/card",
+                  "preset": "card",
+                  "width": 640.0
+                },
+                {
+                  "height": 1254.0,
+                  "path": "media/kg257gx836nfp7gwyebady4m6n8fv4sh/3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84/detail",
+                  "preset": "detail",
+                  "width": 1254.0
+                }
+              ],
+              "height": 1254.0,
+              "mediaId": "kg257gx836nfp7gwyebady4m6n8fv4sh",
+              "originalUrl": "https://convex.echoray.io/api/storage/5340376f-161f-471a-99de-54af2a151a59?component=m02e7xt3v2jhs2110ndxqr0h758ffbz5",
+              "version": "3d98ee6f89fb25c7ebe32bcf25ecfd99b5c47ed86715c1d6d247dbd704c00b84",
+              "width": 1254.0
+            }
+          ],
+          "material": "wood",
+          "maxAmount": 190000.0,
+          "minAmount": 190000.0,
+          "name": "Rest",
+          "optionLabel": "Natural",
+          "slug": "rest"
+        }
+      ],
+      "slug": "arm",
+      "specifications": [
+        {
+          "label": "Dimensions",
+          "value": "58 × 56 × 80 cm (W × D × H)"
+        },
+        {
+          "label": "Material",
+          "value": "Solid reclaimed oak, 100+ years old"
+        },
+        {
+          "label": "Finish",
+          "value": "Natural or Smoked matte oil"
+        },
+        {
+          "label": "Seat height",
+          "value": "46 cm"
+        },
+        {
+          "label": "Arm height",
+          "value": "66 cm"
+        },
+        {
+          "label": "Construction",
+          "value": "Board-built oak seat; traditional apron frame, four tapered legs, straight arm rails and a broad oak back board"
+        }
+      ],
+      "variants": [
+        {
+          "amount": 125000.0,
+          "key": "default",
+          "label": "Natural",
+          "leadMaxDays": 60.0,
+          "leadMinDays": 30.0,
+          "methods": [
+            "delivery"
+          ],
+          "mode": "made_to_order",
+          "unlimited": true
+        },
+        {
+          "amount": 125000.0,
+          "key": "option-5e1b2f0b",
+          "label": "Smoked",
+          "leadMaxDays": 60.0,
+          "leadMinDays": 30.0,
+          "methods": [
+            "delivery"
+          ],
+          "mode": "made_to_order",
+          "unlimited": true
+        }
+      ]
+    }
+  },
+  "generatedAt": 1791396939917.0,
+  "status": "ok",
+  "storefrontId": "p1724smvytpbhadhmmdfpgh3p58fnvxe",
+  "version": 1.0
+}

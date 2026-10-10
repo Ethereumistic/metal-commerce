@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "moris",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/home/echo/Documents/furniture-commerce",
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "moris-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/home/echo/Documents/furniture-commerce",
+        "run",
+        "preview"
+      ],
+      "port": 3000
+    }
+  ]
+}
