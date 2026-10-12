@@ -52,8 +52,6 @@ type Quote = {
   payable: boolean;
 };
 
-const PROVIDER = "storefront-password";
-const OTP_PROVIDER = "storefront-otp";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 class GatewayError extends Error {
@@ -102,6 +100,10 @@ function mapError(error: unknown, fallback: ShopErrorCode): ShopErrorCode {
   if (code === "METHOD_DISABLED") return "method_disabled";
   if (code === "INVALID_ADDRESS") return "invalid_address";
   if (code === "SIGN_IN_REQUIRED") return "sign_in_required";
+  if (code === "INVALID_CREDENTIALS") return "invalid_credentials";
+  if (code === "INVALID_CODE" || code === "EXCHANGE_EXPIRED") return "invalid_code";
+  if (code === "PASSWORD_RULES") return "password_rules";
+  if (code === "INVALID_EMAIL") return "invalid_email";
   if (code?.includes("12–128")) return "password_rules";
   if (code?.includes("valid email")) return "invalid_email";
   const message = error instanceof Error ? error.message : "";
@@ -326,73 +328,79 @@ export function createShopGateway(request: Request) {
     });
   }
 
-  /** Converts a verified core identity into a shop session (PKCE exchange), then drops the core session. */
-  async function completeSignIn(token: string) {
-    const authed = new ConvexHttpClient(backend!);
-    authed.setAuth(token);
-    try {
-      const verifier = base64url(crypto.getRandomValues(new Uint8Array(48)));
-      const state = hex();
-      const challenge = base64url(
-        new Uint8Array(
-          await crypto.subtle.digest(
-            "SHA-256",
-            new TextEncoder().encode(verifier),
-          ),
-        ),
-      );
-      const exchangeId = await client!.mutation(
-        anyApi.commerce.auth.startExchange,
-        { integrationId, secret, state, challenge },
-      );
-      const info = (await client!.query(anyApi.commerce.auth.exchangeInfo, {
-        exchangeId,
-      })) as { policyVersion: string };
-      const destination = new URL(
-        (await authed.mutation(anyApi.commerce.auth.authorizeExchange, {
-          exchangeId,
-          policyVersion: info.policyVersion,
-        })) as string,
-      );
-      if (destination.searchParams.get("state") !== state)
-        throw new GatewayError("unavailable");
-      const result = (await client!.action(
-        anyApi.commerce.auth.redeemExchange,
-        {
-          integrationId,
-          secret,
-          code: destination.searchParams.get("code") ?? "",
-          verifier,
-          state,
-          guest,
-        },
-      )) as { session: string; expiresAt: number };
-      session = result.session;
-      setCookie("session", result.session, (result.expiresAt - Date.now()) / 1000);
-    } finally {
-      await authed.action(anyApi.auth.signOut, {}).catch(() => undefined);
-    }
-  }
+  // Shopper sign-in uses identities that exist only in this shop (commerce/identity:*).
+  // No Echoray session is ever created: each verified step authorises this Worker's PKCE
+  // exchange, which it redeems for the HttpOnly shop session cookie. Between the code
+  // request and the code check, the exchange and its verifier wait in an HttpOnly cookie.
+  type Flow = { exchangeId: string; verifier: string; state: string };
 
-  async function signIn(
-    params: Record<string, string>,
-    provider: string = PROVIDER,
-  ) {
-    // The shop enforces its method policy and brands any code email before the auth call.
-    await client!
-      .mutation(anyApi.commerce.shopAuth.prepareMail, {
-        integrationId,
-        secret,
-        email: params.email,
-        method: provider === OTP_PROVIDER ? "otp" : "password",
-      })
-      .catch((error) => {
-        throw new GatewayError(mapError(error, "unavailable"));
-      });
-    return (await client!.action(anyApi.auth.signIn, {
-      provider,
-      params,
-    })) as { tokens?: { token: string } | null };
+  async function beginFlow(): Promise<Flow> {
+    const verifier = base64url(crypto.getRandomValues(new Uint8Array(48)));
+    const state = hex();
+    const challenge = base64url(
+      new Uint8Array(
+        await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)),
+      ),
+    );
+    const exchangeId = (await client!.mutation(anyApi.commerce.auth.startExchange, {
+      integrationId,
+      secret,
+      state,
+      challenge,
+      ...(await clientHash()),
+    })) as string;
+    setCookie("signin", JSON.stringify({ exchangeId, verifier, state }), 600);
+    return { exchangeId, verifier, state };
+  }
+  function savedFlow(): Flow {
+    try {
+      const flow = JSON.parse(jar[`${prefix}signin`] || "null") as Partial<Flow> | null;
+      if (
+        typeof flow?.exchangeId === "string" &&
+        typeof flow.verifier === "string" &&
+        typeof flow.state === "string"
+      )
+        return flow as Flow;
+    } catch {
+      // Fall through: the code step needs a fresh code.
+    }
+    throw new GatewayError("invalid_code");
+  }
+  /** The shop's current terms version; signing in accepts it, as before. */
+  async function policyVersion(exchangeId: string) {
+    const info = (await client!.query(anyApi.commerce.auth.exchangeInfo, {
+      exchangeId,
+    })) as { policyVersion: string };
+    return info.policyVersion;
+  }
+  async function finishFlow(flow: Flow, code: string) {
+    const result = (await client!.action(anyApi.commerce.auth.redeemExchange, {
+      integrationId,
+      secret,
+      code,
+      verifier: flow.verifier,
+      state: flow.state,
+      guest,
+    })) as { session: string; expiresAt: number };
+    session = result.session;
+    setCookie("session", result.session, (result.expiresAt - Date.now()) / 1000);
+    setCookie("signin", "", 0);
+  }
+  /** SHA-256 of the shopper's IP, so the backend limits attempts per address without storing it. */
+  async function clientHash(): Promise<{ client?: string }> {
+    const ip = request.headers.get("cf-connecting-ip");
+    if (!ip) return {};
+    const bytes = new Uint8Array(
+      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip)),
+    );
+    return { client: Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("") };
+  }
+  async function attempt<T>(work: () => Promise<T>, fallback: ShopErrorCode) {
+    try {
+      return await work();
+    } catch (error) {
+      throw new GatewayError(mapError(error, fallback));
+    }
   }
 
   function email(raw: unknown) {
@@ -420,79 +428,78 @@ export function createShopGateway(request: Request) {
     operation: string,
     args: Record<string, unknown>,
   ): Promise<AuthStep> {
-    let result: { tokens?: { token: string } | null };
-    if (operation === "signIn") {
-      const params = {
-        email: email(args.email),
-        password: typeof args.password === "string" ? args.password : "",
-        flow: "signIn",
-      };
-      if (!params.password || params.password.length > PASSWORD_MAX)
-        throw new GatewayError("invalid_credentials");
-      result = await signIn(params).catch((error) => {
-        throw new GatewayError(mapError(error, "invalid_credentials"));
-      });
-    } else if (operation === "signUp") {
-      const params = {
-        email: email(args.email),
-        password: password(args.password),
-        flow: "signUp",
-      };
-      result = await signIn(params).catch((error) => {
-        throw new GatewayError(mapError(error, "account_exists"));
-      });
-    } else if (operation === "verifyEmail") {
-      result = await signIn({
-        email: email(args.email),
-        code: code(args.code),
-        flow: "email-verification",
-      }).catch((error) => {
-        throw new GatewayError(mapError(error, "invalid_code"));
-      });
-      if (!result.tokens) throw new GatewayError("invalid_code");
-    } else if (operation === "requestReset") {
-      // Never reveal whether the email has an account.
-      await signIn({ email: email(args.email), flow: "reset" }).catch(
-        (error) => {
-          if (error instanceof GatewayError) throw error;
-        },
-      );
-      return { status: "reset-sent" };
-    } else if (operation === "requestCode") {
-      await signIn({ email: email(args.email) }, OTP_PROVIDER).catch(
-        (error) => {
-          throw new GatewayError(mapError(error, "unavailable"));
-        },
-      );
-      return { status: "code-sent" };
-    } else if (operation === "verifyCode") {
-      result = await signIn(
-        { email: email(args.email), code: code(args.code) },
-        OTP_PROVIDER,
-      ).catch((error) => {
-        throw new GatewayError(mapError(error, "invalid_code"));
-      });
-      if (!result.tokens) throw new GatewayError("invalid_code");
-    } else {
-      result = await signIn({
-        email: email(args.email),
-        code: code(args.code),
-        newPassword: password(args.password),
-        flow: "reset-verification",
-      }).catch((error) => {
-        throw new GatewayError(mapError(error, "invalid_code"));
-      });
-      if (!result.tokens) throw new GatewayError("invalid_code");
+    const gateway = { integrationId, secret, ...(await clientHash()) };
+    if (operation === "requestCode" || operation === "signUp" || operation === "requestReset") {
+      const address = email(args.email);
+      const chosen = operation === "signUp" ? password(args.password) : undefined;
+      const mail = attempt(async () => {
+        const flow = await beginFlow();
+        const target = { ...gateway, exchangeId: flow.exchangeId, email: address };
+        if (operation === "requestCode")
+          await client!.action(anyApi.commerce.identity.requestCode, target);
+        else if (chosen)
+          await client!.action(anyApi.commerce.identity.passwordSignUp, { ...target, password: chosen });
+        else await client!.action(anyApi.commerce.identity.requestReset, target);
+      }, "unavailable");
+      if (operation === "requestReset") {
+        // Never reveal whether the email has an account; only limits and disabled methods are shown.
+        await mail.catch((error: GatewayError) => {
+          if (error.code === "rate_limited" || error.code === "method_disabled") throw error;
+        });
+        return { status: "reset-sent" };
+      }
+      await mail;
+      return operation === "signUp" ? { status: "verify" } : { status: "code-sent" };
     }
-    if (!result.tokens) return { status: "verify" };
-    await completeSignIn(result.tokens.token).catch((error) => {
-      throw new GatewayError(mapError(error, "unavailable"));
-    });
+    let flow: Flow;
+    let authorized: string;
+    if (operation === "signIn") {
+      const address = email(args.email);
+      const given = typeof args.password === "string" ? args.password : "";
+      if (!given || given.length > PASSWORD_MAX)
+        throw new GatewayError("invalid_credentials");
+      flow = await attempt(beginFlow, "unavailable");
+      const exchangeId = flow.exchangeId;
+      authorized = await attempt(async () => {
+        const result = (await client!.action(anyApi.commerce.identity.passwordSignIn, {
+          ...gateway,
+          exchangeId,
+          email: address,
+          password: given,
+          policyVersion: await policyVersion(exchangeId),
+        })) as { code: string };
+        return result.code;
+      }, "invalid_credentials");
+    } else {
+      // verifyCode, verifyEmail (after signUp) and resetPassword: the code mailed for this browser's exchange.
+      const address = email(args.email);
+      const value = code(args.code);
+      const newPassword = operation === "resetPassword" ? password(args.password) : undefined;
+      flow = savedFlow();
+      const exchangeId = flow.exchangeId;
+      authorized = await attempt(async () => {
+        const target = {
+          ...gateway,
+          exchangeId,
+          email: address,
+          code: value,
+          policyVersion: await policyVersion(exchangeId),
+        };
+        const result = (newPassword
+          ? await client!.action(anyApi.commerce.identity.resetPassword, { ...target, password: newPassword })
+          : await client!.action(anyApi.commerce.identity.verifyCode, {
+              ...target,
+              purpose: operation === "verifyEmail" ? "verify" : "signin",
+            })) as { code: string };
+        return result.code;
+      }, "invalid_code");
+    }
+    await attempt(() => finishFlow(flow, authorized), "unavailable");
     return { status: "signed-in", state: await readState() };
   }
 
   async function authConfig() {
-    const config = (await client!.query(anyApi.commerce.shopAuth.storefrontConfig, {
+    const config = (await client!.query(anyApi.commerce.identity.storefrontAuth, {
       integrationId,
       secret,
     })) as { password: boolean; otp: boolean };
@@ -623,7 +630,7 @@ export function createShopGateway(request: Request) {
       case "lookup": {
         const [config, found] = await Promise.all([
           authConfig(),
-          client.mutation(anyApi.commerce.shopAuth.lookupAccount, {
+          client.mutation(anyApi.commerce.identity.lookup, {
             integrationId,
             secret,
             email: email(args.email),
