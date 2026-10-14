@@ -21,7 +21,7 @@ export default defineConfig({
     },
     {
       command:
-        "pnpm build && CLOUDFLARE_ENV= pnpm preview -- --port 5187",
+        "pnpm build && CLOUDFLARE_ENV= pnpm preview --port 5187",
       url: "http://localhost:5187/en",
       env: { CLOUDFLARE_ENV: "catalog_test" },
       reuseExistingServer: false,

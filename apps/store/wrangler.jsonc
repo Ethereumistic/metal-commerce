@@ -27,7 +27,7 @@
         "STOREFRONT_CONVEX_URL": "https://convex.echoray.io",
         "STOREFRONT_CATALOG_ADAPTER": "gateway",
         "STOREFRONT_GATEWAY_URL": "http://127.0.0.1:4319",
-        "STOREFRONT_PUBLIC_INTEGRATION_ID": "metal-craft-fixture",
+        "STOREFRONT_PUBLIC_INTEGRATION_ID": "metalcatalogfixture00000000000001",
         "STOREFRONT_AUTH_ORIGIN": "https://dev.echoray.io",
         "STOREFRONT_BUSINESS_ID": "metal-craft-fixture-business"
       }

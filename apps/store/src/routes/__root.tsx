@@ -140,7 +140,7 @@ function Root() {
         <link
           rel="alternate"
           hrefLang="x-default"
-          href={siteUrl + localizeHref(path, { locale: "en" })}
+          href={siteUrl + localizeHref(path, { locale: "bg" })}
         />
         <link rel="canonical" href={siteUrl + localizeHref(path)} />
       </head>

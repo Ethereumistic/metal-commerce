@@ -7,17 +7,17 @@ test.beforeEach(async ({ request }) => {
 test("informational SSR reads bootstrap only and every dynamic response is no-store", async ({
   request,
 }) => {
-  for (const locale of ["en", "fr", "de"]) {
+  for (const locale of ["bg", "en"]) {
     const response = await request.get(`/${locale}/about`);
     expect(response.status()).toBe(200);
     expect(response.headers()["cache-control"]).toContain("no-store");
     const html = await response.text();
     expect(html).toContain(`<html lang="${locale}">`);
     expect(html).toContain('rel="canonical"');
-    expect(html).toContain('hrefLang="fr"');
+    expect(html).toContain('hrefLang="bg"');
   }
   const calls = (await (await request.get(control)).json()).requests;
-  expect(calls).toHaveLength(3);
+  expect(calls).toHaveLength(2);
   expect(
     calls.every((c: { path: string }) => c.path.endsWith("/bootstrap")),
   ).toBe(true);
@@ -35,23 +35,29 @@ test("home fetches four cards and derivatives; hydration, mobile menu and locale
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/de");
+  await page.goto("/bg");
   await expect(page.locator("html")).toHaveAttribute(
     "data-moris-hydrated",
     "true",
   );
-  await expect(page.locator(".edit-section .piece-card")).toHaveCount(4);
-  await expect(page.locator(".category-card")).toHaveCount(7);
+  await expect(
+    page.locator('section[aria-labelledby="latest-heading"] .piece-card'),
+  ).toHaveCount(4);
+  await expect(
+    page.locator('section[aria-labelledby="collections-heading"] a'),
+  ).toHaveCount(7);
   expect(
     await page.locator(".piece-primary").first().getAttribute("src"),
   ).toContain("/media/");
   expect(
     await page.locator(".piece-primary").first().getAttribute("srcset"),
   ).toContain("640w");
-  await page.getByRole("button", { name: "Menü öffnen" }).click();
+  await page.getByRole("button", { name: "Отвори менюто" }).click();
   await expect(page.locator(".mobile-menu nav a")).toHaveCount(8);
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Menü öffnen" })).toBeFocused();
+  await expect(
+    page.getByRole("button", { name: "Отвори менюто" }),
+  ).toBeFocused();
   const calls = (await (await request.get(control)).json()).requests;
   expect(
     calls.some(
@@ -110,21 +116,21 @@ test("search is bounded, reports refinement, and opens a localized detail with o
   page,
   request,
 }) => {
-  await page.goto("/fr/about");
+  await page.goto("/bg/about");
   await expect(page.locator("html")).toHaveAttribute(
     "data-moris-hydrated",
     "true",
   );
-  await page.getByRole("button", { name: "Rechercher", exact: true }).click();
-  const box = page.getByRole("textbox", { name: "Rechercher" });
+  await page.getByRole("button", { name: "Търсене", exact: true }).click();
+  const box = page.getByRole("textbox", { name: "Търсене" });
   await box.fill("Z");
   await expect(page.locator(".search-result")).toHaveCount(8);
   await box.fill("broad");
-  await expect(page.locator(".empty-search")).toContainText("préciser");
+  await expect(page.locator(".empty-search")).toContainText("по-точни");
   await box.fill("arm");
   await expect(page.locator(".search-result")).toHaveCount(1);
   await page.locator(".search-result").click();
-  await expect(page).toHaveURL("/fr/pieces/arm");
+  await expect(page).toHaveURL("/bg/pieces/arm");
   await expect(page.locator("h1")).toHaveText("Arm");
   expect(await page.locator(".gallery-open img").getAttribute("src")).toContain(
     "/detail",
@@ -132,7 +138,7 @@ test("search is bounded, reports refinement, and opens a localized detail with o
   expect(
     await page.locator(".gallery-thumbnails img").first().getAttribute("src"),
   ).toContain("/thumbnail");
-  await page.getByRole("button", { name: "Agrandir l’image" }).click();
+  await page.getByRole("button", { name: "Виж по-голямо изображение" }).click();
   await expect(page.locator(".lightbox-photo img")).toHaveAttribute(
     "src",
     /\/api\/storage\//,
@@ -179,7 +185,7 @@ test("focus refresh drops stale content on failure and recovers; 404 remains dis
   await request.get(`${control}?fail=0`);
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(page.locator(".piece-card")).toHaveCount(24);
-  const response = await page.goto("/de/pieces/missing");
+  const response = await page.goto("/bg/pieces/missing");
   expect(response?.status()).toBe(404);
 });
 
@@ -229,8 +235,8 @@ test("navigation reuses original receipts until expiry and refreshes the active 
   await page.clock.install();
   await page.clock.fastForward(31_000);
   await page
-    .locator(".header-left")
-    .getByRole("link", { name: "Our story" })
+    .locator(".primary-nav")
+    .getByRole("link", { name: "The workshop" })
     .click();
   await expect(page).toHaveURL("/en/about");
   await expect
@@ -252,14 +258,121 @@ test("long URL searches explain refinement, and dynamic layouts fit small screen
   await expect(page.locator(".collection-empty")).toContainText("more words");
   for (const width of [320, 768, 1440]) {
     await page.setViewportSize({ width, height: 844 });
-    for (const path of ["/en/collection", "/fr/pieces/arm", "/de/about"]) {
+    for (const path of ["/en/collection", "/bg/pieces/arm", "/bg/about"]) {
       await page.goto(path);
       await expect(page.locator("h1")).toBeVisible();
+      await page.evaluate(() => document.fonts.ready);
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
         ),
-        path,
+        "Page must fit the viewport",
+      ).toBe(true);
+    }
+  }
+});
+
+test("Bulgarian defaults, supported language switching, and removed locale links retain the page", async ({
+  page,
+  context,
+  request,
+}) => {
+  const entry = await request.get("/", { maxRedirects: 0 });
+  expect(entry.status()).toBe(307);
+  expect(entry.headers().location).toMatch(/\/bg$/);
+  await page.goto("/bg/collection?category=chairs");
+  await expect(page.locator("html")).toHaveAttribute("lang", "bg");
+  await expect(page.locator("h1")).toHaveText("Столове.");
+  const trigger = page.locator("header").getByRole("combobox");
+  await trigger.click();
+  await expect(page.getByRole("option")).toHaveCount(2);
+  await expect(page.getByRole("option", { name: "Български" })).toBeVisible();
+  await page.getByRole("option", { name: "English" }).click();
+  await expect(page).toHaveURL(/\/en\/collection\?category=chairs/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  expect(
+    (await context.cookies()).find(
+      (cookie) => cookie.name === "METAL_CRAFT_LOCALE",
+    )?.value,
+  ).toBe("en");
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/en$/);
+  await page.goto("/fr/collection?category=chairs");
+  await expect(page).toHaveURL(/\/en\/collection\?category=chairs/);
+  await page.locator("header").getByRole("combobox").click();
+  await page.getByRole("option", { name: "Български" }).click();
+  await expect(page).toHaveURL(/\/bg\/collection\?category=chairs/);
+  await expect(page.locator('link[hreflang="x-default"]')).toHaveAttribute(
+    "href",
+    /\/bg\/collection\?category=chairs$/,
+  );
+  await expect(
+    page.locator('link[hreflang="fr"], link[hreflang="de"]'),
+  ).toHaveCount(0);
+  await page.goto("/de/pieces/arm");
+  await expect(page).toHaveURL(/\/bg\/pieces\/arm$/);
+  const shareLink = await request.get("/bg/products/arm", { maxRedirects: 0 });
+  expect(shareLink.headers().location).toMatch(/\/bg\/pieces\/arm$/);
+});
+
+test("product image frame stays square on phones, tablets and desktop with gallery controls intact", async ({
+  page,
+}) => {
+  for (const width of [320, 390, 768, 901, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/bg/pieces/arm");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-moris-hydrated",
+      "true",
+    );
+    await page.evaluate(() => document.fonts.ready);
+    const stage = await page.locator(".gallery-stage").boundingBox();
+    expect(stage).not.toBeNull();
+    expect(
+      Math.abs(stage!.width - stage!.height),
+      `${width}px square frame`,
+    ).toBeLessThan(1);
+    const photo = await page.locator(".gallery-open img").boundingBox();
+    expect(Math.abs(photo!.width - (stage!.width - 6))).toBeLessThan(1);
+    expect(Math.abs(photo!.height - (stage!.height - 6))).toBeLessThan(1);
+    expect(
+      await page
+        .locator(".gallery-open img")
+        .evaluate((img) => getComputedStyle(img).objectFit),
+    ).toBe("contain");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      "Page must fit the viewport",
+    ).toBe(true);
+  }
+  await page
+    .getByRole("button", { name: "Следващо изображение", exact: true })
+    .click();
+  await expect(page.locator(".gallery-controls")).toContainText("02");
+  await page.getByRole("button", { name: "Виж по-голямо изображение" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator(".gallery-controls").last()).toContainText("01");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+});
+
+test("Bulgarian and English home pages fit narrow phones and wide screens", async ({
+  page,
+}) => {
+  for (const locale of ["bg", "en"]) {
+    for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/${locale}`);
+      await page.evaluate(() => document.fonts.ready);
+      await expect(page.locator("html")).toHaveAttribute("lang", locale);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+        `${locale} at ${width}px`,
       ).toBe(true);
     }
   }

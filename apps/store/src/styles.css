@@ -5,6 +5,7 @@
 @import "@fontsource/dm-mono/500.css";
 @import "@fontsource-variable/big-shoulders";
 @import "@fontsource-variable/big-shoulders-stencil";
+@import "@fontsource-variable/oswald";
 
 /* Shared shadcn primitives live in packages/ui; the store keeps its own brand tokens. */
 @source "../../../packages/ui/src";
@@ -80,9 +81,11 @@
   --olive: hsl(226 70% 42%);
   --sheet: hsl(var(--card));
 
-  --font-display: "Big Shoulders Variable", "Outfit Variable", sans-serif;
-  --font-stencil: "Big Shoulders Stencil Variable", "Big Shoulders Variable",
-    sans-serif;
+  --font-display:
+    "Big Shoulders Variable", "Oswald Variable", "Outfit Variable", sans-serif;
+  --font-stencil:
+    "Big Shoulders Stencil Variable", "Big Shoulders Variable",
+    "Oswald Variable", sans-serif;
   --page-gutter: clamp(16px, 4vw, 64px);
   --page-max: 1360px;
 }
@@ -141,6 +144,7 @@
     line-height: 0.9;
     text-transform: uppercase;
     letter-spacing: 0.005em;
+    overflow-wrap: anywhere;
   }
   ::selection {
     background: hsl(var(--primary));
@@ -459,6 +463,9 @@
   white-space: pre-line;
   overflow-wrap: break-word;
 }
+.hero-copy {
+  min-width: 0;
+}
 .hero-body {
   margin-top: 28px;
   max-width: 36ch;
@@ -511,6 +518,13 @@
 }
 .hero-plate figcaption {
   margin-top: 26px;
+}
+.hero-plate figcaption a {
+  max-width: 100%;
+  height: auto;
+  min-height: 36px;
+  padding-block: 8px;
+  white-space: normal;
 }
 .cut-path {
   position: absolute;
@@ -698,6 +712,7 @@
 }
 .collection-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
@@ -707,6 +722,7 @@
 }
 .filter-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 20px;
 }
@@ -1213,7 +1229,7 @@
 }
 @media (max-width: 960px) {
   .hero-inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .hero h1 {
     font-size: clamp(64px, 16vw, 140px);
@@ -1432,7 +1448,8 @@
 }
 .gallery-stage {
   min-width: 0;
-  height: var(--gallery-height);
+  aspect-ratio: 1;
+  align-self: start;
   position: relative;
   background: #fff;
   border: 3px solid hsl(var(--foreground));
@@ -1711,7 +1728,6 @@
   }
   .product-gallery-set {
     position: static;
-    --gallery-height: min(70vw, 400px);
   }
   .gallery-layout {
     grid-template-columns: minmax(0, 1fr);

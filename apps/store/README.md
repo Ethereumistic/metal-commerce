@@ -26,7 +26,7 @@ VITE_SITE_URL=https://metal.echoray.cloud pnpm run deploy
 
 The protected `STOREFRONT_INTEGRATION_ID`, `STOREFRONT_INTEGRATION_SECRET` and `STOREFRONT_DOMAIN_CHALLENGE` bindings were installed on `metal-craft`. Use Cloudflare secret commands for any future changes; never commit credentials, put them in `VITE_*`, or reuse credentials from the furniture store. Deployment preserves existing Worker secrets.
 
-The `catalog_test` environment uses isolated fixture data and must never be deployed. English, French and German routes are preserved. Language selection uses `METAL_CRAFT_LOCALE`, and cart/session storage is scoped to Metal Craft.
+The `catalog_test` environment uses isolated fixture data and must never be deployed. Bulgarian is the default language, with English as the only alternative. Routes use `/bg` and `/en`; former `/fr` and `/de` links redirect to the preferred supported language. Language selection uses `METAL_CRAFT_LOCALE`, and cart/session storage is scoped to Metal Craft.
 
 ## Current readiness
 

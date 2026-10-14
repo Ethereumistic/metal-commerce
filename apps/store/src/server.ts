@@ -153,7 +153,7 @@ async function serve(request: Request): Promise<Response> {
   }
   // Commerce share links use /products; preserve the storefront’s established piece URLs.
   const productLink = url.pathname.match(
-    /^\/(en\/|fr\/|de\/)?products\/([a-z0-9][a-z0-9-]{1,78}[a-z0-9])\/?$/,
+    /^\/(bg\/|en\/)?products\/([a-z0-9][a-z0-9-]{1,78}[a-z0-9])\/?$/,
   );
   if (productLink && ["GET", "HEAD"].includes(request.method)) {
     url.pathname = `/${productLink[1] ?? ""}pieces/${productLink[2]}`;

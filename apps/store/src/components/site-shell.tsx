@@ -45,9 +45,8 @@ import {
 } from "@/lib/commerce";
 
 const languageOptions = [
+  { value: "bg" as const, label: "Български", code: "BG", flag: "bg" },
   { value: "en" as const, label: "English", code: "EN", flag: "gb" },
-  { value: "fr" as const, label: "Français", code: "FR", flag: "fr" },
-  { value: "de" as const, label: "Deutsch", code: "DE", flag: "de" },
 ];
 
 export function LanguageSelector({ full = false }: { full?: boolean }) {

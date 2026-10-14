@@ -21,17 +21,15 @@ export default defineConfig({
         {
           pattern: "/",
           localized: [
+            ["bg", "/bg"],
             ["en", "/en"],
-            ["fr", "/fr"],
-            ["de", "/de"],
           ],
         },
         {
           pattern: "/:path(.*)?",
           localized: [
+            ["bg", "/bg/:path(.*)?"],
             ["en", "/en/:path(.*)?"],
-            ["fr", "/fr/:path(.*)?"],
-            ["de", "/de/:path(.*)?"],
           ],
         },
       ],

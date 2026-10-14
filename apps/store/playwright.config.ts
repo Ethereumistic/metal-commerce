@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   webServer: {
-    command: "pnpm preview -- --port 5173",
+    command: "pnpm preview --port 5173",
     url: "http://localhost:5173/en",
     reuseExistingServer: true,
     timeout: 30_000,

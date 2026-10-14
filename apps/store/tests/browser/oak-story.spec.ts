@@ -9,19 +9,12 @@ const translations = {
     closer: "Look closer",
     age: "over 100 years old",
   },
-  fr: {
-    grain: "Le grain",
-    patina: "La patine",
-    life: "Une seconde vie",
-    closer: "Voir de près",
-    age: "plus de 100 ans",
-  },
-  de: {
-    grain: "Die Maserung",
-    patina: "Die Patina",
-    life: "Ein zweites Leben",
-    closer: "Genauer ansehen",
-    age: "über 100 Jahre alter",
+  bg: {
+    grain: "Рисунъкът",
+    patina: "Патината",
+    life: "Втори живот",
+    closer: "Виж отблизо",
+    age: "над 100 години",
   },
 };
 
@@ -73,8 +66,8 @@ test("every oak chapter fits small phones, tablets and wide screens", async ({
 }) => {
   for (const width of [320, 600, 900, 1024, 1920]) {
     await page.setViewportSize({ width, height: 844 });
-    await page.goto("/de/about");
-    for (const label of Object.values(translations.de).slice(0, 3)) {
+    await page.goto("/bg/about");
+    for (const label of Object.values(translations.bg).slice(0, 3)) {
       await page
         .locator("#oak-story")
         .getByRole("tab", { name: label })
