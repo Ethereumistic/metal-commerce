@@ -18,7 +18,10 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@echoray/api-client": "file:vendor/echoray-api-client-1.0.0.tgz",
-    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/big-shoulders": "^5.3.0",
+    "@fontsource-variable/big-shoulders-stencil": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
     "@workspace/ui": "workspace:*",

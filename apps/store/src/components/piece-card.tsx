@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { categoryLabel } from "@/lib/catalog";
 import type { StoreCard } from "@/lib/commerce";
@@ -59,7 +58,13 @@ export function PieceCard({ piece }: { piece: StoreCard }) {
       </div>
       <div className="piece-caption">
         <h3>{piece.name}</h3>
-        <ArrowUpRight size={18} aria-hidden="true" />
+        {minimum !== undefined && (
+          <span className="piece-price">
+            {piece.maxAmount !== minimum
+              ? m.price_from({ price: priceLabel(minimum, piece.currency) })
+              : priceLabel(minimum, piece.currency)}
+          </span>
+        )}
       </div>
       <p>
         {categoryLabel(piece.category)}
@@ -70,13 +75,6 @@ export function PieceCard({ piece }: { piece: StoreCard }) {
           </>
         )}
       </p>
-      {minimum !== undefined && (
-        <span className="piece-price">
-          {piece.maxAmount !== minimum
-            ? m.price_from({ price: priceLabel(minimum, piece.currency) })
-            : priceLabel(minimum, piece.currency)}
-        </span>
-      )}
     </Link>
   );
 }

@@ -18,16 +18,19 @@ function AboutPage() {
           <Link to="/">{m.home()}</Link><span>/</span><span>{m.about()}</span>
         </nav>
         <section className="about-statement">
-          <h1>Metal Craft</h1>
+          <h1>{m.about_title()}</h1>
           <div>
-            <p>{m.about_intro()}</p><p>{m.about_second()}</p>
+            <p>{m.about_intro()}</p>
+            <p>{m.about_second()}</p>
             <Link to="/collection" search={{}} className="text-link">
-              {m.view_collection()}<ArrowUpRight size={18} />
+              {m.view_collection()}
+              <ArrowUpRight size={18} />
             </Link>
           </div>
         </section>
         <section id="materials" className="about-statement">
-          <h2>{m.materials()}</h2><p>{m.material_body()}</p>
+          <h2>{m.materials()}</h2>
+          <p>{m.material_body()}</p>
         </section>
       </div>
     </SiteShell>

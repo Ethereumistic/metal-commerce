@@ -1,6 +1,16 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, ArrowUpRight, ArrowRight } from "lucide-react";
+import {
+  Search,
+  Menu,
+  ArrowUpRight,
+  ArrowUp,
+  ArrowRight,
+  Sparkle,
+} from "lucide-react";
+import { Logo } from "@/components/logo";
+import { Marquee, MarqueeItem } from "@/components/boldkit/marquee";
+import { buttonVariants } from "@/components/boldkit/button";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import {
@@ -245,27 +255,33 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <a href="#main-content" className="skip-link">
         {m.skip()}
       </a>
-      <div className="announcement">{m.announcement()}</div>
+      <p className="sr-only">{m.announcement()}</p>
+      <Marquee
+        className="announcement border-b-3 border-foreground bg-foreground text-primary"
+        speed="slow"
+        aria-hidden="true"
+      >
+        {[m.marquee_1(), m.marquee_2(), m.marquee_3(), m.marquee_4()].map(
+          (text) => (
+            <MarqueeItem key={text} className="text-sm">
+              <Sparkle aria-hidden="true" className="size-3.5 fill-accent text-accent" />
+              {text}
+            </MarqueeItem>
+          ),
+        )}
+      </Marquee>
       <header className="site-header">
         <div className="header-main">
           <Link to="/" className="wordmark" aria-label="Metal Craft">
-            Metal Craft
+            <Logo />
           </Link>
-          <nav className="category-nav" aria-label={m.collection()}>
-            <Link to="/collection" search={{}} className="all-collection">
+          <nav className="primary-nav" aria-label={m.main_nav()}>
+            <Link to="/collection" search={{}}>
               {m.collection()}
             </Link>
-            <span className="nav-divider" aria-hidden="true" />
-            {categoryIds.map((id) => (
-              <Link key={id} to="/collection" search={{ category: id }}>
-                {categoryLabel(id)}
-              </Link>
-            ))}
+            <Link to="/about">{m.about()}</Link>
           </nav>
           <div className="header-right">
-            <Link to="/about" className="header-story">
-              {m.about()}
-            </Link>
             <Button
               variant="ghost"
               className="search-toggle"
@@ -298,7 +314,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
           id="mobile-navigation"
         >
           <SheetHeader>
-            <SheetTitle className="wordmark">Metal Craft</SheetTitle>
+            <SheetTitle className="wordmark">
+              <Logo />
+              <span className="sr-only">Metal Craft</span>
+            </SheetTitle>
             <SheetDescription className="sr-only">
               {m.collection()}
             </SheetDescription>
@@ -340,46 +359,78 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1}>
         {children}
       </main>
-      <footer className="site-footer">
-        <div className="footer-top">
-          <div>
-            <h2>{m.footer_heading()}</h2>
-            <p>{m.footer_body()}</p>
-          </div>
-          <Link to="/collection" search={{}} className="footer-cta">
-            {m.view_collection()}
-            <ArrowUpRight size={26} />
-          </Link>
-        </div>
-        <div className="footer-bottom">
-          <Link to="/" className="wordmark footer-wordmark" aria-label="Metal Craft">
-            Metal Craft
-          </Link>
-          <div className="footer-links">
-            <p>{m.explore()}</p>
-            {categoryIds.map((id) => (
-              <Link key={id} to="/collection" search={{ category: id }}>
-                {categoryLabel(id)}
-              </Link>
-            ))}
-          </div>
-          <div className="footer-links">
-            <p>{m.discover()}</p>
-            <Link to="/about">{m.about()}</Link>
-            <Link to="/about" hash="materials">
-              {m.materials()}
+      <footer className="site-footer border-t-3 border-foreground">
+        <div className="footer-cta border-b-3 border-foreground bg-primary text-primary-foreground">
+          <div className="footer-inner flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
+            <h2 className="footer-cta-title">{m.cta_heading()}</h2>
+            <Link
+              to="/collection"
+              search={{}}
+              className={buttonVariants({ variant: "ink", size: "xl" })}
+            >
+              {m.view_collection()}
+              <ArrowRight />
             </Link>
-            <div className="footer-language">
-              <LanguageSelector full />
+          </div>
+        </div>
+        <div className="bg-foreground text-background">
+          <div className="footer-inner grid gap-10 py-14 md:grid-cols-[1.2fr_2fr_1fr]">
+            <div className="space-y-5">
+              <Link to="/" className="wordmark footer-logo" aria-label="Metal Craft">
+                <Logo />
+              </Link>
+              <p className="max-w-[34ch] text-sm text-background/75">
+                {m.footer_body()}
+              </p>
+              <div className="footer-language">
+                <LanguageSelector full />
+              </div>
+            </div>
+            <div>
+              <h3 className="footer-heading">{m.explore()}</h3>
+              <ul className="footer-collections">
+                {categoryIds.map((id) => (
+                  <li key={id}>
+                    <Link to="/collection" search={{ category: id }}>
+                      {categoryLabel(id)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="footer-heading">{m.discover()}</h3>
+              <ul className="footer-links">
+                <li>
+                  <Link to="/collection" search={{}}>
+                    {m.view_collection()}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/about">{m.about()}</Link>
+                </li>
+                <li>
+                  <Link to="/about" hash="materials">
+                    {m.materials()}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/account">{m.account()}</Link>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
-        <div className="footer-meta">
-          <p>{m.copyright({ year: "2026" })}</p>
-          <p>{m.photo_credit()}</p>
-          <a href="#main-content" aria-label={m.skip()}>
-            <ArrowRight className="-rotate-90" size={20} />
-          </a>
+          <div className="footer-inner flex flex-col gap-3 border-t-3 border-background/25 py-6 text-xs text-background/70 sm:flex-row sm:items-center sm:justify-between">
+            <p>{m.copyright({ year: "2026" })}</p>
+            <p>{m.photo_credit()}</p>
+            <a
+              href="#main-content"
+              aria-label={m.skip()}
+              className="footer-top"
+            >
+              <ArrowUp size={18} />
+            </a>
+          </div>
         </div>
       </footer>
     </>

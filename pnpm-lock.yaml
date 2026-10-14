@@ -186,7 +186,16 @@ importers:
       '@echoray/api-client':
         specifier: file:vendor/echoray-api-client-1.0.0.tgz
         version: file:apps/store/vendor/echoray-api-client-1.0.0.tgz
-      '@fontsource-variable/manrope':
+      '@fontsource-variable/big-shoulders':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/big-shoulders-stencil':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource-variable/outfit':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/dm-mono':
         specifier: ^5.3.0
         version: 5.3.0
       '@tanstack/react-router':
@@ -224,7 +233,7 @@ importers:
         version: 1.4.0
       zustand:
         specifier: ^5.0.15
-        version: 5.0.15(@types/react@19.3.0)(immer@11.1.21)(react@19.3.0)(use-sync-external-store@1.7.0(react@19.3.0))
+        version: 5.0.15(@types/react@19.3.0)(react@19.3.0)(use-sync-external-store@1.7.0(react@19.3.0))
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.13.0
@@ -907,11 +916,20 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
+  '@fontsource-variable/big-shoulders-stencil@5.3.0':
+    resolution: {integrity: sha512-M722iR7TPc+CDhj5kI0rsTo1IS+vh5AbTY+p2Ee507tgbqD/ElbuQzR32VRuYYqonG50VFoas5+rWSd84RHmKQ==}
+
+  '@fontsource-variable/big-shoulders@5.3.0':
+    resolution: {integrity: sha512-b6JtGj6cqvOO5RLuzqLOoiG1ojTHhM8hNDmqbwQXmWCcQumP0gzHXgYviAooZZWLtEvOoX/EHboa+6/Nx2n9ng==}
+
   '@fontsource-variable/geist@5.3.0':
     resolution: {integrity: sha512-j0m+vLQuG5XAYoHtGCVu0spvlGreR3EzpECUVzkFmI1mTVnAO38l/NEPDCFgZ177JxzYJCLSmTQibIiYPilGrA==}
 
-  '@fontsource-variable/manrope@5.3.0':
-    resolution: {integrity: sha512-6D5dgokHsWDDMtmXHznKa0hK229NN+1a4BLPmUCLqcO1Pw5EEhWY5RFt0AcXnVRAljFFPfRtLkJePQj6LSsV6g==}
+  '@fontsource-variable/outfit@5.3.0':
+    resolution: {integrity: sha512-fPb5XnYK0k7SbR++HEmm4+ZqDszmLKQ+sPRUr8oQ/KNC0vy6r6hazJFe8iYozv4cqlHbvJ/JECkJWrfDodUMVQ==}
+
+  '@fontsource/dm-mono@5.3.0':
+    resolution: {integrity: sha512-OINjI8C1S/wpchhQxl7njZdMn4+hnDCpQ4YtvvOpKNARo+0J8O1x1IcrChxNjHOhfVv1by8C/FQoy3hXK+C1Ug==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -3003,9 +3021,15 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@fontsource-variable/big-shoulders-stencil@5.3.0': {}
+
+  '@fontsource-variable/big-shoulders@5.3.0': {}
+
   '@fontsource-variable/geist@5.3.0': {}
 
-  '@fontsource-variable/manrope@5.3.0': {}
+  '@fontsource-variable/outfit@5.3.0': {}
+
+  '@fontsource/dm-mono@5.3.0': {}
 
   '@img/colour@1.1.0': {}
 
@@ -4352,5 +4376,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
       immer: 11.1.21
+      react: 19.3.0
+      use-sync-external-store: 1.7.0(react@19.3.0)
+
+  zustand@5.0.15(@types/react@19.3.0)(react@19.3.0)(use-sync-external-store@1.7.0(react@19.3.0)):
+    optionalDependencies:
+      '@types/react': 19.3.0
       react: 19.3.0
       use-sync-external-store: 1.7.0(react@19.3.0)

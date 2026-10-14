@@ -18,6 +18,7 @@ import {
   type CatalogRouterContext,
 } from "@/lib/catalog-freshness";
 import { getStoreCatalog } from "@/lib/commerce";
+import { Logo } from "@/components/logo";
 import { CartDrawer, CartFlightLayer, CartSync } from "@/components/cart";
 
 export const Route = createRootRouteWithContext<CatalogRouterContext>()({
@@ -33,9 +34,9 @@ export const Route = createRootRouteWithContext<CatalogRouterContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Metal Craft — " + m.announcement() },
+      { title: "Metal Craft — " + m.site_tagline() },
       { name: "description", content: m.collection_intro() },
-      { name: "theme-color", content: "#faf9f6" },
+      { name: "theme-color", content: "#ffd23f" },
     ],
     links: [
       { rel: "stylesheet", href: stylesheet },
@@ -45,8 +46,8 @@ export const Route = createRootRouteWithContext<CatalogRouterContext>()({
   component: Root,
   notFoundComponent: () => (
     <main className="not-found">
-      <Link className="wordmark" to="/">
-        Metal Craft
+      <Link className="wordmark" to="/" aria-label="Metal Craft">
+        <Logo />
       </Link>
       <h1>{m.not_found()}</h1>
       <p>{m.not_found_body()}</p>

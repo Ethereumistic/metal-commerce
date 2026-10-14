@@ -1,112 +1,185 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { ArrowRight, PenTool, Zap, Paintbrush, Truck } from "lucide-react";
 import { SiteShell } from "./site-shell";
-import { Photo } from "./photo";
 import { PieceCard } from "./piece-card";
+import { buttonVariants } from "./boldkit/button";
+import { Sticker, Stamp } from "./boldkit/sticker";
+import {
+  CollectionBento,
+  FAQAccordion,
+  FeatureSteps,
+  SectionHeading,
+  StatsCards,
+} from "./boldkit/blocks";
 import { categoryLabel } from "@/lib/catalog";
 import { Route } from "@/routes/index";
 import { m } from "@/paraglide/messages";
 import { useCategories } from "@/lib/commerce";
+
+const heroImage = "/images/hero-oak-canopy.webp";
 
 export function HomePage() {
   const { categories, status } = useCategories();
   const { products, productStatus } = Route.useLoaderData();
   return (
     <SiteShell>
+      {/* BoldKit HeroSplit, set on hazard yellow with a stripe edge. */}
       <section className="hero" aria-labelledby="hero-heading">
-        <picture>
-          <source
-            media="(max-width: 600px)"
-            srcSet="/images/hero-mobile-640.webp 640w, /images/hero-mobile-1280.webp 1280w"
-            sizes="100vw"
-          />
-          <Photo
-            name="hero"
-            alt={m.hero_alt()}
-            priority
-            className="hero-photo"
-          />
-        </picture>
-        <div className="hero-shade" />
-        <div className="hero-content">
-          <p className="hero-label">{m.new_collection()}</p>
-          <h1 id="hero-heading">{m.hero_title()}</h1>
-          <p className="hero-body">{m.hero_body()}</p>
-          <Link
-            to="/collection"
-            search={{}}
-            className="moris-button hero-button"
-          >
-            {m.view_collection()}
-            <ArrowUpRight size={19} />
-          </Link>
-        </div>
-        <a className="hero-scroll" href="#collections">
-          <span>{m.hero_note()}</span>
-          <ArrowDown size={19} />
-        </a>
-      </section>
-      <section id="collections" className="section category-section">
-        <div className="section-heading">
-          <h2>{m.category_heading()}</h2>
-          <p>{m.category_body()}</p>
-        </div>
-        {status !== "ready" && (
-          <p role="status">{m.categories_unavailable()}</p>
-        )}
-        <div className="category-grid">
-          {categories.map(({ id, imageUrl, imageAlt, image }) => (
-            <Link
-              to="/collection"
-              search={{ category: id }}
-              key={id}
-              className={"category-card category-" + id}
-            >
-              <div>
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    srcSet={image?.srcSet}
-                    sizes="(max-width: 600px) 50vw, (max-width: 1000px) 33vw, 20vw"
-                    width={image?.width}
-                    height={image?.height}
-                    alt={imageAlt || categoryLabel(id)}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
-              </div>
-              <span>
-                {categoryLabel(id)}
-                <ArrowUpRight size={17} />
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="section edit-section">
-        <div className="section-heading">
-          <div>
-            <h2>{m.edit_heading()}</h2>
-            <p>{m.edit_body()}</p>
+        <div className="hero-inner">
+          <div className="hero-copy">
+            <Sticker tape rotation="slight" variant="outline" className="mb-8">
+              {m.hero_sticker()}
+            </Sticker>
+            <h1 id="hero-heading">{m.hero_title()}</h1>
+            <p className="hero-body">{m.hero_body()}</p>
+            <div className="mt-9 flex flex-wrap gap-4">
+              <Link
+                to="/collection"
+                search={{}}
+                className={buttonVariants({ variant: "ink", size: "xl" })}
+              >
+                {m.view_collection()}
+                <ArrowRight />
+              </Link>
+              <a
+                href="#process"
+                className={buttonVariants({ variant: "outline", size: "xl" })}
+              >
+                {m.hero_secondary()}
+              </a>
+            </div>
           </div>
-          <Link to="/collection" search={{}} className="text-link">
-            {m.view_all()}
-            <ArrowUpRight size={19} />
-          </Link>
+          <figure className="hero-plate">
+            <div aria-hidden="true" className="hero-deco hero-deco-a" />
+            <div aria-hidden="true" className="hero-deco hero-deco-b" />
+            <div className="hero-sheet">
+              <img
+                src={heroImage}
+                width={1254}
+                height={1254}
+                alt={m.hero_alt()}
+                fetchPriority="high"
+                decoding="async"
+              />
+              {/* The laser traces the plate once, leaving its kerf behind. */}
+              <svg
+                className="cut-path"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <rect x="0" y="0" width="100" height="100" pathLength="1" />
+              </svg>
+              <span className="laser-head" aria-hidden="true" />
+            </div>
+            <Stamp className="hero-stamp" aria-hidden="true">
+              {m.hero_stamp()}
+            </Stamp>
+            <figcaption>
+              <Link
+                to="/pieces/$slug"
+                params={{ slug: "oak-canopy" }}
+                className={buttonVariants({ variant: "outline", size: "sm" })}
+              >
+                {m.hero_caption()}
+                <ArrowRight />
+              </Link>
+            </figcaption>
+          </figure>
         </div>
-        <div className="piece-grid">
-          {products.slice(0, 4).map((piece) => (
-            <PieceCard key={piece.slug} piece={piece} />
-          ))}
-        </div>
-        {productStatus !== "ready" && (
-          <p role="status">{m.products_unavailable()}</p>
-        )}
-        {productStatus === "ready" && !products.length && (
-          <p>{m.no_pieces()}</p>
-        )}
       </section>
+
+      <StatsCards
+        title={m.stats_heading()}
+        stats={[
+          { value: "12 mm", label: m.stat_steel() },
+          { value: "4 mm", label: m.stat_aluminium() },
+          { value: "1500 × 3000", label: m.stat_sheet() },
+          {
+            value: categories.length ? String(categories.length) : "—",
+            label: m.stat_collections(),
+          },
+        ]}
+      />
+
+      {status !== "ready" && (
+        <p role="status" className="px-4 pt-10 text-center md:px-8">
+          {m.categories_unavailable()}
+        </p>
+      )}
+      <CollectionBento
+        title={m.category_heading()}
+        description={m.category_body()}
+        collections={categories.map(({ id, imageUrl, imageAlt, image }) => ({
+          id,
+          label: categoryLabel(id),
+          image: imageUrl
+            ? {
+                src: imageUrl,
+                srcSet: image?.srcSet,
+                width: image?.width,
+                height: image?.height,
+                alt: imageAlt || categoryLabel(id),
+              }
+            : undefined,
+        }))}
+      />
+
+      <section
+        className="border-y-3 border-foreground bg-secondary px-4 py-20 md:px-8 lg:px-16"
+        aria-labelledby="latest-heading"
+      >
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading
+            id="latest-heading"
+            title={m.edit_heading()}
+            description={m.edit_body()}
+            action={
+              <Link
+                to="/collection"
+                search={{}}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                {m.view_all()}
+                <ArrowRight />
+              </Link>
+            }
+          />
+          <div className="piece-grid">
+            {products.slice(0, 4).map((piece) => (
+              <PieceCard key={piece.slug} piece={piece} />
+            ))}
+          </div>
+          {productStatus !== "ready" && (
+            <p role="status">{m.products_unavailable()}</p>
+          )}
+          {productStatus === "ready" && !products.length && (
+            <p>{m.no_pieces()}</p>
+          )}
+        </div>
+      </section>
+
+      <FeatureSteps
+        id="process"
+        title={m.process_heading()}
+        stepLabel={(number) => m.step({ number: String(number) })}
+        steps={[
+          { title: m.process_1_title(), description: m.process_1_body(), icon: <PenTool /> },
+          { title: m.process_2_title(), description: m.process_2_body(), icon: <Zap /> },
+          { title: m.process_3_title(), description: m.process_3_body(), icon: <Paintbrush /> },
+          { title: m.process_4_title(), description: m.process_4_body(), icon: <Truck /> },
+        ]}
+      />
+
+      <FAQAccordion
+        title={m.faq_heading()}
+        items={[
+          { question: m.faq_1_q(), answer: m.faq_1_a() },
+          { question: m.faq_2_q(), answer: m.faq_2_a() },
+          { question: m.faq_3_q(), answer: m.faq_3_a() },
+          { question: m.faq_4_q(), answer: m.faq_4_a() },
+        ]}
+      />
     </SiteShell>
   );
 }
