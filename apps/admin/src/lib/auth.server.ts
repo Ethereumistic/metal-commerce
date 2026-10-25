@@ -124,6 +124,12 @@ async function signIn(args: Record<string, unknown>) {
 
 /** Resolves the operator for a token, or throws when they are not a member of the business. */
 async function authorize(token: string): Promise<AdminSession> {
+  return (await resolveOperator(token)).session;
+}
+
+async function resolveOperator(
+  token: string,
+): Promise<{ session: AdminSession; userId: string | null }> {
   const convex = client(token);
   const { businessId } = config();
   const [business, user] = await Promise.all([
@@ -135,6 +141,7 @@ async function authorize(token: string): Promise<AdminSession> {
       canEdit: boolean;
     }>,
     convex.query(anyApi.users.me, {}) as Promise<{
+      id?: string;
       name?: string;
       email?: string;
       image?: string;
@@ -142,7 +149,7 @@ async function authorize(token: string): Promise<AdminSession> {
   ]);
   if (!business || business.id !== businessId || !user)
     throw new AuthError("not_member");
-  return {
+  const session: AdminSession = {
     user: {
       name: user.name ?? null,
       email: user.email ?? null,
@@ -156,6 +163,7 @@ async function authorize(token: string): Promise<AdminSession> {
       canEdit: business.canEdit,
     },
   };
+  return { session, userId: user.id ?? null };
 }
 
 /** Admits freshly issued tokens only for business members; others are signed out again. */
@@ -174,6 +182,34 @@ async function admit(tokens: Tokens | null | undefined) {
 }
 
 export async function currentSession(): Promise<AdminSession | null> {
+  return (await operatorSession())?.session ?? null;
+}
+
+/**
+ * The signed-in operator plus a core client acting as them, for server-only
+ * reads that core authorizes per user (the catalog). Neither the client nor
+ * the user ID leaves the server.
+ */
+export async function operatorClient(): Promise<{
+  session: AdminSession;
+  userId: string | null;
+  convex: ConvexHttpClient;
+} | null> {
+  const operator = await operatorSession();
+  return operator
+    ? {
+        session: operator.session,
+        userId: operator.userId,
+        convex: client(operator.token),
+      }
+    : null;
+}
+
+async function operatorSession(): Promise<{
+  session: AdminSession;
+  userId: string | null;
+  token: string;
+} | null> {
   const names = cookieNames();
   let token = getCookie(names.token);
   const refreshToken = getCookie(names.refresh);
@@ -188,7 +224,7 @@ export async function currentSession(): Promise<AdminSession | null> {
       storeTokens(tokens);
       token = tokens.token;
     }
-    return await authorize(token);
+    return { ...(await resolveOperator(token)), token };
   } catch (error) {
     // Keep the session through network outages. Core rejections (revoked or
     // expired session, invalid refresh token, lost membership) end it.

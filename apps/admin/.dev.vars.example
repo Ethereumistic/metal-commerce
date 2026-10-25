@@ -1,0 +1,9 @@
+# Copy to .dev.vars for local development (never commit .dev.vars).
+# The admin's server proxies to the artwork service on this PC.
+ARTWORK_PRODUCTION_ENABLED=true
+ARTWORK_SERVICE_ORIGIN=http://127.0.0.1:8766
+# Same value as the service's ARTWORK_SERVICE_TOKEN.
+ARTWORK_SERVICE_TOKEN=replace-with-a-long-random-token
+# Only for the hosted admin behind Cloudflare Access (leave unset locally).
+# ARTWORK_ACCESS_CLIENT_ID=
+# ARTWORK_ACCESS_CLIENT_SECRET=

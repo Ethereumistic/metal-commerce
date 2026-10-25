@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Monitor } from "lucide-react";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
+import { ProductionWorkspace } from "../../production/production-workspace";
 import { useStudio } from "../store";
 import { Canvas } from "./canvas";
 import { Inspector } from "./inspector";
@@ -8,6 +10,7 @@ import { LayersPanel } from "./layers-panel";
 import { LibraryPanel } from "./library-panel";
 import { SheetInspector } from "./sheet-inspector";
 import { SheetView } from "./sheet-view";
+import { Segmented } from "./fields";
 import { Toolbar } from "./toolbar";
 
 function isEditable(target: EventTarget | null) {
@@ -73,9 +76,29 @@ function useShortcuts() {
   }, []);
 }
 
+type Workspace = "editor" | "production";
+
+function WorkspaceSwitch({ value }: { value: Workspace }) {
+  const navigate = useNavigate({ from: "/studio" });
+  return (
+    <Segmented<Workspace>
+      className="w-auto"
+      value={value}
+      options={[
+        { value: "editor", label: "Editor" },
+        { value: "production", label: "Production" },
+      ]}
+      onChange={(next) =>
+        void navigate({ search: next === "production" ? { workspace: "production" } : {} })
+      }
+    />
+  );
+}
+
 export function Studio() {
-  useShortcuts();
-  const mode = useStudio((state) => state.view.mode);
+  const search = useSearch({ from: "/_app/studio" });
+  const workspace: Workspace = search.workspace === "production" ? "production" : "editor";
+  const switcher = <WorkspaceSwitch value={workspace} />;
   return (
     <>
       <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6 text-center lg:hidden">
@@ -84,38 +107,53 @@ export function Studio() {
         <p className="text-sm text-muted-foreground">Open it on a desktop or widen the window.</p>
       </div>
       <div className="hidden min-h-0 flex-1 flex-col lg:flex">
-        <Toolbar />
-        <div className="flex min-h-0 flex-1">
-          {mode === "design" ? (
-            <>
-              <aside className="flex w-64 shrink-0 flex-col border-r">
-                <ScrollArea className="min-h-0 basis-1/2 border-b">
-                  <div className="p-3">
-                    <LibraryPanel />
+        {workspace === "production" ? (
+          <ProductionWorkspace switcher={switcher} />
+        ) : (
+          <Editor switcher={switcher} />
+        )}
+      </div>
+    </>
+  );
+}
+
+/** The design editor; its keyboard shortcuts are only bound while it is shown. */
+function Editor({ switcher }: { switcher: ReactNode }) {
+  useShortcuts();
+  const mode = useStudio((state) => state.view.mode);
+  return (
+    <>
+      <Toolbar leading={switcher} />
+      <div className="flex min-h-0 flex-1">
+        {mode === "design" ? (
+          <>
+            <aside className="flex w-64 shrink-0 flex-col border-r">
+              <ScrollArea className="min-h-0 basis-1/2 border-b">
+                <div className="p-3">
+                  <LibraryPanel />
+                </div>
+              </ScrollArea>
+              <div className="flex min-h-0 flex-1 flex-col">
+                <h3 className="px-3 pt-3 pb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  Layers
+                </h3>
+                <ScrollArea className="min-h-0 flex-1">
+                  <div className="px-2 pb-3">
+                    <LayersPanel />
                   </div>
                 </ScrollArea>
-                <div className="flex min-h-0 flex-1 flex-col">
-                  <h3 className="px-3 pt-3 pb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                    Layers
-                  </h3>
-                  <ScrollArea className="min-h-0 flex-1">
-                    <div className="px-2 pb-3">
-                      <LayersPanel />
-                    </div>
-                  </ScrollArea>
-                </div>
-              </aside>
-              <Canvas />
-            </>
-          ) : (
-            <SheetView />
-          )}
-          <aside className="w-76 shrink-0 border-l">
-            <ScrollArea className="h-full">
-              {mode === "design" ? <Inspector /> : <SheetInspector />}
-            </ScrollArea>
-          </aside>
-        </div>
+              </div>
+            </aside>
+            <Canvas />
+          </>
+        ) : (
+          <SheetView />
+        )}
+        <aside className="w-76 shrink-0 border-l">
+          <ScrollArea className="h-full">
+            {mode === "design" ? <Inspector /> : <SheetInspector />}
+          </ScrollArea>
+        </aside>
       </div>
     </>
   );
