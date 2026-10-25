@@ -123,7 +123,8 @@ def nest_group(
         "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded "
         "and may differ between runs",
         "gap_mm": stock.gap_mm,
-        "gap_handling": "solver item_item_minimum_spacing; collision contours are not inflated by the gap",
+        "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; "
+        "solver item_item_minimum_spacing = 0",
         "holes_in_solver": False,
         "mirror": False,
         "attempts": [],
@@ -196,6 +197,7 @@ def _solver_attempt(parts, stock, budget, safety_offset, cancel, progress):
             p.geometry,
             tolerance_mm=solver_adapter.default_tolerance_mm(p.geometry),
             safety_offset_mm=safety_offset,
+            clearance_mm=stock.gap_mm / 2.0,
         )
         for p in parts
     ]
@@ -226,6 +228,7 @@ def _solver_attempt(parts, stock, budget, safety_offset, cancel, progress):
                 "original_vertex_count": c.original_vertex_count,
                 "simplify_tolerance_mm": c.simplify_tolerance_mm,
                 "offset_mm": c.offset_mm,
+                "clearance_mm": c.clearance_mm,
                 "max_error_mm": c.max_error_mm,
             }
             for p, c in zip(parts, contours, strict=True)

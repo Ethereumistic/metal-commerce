@@ -159,7 +159,11 @@ function LineRow({ line, draft }: { line: BatchLine; draft: BatchDraft["lines"][
       {draft && (
         <div className="flex flex-col gap-0.5">
           <p className="text-xs tabular-nums">
-            Service: {formatMm(draft.actual_width_mm)} × {formatMm(draft.actual_height_mm)} mm ·{" "}
+            Service:{" "}
+            {draft.actual_width_mm != null && draft.actual_height_mm != null
+              ? `${formatMm(draft.actual_width_mm)} × ${formatMm(draft.actual_height_mm)} mm`
+              : "size unavailable"}{" "}
+            ·{" "}
             {draft.fits ? (
               <span className="text-emerald-600 dark:text-emerald-400">fits the sheet</span>
             ) : (

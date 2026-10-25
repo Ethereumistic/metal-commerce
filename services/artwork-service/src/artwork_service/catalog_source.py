@@ -15,9 +15,11 @@ from __future__ import annotations
 import hashlib
 import io
 import ipaddress
+import re
 import socket
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Protocol
 from urllib.parse import urljoin, urlsplit
 
@@ -202,3 +204,40 @@ class HttpSourceFetcher:
         except httpx.HTTPError as exc:
             raise ServiceError("SOURCE_UNAVAILABLE", "The image could not be downloaded.",
                                {"reason": type(exc).__name__, "url": safe_url_for_log(url)}) from exc
+
+
+TEST_FIXTURE_PREFIX = "test-fixture://local/"
+_FIXTURE_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,199}$")
+
+
+class FixtureDirFetcher:
+    """Acceptance-test source: serves `test-fixture://local/<name>` from one directory.
+
+    Only built when `ARTWORK_TEST_FIXTURE_DIR` is set; every other URL goes to
+    the normal HTTPS fetcher. Names are plain file names (no separators), so a
+    URL cannot reach outside the directory.
+    """
+
+    def __init__(self, directory: Path, fallback: SourceFetcher, max_pixels: int) -> None:
+        self.directory = directory.resolve()
+        self.fallback = fallback
+        self.max_pixels = max_pixels
+
+    def fetch(self, url: str) -> FetchedSource:
+        if not url.startswith(TEST_FIXTURE_PREFIX):
+            return self.fallback.fetch(url)
+        name = url[len(TEST_FIXTURE_PREFIX):]
+        if not _FIXTURE_NAME.match(name) or ".." in name:
+            raise ServiceError("SOURCE_HOST_NOT_ALLOWED", "The test fixture name is invalid.", {})
+        path = self.directory / name
+        if not path.is_file():
+            raise ServiceError("SOURCE_UNAVAILABLE", "The test fixture does not exist.", {"name": name})
+        return inspect_image(path.read_bytes(), self.max_pixels)
+
+
+def build_fetcher(config: Config) -> SourceFetcher:
+    """The production fetcher, wrapped with the test fixture source only when configured."""
+    http = HttpSourceFetcher(config)
+    if config.test_fixture_dir is None:
+        return http
+    return FixtureDirFetcher(config.test_fixture_dir, http, config.max_source_pixels)

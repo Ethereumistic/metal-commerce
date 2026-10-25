@@ -1,0 +1,3344 @@
+{
+  "batch_cancelled": {
+    "artifacts": {
+      "manifest": null,
+      "sheets": [],
+      "zip": null
+    },
+    "batch_id": "f5098bfc5888469196d02fd08a1711a0",
+    "created_at": "2026-10-25T21:44:44.681Z",
+    "error": {
+      "code": "CANCELLED",
+      "details": {},
+      "message": "The job was cancelled before it started."
+    },
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 40,
+        "line_ids": [
+          "comb-320"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "job_id": "d3e738c4c92f4ddb98f12576da0e069f",
+    "lines": [
+      {
+        "actual_height_mm": 289.982412,
+        "actual_width_mm": 320.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "comb-320",
+        "master_id": "218768a057894676b4660c64b4888075",
+        "material": "steel",
+        "product_id": "p-comb",
+        "quantity": 40,
+        "thickness_mm": 2.0
+      }
+    ],
+    "name": "cancel me",
+    "request": {
+      "export": {
+        "chord_tolerance_mm": 0.05
+      },
+      "lines": [
+        {
+          "allowed_rotations": [
+            0,
+            180
+          ],
+          "line_id": "comb-320",
+          "master_id": "218768a057894676b4660c64b4888075",
+          "material": "steel",
+          "product_id": "p-comb",
+          "quantity": 40,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 320.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        }
+      ],
+      "name": "cancel me",
+      "optimization": {
+        "seed": 1,
+        "time_budget_s": 120
+      },
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 3000.0,
+        "label": "Current machine 1500 x 3000",
+        "margins_mm": {
+          "bottom": 20.0,
+          "left": 10.0,
+          "right": 15.0,
+          "top": 25.0
+        },
+        "max_sheets": 10,
+        "width_mm": 1500.0
+      }
+    },
+    "sheets": [],
+    "snapshot": {
+      "lines": [
+        {
+          "actual_height_mm": 289.982412,
+          "actual_width_mm": 320.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "comb-320",
+          "master": {
+            "aspect_ratio": 1.1035152037955576,
+            "master_id": "218768a057894676b4660c64b4888075",
+            "product_revision": 1,
+            "source_sha256": "29446f546d55c8cf0165e86b5172af72d18aca71ce7bdcfce8bf839e6c4fe3bc",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_6fa5ed405aef02b34c880e4a9345e302",
+          "product_id": "p-comb",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        }
+      ],
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 3000.0,
+        "label": "Current machine 1500 x 3000",
+        "margins_mm": {
+          "bottom": 20.0,
+          "left": 10.0,
+          "right": 15.0,
+          "top": 25.0
+        },
+        "max_sheets": 10,
+        "width_mm": 1500.0
+      },
+      "usable_envelope_mm": {
+        "height_mm": 2955.0,
+        "width_mm": 1475.0
+      },
+      "versions": {
+        "geometry": "1",
+        "service": "0.1.0",
+        "trace_engine": "opencv-contours",
+        "trace_version": "1.0.0"
+      }
+    },
+    "status": "cancelled",
+    "totals": null,
+    "updated_at": "2026-10-25T21:44:49.228Z",
+    "validation": null
+  },
+  "batch_completed": {
+    "artifacts": {
+      "manifest": "3b9d2fded43c4c0c8aba4ff6917240d6",
+      "sheets": [
+        {
+          "dxf": "43671e01a7fe41ff93af57809e726062",
+          "sheet_id": "c74e62bbf0584cec8f11317adec055fa",
+          "svg": "45f36fe601a44f21839ca6ea704c806b"
+        }
+      ],
+      "zip": "6db511603a4b4c21ae26fe6824333958"
+    },
+    "batch_id": "7abbd4bde79a4834ad07a808b31b317f",
+    "created_at": "2026-10-25T21:42:45.847Z",
+    "error": null,
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 3,
+        "line_ids": [
+          "ring-600",
+          "ring-900",
+          "ring-1500"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "job_id": "feb4535c9ff345ef90471edbe8efe4a1",
+    "lines": [
+      {
+        "actual_height_mm": 600.0,
+        "actual_width_mm": 600.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-600",
+        "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+        "material": "steel",
+        "product_id": "p-ring",
+        "quantity": 1,
+        "thickness_mm": 2.0
+      },
+      {
+        "actual_height_mm": 900.0,
+        "actual_width_mm": 900.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-900",
+        "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+        "material": "steel",
+        "product_id": "p-ring",
+        "quantity": 1,
+        "thickness_mm": 2.0
+      },
+      {
+        "actual_height_mm": 1500.0,
+        "actual_width_mm": 1500.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-1500",
+        "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+        "material": "steel",
+        "product_id": "p-ring",
+        "quantity": 1,
+        "thickness_mm": 2.0
+      }
+    ],
+    "name": "square sizes",
+    "request": {
+      "export": {
+        "chord_tolerance_mm": 0.05
+      },
+      "lines": [
+        {
+          "allowed_rotations": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "line_id": "ring-600",
+          "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+          "material": "steel",
+          "product_id": "p-ring",
+          "quantity": 1,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 600.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        },
+        {
+          "allowed_rotations": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "line_id": "ring-900",
+          "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+          "material": "steel",
+          "product_id": "p-ring",
+          "quantity": 1,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 900.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        },
+        {
+          "allowed_rotations": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "line_id": "ring-1500",
+          "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+          "material": "steel",
+          "product_id": "p-ring",
+          "quantity": 1,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 1500.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        }
+      ],
+      "name": "square sizes",
+      "optimization": {
+        "seed": 1,
+        "time_budget_s": 10
+      },
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 4000.0,
+        "label": "Custom 2000 x 4000 (size check only)",
+        "margins_mm": {
+          "bottom": 10.0,
+          "left": 10.0,
+          "right": 10.0,
+          "top": 10.0
+        },
+        "max_sheets": 2,
+        "width_mm": 2000.0
+      }
+    },
+    "sheets": [
+      {
+        "group_key": "steel/2mm",
+        "group_sheet_index": 0,
+        "height_mm": 4000.0,
+        "index": 1,
+        "metrics": {
+          "metal_area_mm2": 2013629.874,
+          "occupied_extent_mm": 2130.653,
+          "parts": 3,
+          "sheet_area_mm2": 8000000.0,
+          "utilization": 0.251704
+        },
+        "placements": [
+          {
+            "instance_id": "ring-1500#0001",
+            "line_id": "ring-1500",
+            "product_id": "p-ring",
+            "rotation_deg": 180,
+            "tx_mm": 1986.9999999999998,
+            "ty_mm": 2140.6533118090474
+          },
+          {
+            "instance_id": "ring-600#0001",
+            "line_id": "ring-600",
+            "product_id": "p-ring",
+            "rotation_deg": 90,
+            "tx_mm": 1508.7176400015562,
+            "ty_mm": 11.200000000000045
+          },
+          {
+            "instance_id": "ring-900#0001",
+            "line_id": "ring-900",
+            "product_id": "p-ring",
+            "rotation_deg": 270,
+            "tx_mm": 11.8,
+            "ty_mm": 911.8000000000009
+          }
+        ],
+        "sheet_id": "c74e62bbf0584cec8f11317adec055fa",
+        "width_mm": 2000.0
+      }
+    ],
+    "snapshot": {
+      "lines": [
+        {
+          "actual_height_mm": 600.0,
+          "actual_width_mm": 600.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "ring-600",
+          "master": {
+            "aspect_ratio": 1.0,
+            "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+            "product_revision": 1,
+            "source_sha256": "026636dadb9c78f3eddae095ecede4855ee89a639b2d8878e7a0ec9d0cd687e4",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_8654eb13faf1b2aaae15f570e1be9fcd",
+          "product_id": "p-ring",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        },
+        {
+          "actual_height_mm": 900.0,
+          "actual_width_mm": 900.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "ring-900",
+          "master": {
+            "aspect_ratio": 1.0,
+            "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+            "product_revision": 1,
+            "source_sha256": "026636dadb9c78f3eddae095ecede4855ee89a639b2d8878e7a0ec9d0cd687e4",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_ce8f17d90ea38f652a161baa26ab37b4",
+          "product_id": "p-ring",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        },
+        {
+          "actual_height_mm": 1500.0,
+          "actual_width_mm": 1500.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "ring-1500",
+          "master": {
+            "aspect_ratio": 1.0,
+            "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+            "product_revision": 1,
+            "source_sha256": "026636dadb9c78f3eddae095ecede4855ee89a639b2d8878e7a0ec9d0cd687e4",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_8e5f4e56cfc28cc6f5bb8c2199f94175",
+          "product_id": "p-ring",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        }
+      ],
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 4000.0,
+        "label": "Custom 2000 x 4000 (size check only)",
+        "margins_mm": {
+          "bottom": 10.0,
+          "left": 10.0,
+          "right": 10.0,
+          "top": 10.0
+        },
+        "max_sheets": 2,
+        "width_mm": 2000.0
+      },
+      "usable_envelope_mm": {
+        "height_mm": 3980.0,
+        "width_mm": 1980.0
+      },
+      "versions": {
+        "geometry": "1",
+        "service": "0.1.0",
+        "trace_engine": "opencv-contours",
+        "trace_version": "1.0.0"
+      }
+    },
+    "status": "completed",
+    "totals": {
+      "definitions": {
+        "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the farthest placed part on the group's last sheet; the total is the maximum",
+        "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count \u00d7 sheet width \u00d7 height)"
+      },
+      "groups": {
+        "steel/2mm": {
+          "baseline_metrics": {
+            "extent_axis": "y",
+            "formulas": {
+              "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+              "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+              "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+            },
+            "metal_area_mm2": 2013629.874160828,
+            "occupied_extent_mm": 2415.0,
+            "placed": 3,
+            "requested": 3,
+            "sheet_area_mm2": 8000000.0,
+            "sheet_count": 1,
+            "sheets": [
+              {
+                "index": 0,
+                "metal_area_mm2": 2013629.874160828,
+                "occupied_extent_mm": 2415.0,
+                "placed": 3,
+                "sheet_area_mm2": 8000000.0,
+                "unused_area_mm2": 5986370.125839172,
+                "utilization": 0.2517037342701035
+              }
+            ],
+            "unplaced": 0,
+            "unused_area_mm2": 5986370.125839172,
+            "utilization": 0.2517037342701035,
+            "valid": true
+          },
+          "engine": "packingsolver-irregular",
+          "engine_version": "0.1.1218",
+          "metrics": {
+            "extent_axis": "y",
+            "formulas": {
+              "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+              "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+              "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+            },
+            "metal_area_mm2": 2013629.874160828,
+            "occupied_extent_mm": 2140.6533118090474,
+            "optimization_status": "complete",
+            "placed": 3,
+            "requested": 3,
+            "runtime_s": 5.948348582023755,
+            "sheet_area_mm2": 8000000.0,
+            "sheet_count": 1,
+            "sheets": [
+              {
+                "index": 0,
+                "metal_area_mm2": 2013629.874160828,
+                "occupied_extent_mm": 2140.6533118090474,
+                "placed": 3,
+                "sheet_area_mm2": 8000000.0,
+                "unused_area_mm2": 5986370.125839172,
+                "utilization": 0.2517037342701035
+              }
+            ],
+            "unplaced": 0,
+            "unused_area_mm2": 5986370.125839172,
+            "utilization": 0.2517037342701035
+          },
+          "runtime_s": 5.948348582023755,
+          "settings": {
+            "attempts": [
+              {
+                "collision_contours": [
+                  {
+                    "clearance_mm": 2.5,
+                    "line_id": "ring-600",
+                    "max_error_mm": 2.7325901807804756,
+                    "offset_mm": 3.7,
+                    "original_vertex_count": 346,
+                    "part_key": "pk_8654eb13faf1b2aaae15f570e1be9fcd",
+                    "simplify_tolerance_mm": 0.6,
+                    "vertex_count": 85
+                  },
+                  {
+                    "clearance_mm": 2.5,
+                    "line_id": "ring-900",
+                    "max_error_mm": 3.5811183182043047,
+                    "offset_mm": 4.3,
+                    "original_vertex_count": 346,
+                    "part_key": "pk_ce8f17d90ea38f652a161baa26ab37b4",
+                    "simplify_tolerance_mm": 0.9,
+                    "vertex_count": 80
+                  },
+                  {
+                    "clearance_mm": 2.5,
+                    "line_id": "ring-1500",
+                    "max_error_mm": 5.2781745930519826,
+                    "offset_mm": 5.5,
+                    "original_vertex_count": 346,
+                    "part_key": "pk_8e5f4e56cfc28cc6f5bb8c2199f94175",
+                    "simplify_tolerance_mm": 1.5,
+                    "vertex_count": 70
+                  }
+                ],
+                "engine": "packingsolver-irregular",
+                "engine_version": "0.1.1218",
+                "hard_timeout_s": 6.998742027184925,
+                "objective": "bin-packing-with-leftovers",
+                "parameters": {
+                  "item_item_minimum_spacing": 0.0,
+                  "leftover_mode": "bottom"
+                },
+                "process": "subprocess python -m artwork_service.solver_adapter",
+                "runtime_s": 5.915483977994882,
+                "safety_offset_mm": 0.0,
+                "sheet_count": 1,
+                "solutions_seen": 6,
+                "status": "ok",
+                "time_limit_s": 5.59899362174794,
+                "unplaced": 0,
+                "valid": true
+              }
+            ],
+            "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+            "gap_mm": 5.0,
+            "holes_in_solver": false,
+            "mirror": false,
+            "nesting_version": "nesting-1.0.0",
+            "seed": 1,
+            "seed_applied": false,
+            "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+            "time_budget_s": 10.0
+          },
+          "status": "complete",
+          "unplaced": 0
+        }
+      },
+      "metal_area_mm2": 2013629.874,
+      "occupied_extent_by_group_mm": {
+        "steel/2mm": 2130.653
+      },
+      "occupied_extent_mm": 2130.653,
+      "optimization_status": "complete",
+      "placed": 3,
+      "requested": 3,
+      "runtime_s": 5.948,
+      "sheet_area_mm2": 8000000.0,
+      "sheet_count": 1,
+      "unplaced": 0,
+      "utilization": 0.251704
+    },
+    "updated_at": "2026-10-25T21:42:52.787Z",
+    "validation": {
+      "steel/2mm": {
+        "gap_mm": 5.0,
+        "min_gap_mm": null,
+        "placed": 3,
+        "requested": 3,
+        "sheet_count": 1,
+        "tolerance_mm": 1e-06,
+        "unplaced_instance_ids": [],
+        "valid": true,
+        "violations": []
+      }
+    }
+  },
+  "batch_draft": {
+    "batch_id": "7abbd4bde79a4834ad07a808b31b317f",
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 3,
+        "line_ids": [
+          "ring-600",
+          "ring-900",
+          "ring-1500"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "lines": [
+      {
+        "actual_height_mm": 600.0,
+        "actual_width_mm": 600.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-600"
+      },
+      {
+        "actual_height_mm": 900.0,
+        "actual_width_mm": 900.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-900"
+      },
+      {
+        "actual_height_mm": 1500.0,
+        "actual_width_mm": 1500.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "ring-1500"
+      }
+    ],
+    "status": "draft"
+  },
+  "batch_draft_invalid": {
+    "batch_id": "be23531c51bf4520aa547f606543e945",
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 1,
+        "line_ids": [
+          "ring-1500"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "lines": [
+      {
+        "actual_height_mm": 1500.0,
+        "actual_width_mm": 1500.0,
+        "errors": [
+          {
+            "code": "PART_DOES_NOT_FIT",
+            "details": {
+              "part_height_mm": 1500.0,
+              "part_width_mm": 1500.0,
+              "rotations_checked": [
+                0,
+                90,
+                180,
+                270
+              ],
+              "usable_height_mm": 2980.0,
+              "usable_width_mm": 1480.0
+            },
+            "message": "A 1500 \u00d7 1500 mm part does not fit the usable sheet area of 1480 \u00d7 2980 mm in any allowed rotation."
+          }
+        ],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": false,
+        "line_id": "ring-1500"
+      }
+    ],
+    "status": "invalid"
+  },
+  "batch_draft_unknown_master": {
+    "batch_id": "084859e295b84195aaded5fe8b25e4b8",
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 1,
+        "line_ids": [
+          "x"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "lines": [
+      {
+        "actual_height_mm": null,
+        "actual_width_mm": null,
+        "errors": [
+          {
+            "code": "NOT_FOUND",
+            "details": {
+              "master_id": "395ecdb7ad2a4857b74265d9a9c4286a"
+            },
+            "message": "The master does not exist."
+          }
+        ],
+        "feature_check": {
+          "message": "Not checked.",
+          "status": "unknown"
+        },
+        "fits": false,
+        "line_id": "x"
+      }
+    ],
+    "status": "invalid"
+  },
+  "batch_incomplete": {
+    "artifacts": {
+      "manifest": "aecd27f87a9d4fa3a72367a05abcbdc0",
+      "sheets": [
+        {
+          "dxf": null,
+          "sheet_id": "3c1146ddc48c43589cbdc4b0cde6e2b9",
+          "svg": "76ec45ef4c934b9eb6fd158cbbe903bb"
+        }
+      ],
+      "zip": null
+    },
+    "batch_id": "8f168abd97514b8bac9f9f1b527757ed",
+    "created_at": "2026-10-25T21:43:34.598Z",
+    "error": {
+      "code": "NEST_INCOMPLETE",
+      "details": {
+        "placed": 18,
+        "requested": 54,
+        "unplaced": 36,
+        "unplaced_instance_ids": [
+          "flower-300#0009",
+          "flower-300#0010",
+          "flower-300#0011",
+          "flower-300#0012",
+          "flower-300#0013",
+          "flower-300#0014",
+          "flower-300#0015",
+          "flower-300#0016",
+          "flower-300#0017",
+          "flower-300#0018",
+          "flower-300#0019",
+          "flower-300#0020",
+          "flower-300#0021",
+          "flower-300#0022",
+          "flower-300#0023",
+          "flower-300#0024",
+          "flower-300#0025",
+          "flower-300#0026",
+          "flower-300#0027",
+          "flower-300#0028",
+          "flower-300#0029",
+          "flower-300#0030",
+          "flower-300#0031",
+          "flower-300#0032",
+          "flower-300#0033",
+          "flower-300#0034",
+          "flower-300#0035",
+          "flower-300#0036",
+          "flower-300#0037",
+          "flower-300#0038",
+          "flower-300#0039",
+          "flower-300#0040",
+          "flower-300#0041",
+          "flower-300#0042",
+          "flower-300#0043",
+          "flower-300#0044"
+        ]
+      },
+      "message": "36 of 54 instances could not be placed within the sheet limit and time budget; no production files were published."
+    },
+    "groups": [
+      {
+        "group_key": "steel/2mm",
+        "instance_count": 54,
+        "line_ids": [
+          "flower-300",
+          "motorcycle-600"
+        ],
+        "material": "steel",
+        "thickness_mm": 2.0
+      }
+    ],
+    "job_id": "2f514a509a864bc68169b1732713a945",
+    "lines": [
+      {
+        "actual_height_mm": 326.351593,
+        "actual_width_mm": 300.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "flower-300",
+        "master_id": "395ecdb7ad2a4857b74265d9a9c4286a",
+        "material": "steel",
+        "product_id": "p-flower",
+        "quantity": 44,
+        "thickness_mm": 2.0
+      },
+      {
+        "actual_height_mm": 418.5329,
+        "actual_width_mm": 600.0,
+        "errors": [],
+        "feature_check": {
+          "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+          "min_feature_mm": null,
+          "min_hole_mm": null,
+          "status": "unknown"
+        },
+        "fits": true,
+        "line_id": "motorcycle-600",
+        "master_id": "55103d35606445e5932592f47fb66592",
+        "material": "steel",
+        "product_id": "p-motorcycle",
+        "quantity": 10,
+        "thickness_mm": 2.0
+      }
+    ],
+    "name": "insufficient",
+    "request": {
+      "export": {
+        "chord_tolerance_mm": 0.05
+      },
+      "lines": [
+        {
+          "allowed_rotations": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "line_id": "flower-300",
+          "master_id": "395ecdb7ad2a4857b74265d9a9c4286a",
+          "material": "steel",
+          "product_id": "p-flower",
+          "quantity": 44,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 300.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        },
+        {
+          "allowed_rotations": [
+            0,
+            90,
+            180,
+            270
+          ],
+          "line_id": "motorcycle-600",
+          "master_id": "55103d35606445e5932592f47fb66592",
+          "material": "steel",
+          "product_id": "p-motorcycle",
+          "quantity": 10,
+          "size": {
+            "height_mm": null,
+            "mode": "width",
+            "width_mm": 600.0
+          },
+          "thickness_mm": 2.0,
+          "variant_id": null
+        }
+      ],
+      "name": "insufficient",
+      "optimization": {
+        "seed": 1,
+        "time_budget_s": 10
+      },
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 3000.0,
+        "label": "Current machine 1500 x 3000",
+        "margins_mm": {
+          "bottom": 20.0,
+          "left": 10.0,
+          "right": 15.0,
+          "top": 25.0
+        },
+        "max_sheets": 1,
+        "width_mm": 1500.0
+      }
+    },
+    "sheets": [
+      {
+        "group_key": "steel/2mm",
+        "group_sheet_index": 0,
+        "height_mm": 3000.0,
+        "index": 1,
+        "metrics": {
+          "metal_area_mm2": 1338315.304,
+          "occupied_extent_mm": 2722.664,
+          "parts": 18,
+          "sheet_area_mm2": 4500000.0,
+          "utilization": 0.297403
+        },
+        "placements": [
+          {
+            "instance_id": "flower-300#0001",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 336.351593,
+            "ty_mm": 2137.6645
+          },
+          {
+            "instance_id": "flower-300#0002",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 667.703186,
+            "ty_mm": 2137.6645
+          },
+          {
+            "instance_id": "flower-300#0003",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 999.0547789999999,
+            "ty_mm": 2137.6645
+          },
+          {
+            "instance_id": "flower-300#0004",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 1330.406372,
+            "ty_mm": 2137.6645
+          },
+          {
+            "instance_id": "flower-300#0005",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 336.351593,
+            "ty_mm": 2442.6645
+          },
+          {
+            "instance_id": "flower-300#0006",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 667.703186,
+            "ty_mm": 2442.6645
+          },
+          {
+            "instance_id": "flower-300#0007",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 999.0547789999999,
+            "ty_mm": 2442.6645
+          },
+          {
+            "instance_id": "flower-300#0008",
+            "line_id": "flower-300",
+            "product_id": "p-flower",
+            "rotation_deg": 90,
+            "tx_mm": 1330.406372,
+            "ty_mm": 2442.6645
+          },
+          {
+            "instance_id": "motorcycle-600#0001",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 10.0,
+            "ty_mm": 20.0
+          },
+          {
+            "instance_id": "motorcycle-600#0002",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 615.0,
+            "ty_mm": 20.0
+          },
+          {
+            "instance_id": "motorcycle-600#0003",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 10.0,
+            "ty_mm": 443.5329
+          },
+          {
+            "instance_id": "motorcycle-600#0004",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 615.0,
+            "ty_mm": 443.5329
+          },
+          {
+            "instance_id": "motorcycle-600#0005",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 10.0,
+            "ty_mm": 867.0658
+          },
+          {
+            "instance_id": "motorcycle-600#0006",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 615.0,
+            "ty_mm": 867.0658
+          },
+          {
+            "instance_id": "motorcycle-600#0007",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 10.0,
+            "ty_mm": 1290.5987
+          },
+          {
+            "instance_id": "motorcycle-600#0008",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 615.0,
+            "ty_mm": 1290.5987
+          },
+          {
+            "instance_id": "motorcycle-600#0009",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 10.0,
+            "ty_mm": 1714.1316
+          },
+          {
+            "instance_id": "motorcycle-600#0010",
+            "line_id": "motorcycle-600",
+            "product_id": "p-motorcycle",
+            "rotation_deg": 0,
+            "tx_mm": 615.0,
+            "ty_mm": 1714.1316
+          }
+        ],
+        "sheet_id": "3c1146ddc48c43589cbdc4b0cde6e2b9",
+        "width_mm": 1500.0
+      }
+    ],
+    "snapshot": {
+      "lines": [
+        {
+          "actual_height_mm": 326.351593,
+          "actual_width_mm": 300.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "flower-300",
+          "master": {
+            "aspect_ratio": 0.9192539769610532,
+            "master_id": "395ecdb7ad2a4857b74265d9a9c4286a",
+            "product_revision": 1,
+            "source_sha256": "def78de96f66e7076fff7a983bb04ef3d79908ceff0a46235ddf859e41a1b5da",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_25887d5948f731c4d5ed17de249c2346",
+          "product_id": "p-flower",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        },
+        {
+          "actual_height_mm": 418.5329,
+          "actual_width_mm": 600.0,
+          "feature_check": {
+            "message": "The fabrication profile has no feature limits; feature widths were not qualified.",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "status": "unknown"
+          },
+          "line_id": "motorcycle-600",
+          "master": {
+            "aspect_ratio": 1.4335790582217542,
+            "master_id": "55103d35606445e5932592f47fb66592",
+            "product_revision": 1,
+            "source_sha256": "74613ebc7769d727e374b107cab268a166d8d7959224ec0ff99f616b4882b7e4",
+            "trace_engine": "opencv-contours",
+            "trace_version": "1.0.0"
+          },
+          "part_key": "pk_657f142c630fc1b8c64d6882bfe8ba63",
+          "product_id": "p-motorcycle",
+          "profile": {
+            "id": "b16f4364a90849eab13973a8392e9352",
+            "min_feature_mm": null,
+            "min_hole_mm": null,
+            "revision": 1
+          }
+        }
+      ],
+      "stock": {
+        "gap_mm": 5.0,
+        "height_mm": 3000.0,
+        "label": "Current machine 1500 x 3000",
+        "margins_mm": {
+          "bottom": 20.0,
+          "left": 10.0,
+          "right": 15.0,
+          "top": 25.0
+        },
+        "max_sheets": 1,
+        "width_mm": 1500.0
+      },
+      "usable_envelope_mm": {
+        "height_mm": 2955.0,
+        "width_mm": 1475.0
+      },
+      "versions": {
+        "geometry": "1",
+        "service": "0.1.0",
+        "trace_engine": "opencv-contours",
+        "trace_version": "1.0.0"
+      }
+    },
+    "status": "incomplete",
+    "totals": {
+      "definitions": {
+        "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the farthest placed part on the group's last sheet; the total is the maximum",
+        "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count \u00d7 sheet width \u00d7 height)"
+      },
+      "groups": {
+        "steel/2mm": {
+          "baseline_metrics": {
+            "extent_axis": "y",
+            "formulas": {
+              "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+              "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+              "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+            },
+            "metal_area_mm2": 1338315.3035580423,
+            "occupied_extent_mm": 2742.6645,
+            "placed": 18,
+            "requested": 54,
+            "sheet_area_mm2": 4500000.0,
+            "sheet_count": 1,
+            "sheets": [
+              {
+                "index": 0,
+                "metal_area_mm2": 1338315.3035580423,
+                "occupied_extent_mm": 2742.6645,
+                "placed": 18,
+                "sheet_area_mm2": 4500000.0,
+                "unused_area_mm2": 3161684.6964419577,
+                "utilization": 0.29740340079067606
+              }
+            ],
+            "unplaced": 36,
+            "unused_area_mm2": 3161684.6964419577,
+            "utilization": 0.29740340079067606,
+            "valid": true
+          },
+          "engine": "bbox-baseline",
+          "engine_version": "nesting-1.0.0",
+          "metrics": {
+            "extent_axis": "y",
+            "formulas": {
+              "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+              "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+              "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+            },
+            "metal_area_mm2": 1338315.3035580423,
+            "occupied_extent_mm": 2742.6645,
+            "optimization_status": "incomplete",
+            "placed": 18,
+            "requested": 54,
+            "runtime_s": 2.292060477891937,
+            "sheet_area_mm2": 4500000.0,
+            "sheet_count": 1,
+            "sheets": [
+              {
+                "index": 0,
+                "metal_area_mm2": 1338315.3035580423,
+                "occupied_extent_mm": 2742.6645,
+                "placed": 18,
+                "sheet_area_mm2": 4500000.0,
+                "unused_area_mm2": 3161684.6964419577,
+                "utilization": 0.29740340079067606
+              }
+            ],
+            "unplaced": 36,
+            "unused_area_mm2": 3161684.6964419577,
+            "utilization": 0.29740340079067606
+          },
+          "runtime_s": 2.292060477891937,
+          "settings": {
+            "attempts": [
+              {
+                "collision_contours": [
+                  {
+                    "clearance_mm": 2.5,
+                    "line_id": "flower-300",
+                    "max_error_mm": 1.4970647548554195,
+                    "offset_mm": 2.826351593,
+                    "original_vertex_count": 1249,
+                    "part_key": "pk_25887d5948f731c4d5ed17de249c2346",
+                    "simplify_tolerance_mm": 0.1631757965,
+                    "vertex_count": 277
+                  },
+                  {
+                    "clearance_mm": 2.5,
+                    "line_id": "motorcycle-600",
+                    "max_error_mm": 65.00041641487657,
+                    "offset_mm": 4.9,
+                    "original_vertex_count": 1880,
+                    "part_key": "pk_657f142c630fc1b8c64d6882bfe8ba63",
+                    "simplify_tolerance_mm": 1.2,
+                    "vertex_count": 205
+                  }
+                ],
+                "engine": "packingsolver-irregular",
+                "engine_version": "0.1.1218",
+                "hard_timeout_s": 6.929808050976135,
+                "objective": "bin-packing-with-leftovers",
+                "parameters": {
+                  "item_item_minimum_spacing": 0.0,
+                  "leftover_mode": "bottom"
+                },
+                "process": "subprocess python -m artwork_service.solver_adapter",
+                "runtime_s": 1.9884752409998327,
+                "safety_offset_mm": 0.0,
+                "solutions_seen": 1,
+                "status": "no_solution",
+                "time_limit_s": 5.543846440780908
+              }
+            ],
+            "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+            "gap_mm": 5.0,
+            "holes_in_solver": false,
+            "mirror": false,
+            "nesting_version": "nesting-1.0.0",
+            "seed": 1,
+            "seed_applied": false,
+            "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+            "time_budget_s": 10.0
+          },
+          "status": "incomplete",
+          "unplaced": 36
+        }
+      },
+      "metal_area_mm2": 1338315.304,
+      "occupied_extent_by_group_mm": {
+        "steel/2mm": 2722.664
+      },
+      "occupied_extent_mm": 2722.664,
+      "optimization_status": "incomplete",
+      "placed": 18,
+      "requested": 54,
+      "runtime_s": 2.292,
+      "sheet_area_mm2": 4500000.0,
+      "sheet_count": 1,
+      "unplaced": 36,
+      "utilization": 0.297403
+    },
+    "updated_at": "2026-10-25T21:43:37.540Z",
+    "validation": {
+      "steel/2mm": {
+        "gap_mm": 5.0,
+        "min_gap_mm": 5.0,
+        "placed": 18,
+        "requested": 54,
+        "sheet_count": 1,
+        "tolerance_mm": 1e-06,
+        "unplaced_instance_ids": [
+          "flower-300#0009",
+          "flower-300#0010",
+          "flower-300#0011",
+          "flower-300#0012",
+          "flower-300#0013",
+          "flower-300#0014",
+          "flower-300#0015",
+          "flower-300#0016",
+          "flower-300#0017",
+          "flower-300#0018",
+          "flower-300#0019",
+          "flower-300#0020",
+          "flower-300#0021",
+          "flower-300#0022",
+          "flower-300#0023",
+          "flower-300#0024",
+          "flower-300#0025",
+          "flower-300#0026",
+          "flower-300#0027",
+          "flower-300#0028",
+          "flower-300#0029",
+          "flower-300#0030",
+          "flower-300#0031",
+          "flower-300#0032",
+          "flower-300#0033",
+          "flower-300#0034",
+          "flower-300#0035",
+          "flower-300#0036",
+          "flower-300#0037",
+          "flower-300#0038",
+          "flower-300#0039",
+          "flower-300#0040",
+          "flower-300#0041",
+          "flower-300#0042",
+          "flower-300#0043",
+          "flower-300#0044"
+        ],
+        "valid": true,
+        "violations": []
+      }
+    }
+  },
+  "batches": {
+    "items": [
+      {
+        "batch_id": "a2645cf1b6ca4b7ca288113e0804f822",
+        "created_at": "2026-10-25T21:44:50.289Z",
+        "groups": [
+          {
+            "group_key": "steel/2mm",
+            "instance_count": 54,
+            "line_ids": [
+              "flower-300",
+              "motorcycle-600"
+            ],
+            "material": "steel",
+            "thickness_mm": 2.0
+          }
+        ],
+        "job_id": "e60a2a742a86428995220b2ab1609fe1",
+        "name": "restart",
+        "status": "completed",
+        "totals": {
+          "definitions": {
+            "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the farthest placed part on the group's last sheet; the total is the maximum",
+            "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count \u00d7 sheet width \u00d7 height)"
+          },
+          "groups": {
+            "steel/2mm": {
+              "baseline_metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 2318411.6314418763,
+                "occupied_extent_mm": 2760.0,
+                "placed": 54,
+                "requested": 54,
+                "sheet_area_mm2": 9000000.0,
+                "sheet_count": 2,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 1338315.3035580423,
+                    "occupied_extent_mm": 2742.6645,
+                    "placed": 18,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 3161684.6964419577,
+                    "utilization": 0.29740340079067606
+                  },
+                  {
+                    "index": 1,
+                    "metal_area_mm2": 980096.327883834,
+                    "occupied_extent_mm": 2760.0,
+                    "placed": 36,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 3519903.672116166,
+                    "utilization": 0.21779918397418535
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 6681588.368558124,
+                "utilization": 0.2576012923824307,
+                "valid": true
+              },
+              "engine": "packingsolver-irregular",
+              "engine_version": "0.1.1218",
+              "metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 2318411.6314418763,
+                "occupied_extent_mm": 1749.7385520115188,
+                "optimization_status": "complete",
+                "placed": 54,
+                "requested": 54,
+                "runtime_s": 19.220745956990868,
+                "sheet_area_mm2": 9000000.0,
+                "sheet_count": 2,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 1610564.283525774,
+                    "occupied_extent_mm": 2973.885916355209,
+                    "placed": 28,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 2889435.7164742257,
+                    "utilization": 0.3579031741168387
+                  },
+                  {
+                    "index": 1,
+                    "metal_area_mm2": 707847.3479161024,
+                    "occupied_extent_mm": 1749.7385520115188,
+                    "placed": 26,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 3792152.6520838975,
+                    "utilization": 0.15729941064802275
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 6681588.368558124,
+                "utilization": 0.2576012923824307
+              },
+              "runtime_s": 19.220745956990868,
+              "settings": {
+                "attempts": [
+                  {
+                    "collision_contours": [
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "flower-300",
+                        "max_error_mm": 1.4970647548554195,
+                        "offset_mm": 2.826351593,
+                        "original_vertex_count": 1249,
+                        "part_key": "pk_25887d5948f731c4d5ed17de249c2346",
+                        "simplify_tolerance_mm": 0.1631757965,
+                        "vertex_count": 277
+                      },
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "motorcycle-600",
+                        "max_error_mm": 65.00041641487657,
+                        "offset_mm": 4.9,
+                        "original_vertex_count": 1880,
+                        "part_key": "pk_657f142c630fc1b8c64d6882bfe8ba63",
+                        "simplify_tolerance_mm": 1.2,
+                        "vertex_count": 205
+                      }
+                    ],
+                    "engine": "packingsolver-irregular",
+                    "engine_version": "0.1.1218",
+                    "hard_timeout_s": 20.805325388361233,
+                    "objective": "bin-packing-with-leftovers",
+                    "parameters": {
+                      "item_item_minimum_spacing": 0.0,
+                      "leftover_mode": "bottom"
+                    },
+                    "process": "subprocess python -m artwork_service.solver_adapter",
+                    "runtime_s": 18.63852689601481,
+                    "safety_offset_mm": 0.0,
+                    "sheet_count": 2,
+                    "solutions_seen": 23,
+                    "status": "ok",
+                    "time_limit_s": 16.64426031068899,
+                    "unplaced": 0,
+                    "valid": true
+                  }
+                ],
+                "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+                "gap_mm": 5.0,
+                "holes_in_solver": false,
+                "mirror": false,
+                "nesting_version": "nesting-1.0.0",
+                "seed": 1,
+                "seed_applied": false,
+                "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+                "time_budget_s": 30.0
+              },
+              "status": "complete",
+              "unplaced": 0
+            }
+          },
+          "metal_area_mm2": 2318411.631,
+          "occupied_extent_by_group_mm": {
+            "steel/2mm": 1729.739
+          },
+          "occupied_extent_mm": 1729.739,
+          "optimization_status": "complete",
+          "placed": 54,
+          "requested": 54,
+          "runtime_s": 19.221,
+          "sheet_area_mm2": 9000000.0,
+          "sheet_count": 2,
+          "unplaced": 0,
+          "utilization": 0.257601
+        },
+        "updated_at": "2026-10-25T21:45:34.830Z"
+      },
+      {
+        "batch_id": "f5098bfc5888469196d02fd08a1711a0",
+        "created_at": "2026-10-25T21:44:44.681Z",
+        "groups": [
+          {
+            "group_key": "steel/2mm",
+            "instance_count": 40,
+            "line_ids": [
+              "comb-320"
+            ],
+            "material": "steel",
+            "thickness_mm": 2.0
+          }
+        ],
+        "job_id": "d3e738c4c92f4ddb98f12576da0e069f",
+        "name": "cancel me",
+        "status": "cancelled",
+        "totals": null,
+        "updated_at": "2026-10-25T21:44:49.228Z"
+      },
+      {
+        "batch_id": "7089152278034eb88699f9c42da2ff5a",
+        "created_at": "2026-10-25T21:44:25.228Z",
+        "groups": [
+          {
+            "group_key": "steel/2mm",
+            "instance_count": 40,
+            "line_ids": [
+              "comb-320"
+            ],
+            "material": "steel",
+            "thickness_mm": 2.0
+          }
+        ],
+        "job_id": "90c2009082ae48a0b9c73b9279cf0308",
+        "name": "concave",
+        "status": "completed",
+        "totals": {
+          "definitions": {
+            "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the farthest placed part on the group's last sheet; the total is the maximum",
+            "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count \u00d7 sheet width \u00d7 height)"
+          },
+          "groups": {
+            "steel/2mm": {
+              "baseline_metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 1614191.7027347358,
+                "occupied_extent_mm": 2954.8241199999998,
+                "placed": 40,
+                "requested": 40,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 1614191.7027347358,
+                    "occupied_extent_mm": 2954.8241199999998,
+                    "placed": 40,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 2885808.297265264,
+                    "utilization": 0.35870926727438573
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 2885808.297265264,
+                "utilization": 0.35870926727438573,
+                "valid": true
+              },
+              "engine": "packingsolver-irregular",
+              "engine_version": "0.1.1218",
+              "metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 1614191.7027347358,
+                "occupied_extent_mm": 1920.7973748313707,
+                "optimization_status": "complete",
+                "placed": 40,
+                "requested": 40,
+                "runtime_s": 17.255692955106497,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 1614191.7027347358,
+                    "occupied_extent_mm": 1920.7973748313707,
+                    "placed": 40,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 2885808.297265264,
+                    "utilization": 0.35870926727438573
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 2885808.297265264,
+                "utilization": 0.35870926727438573
+              },
+              "runtime_s": 17.255692955106497,
+              "settings": {
+                "attempts": [
+                  {
+                    "collision_contours": [
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "comb-320",
+                        "max_error_mm": 1.5015912495773,
+                        "offset_mm": 2.82,
+                        "original_vertex_count": 36,
+                        "part_key": "pk_6fa5ed405aef02b34c880e4a9345e302",
+                        "simplify_tolerance_mm": 0.16,
+                        "vertex_count": 25
+                      }
+                    ],
+                    "engine": "packingsolver-irregular",
+                    "engine_version": "0.1.1218",
+                    "hard_timeout_s": 20.996651393140198,
+                    "objective": "bin-packing-with-leftovers",
+                    "parameters": {
+                      "item_item_minimum_spacing": 0.0,
+                      "leftover_mode": "bottom"
+                    },
+                    "process": "subprocess python -m artwork_service.solver_adapter",
+                    "runtime_s": 17.234428695985116,
+                    "safety_offset_mm": 0.0,
+                    "sheet_count": 1,
+                    "solutions_seen": 16,
+                    "status": "ok",
+                    "time_limit_s": 16.797321114512158,
+                    "unplaced": 0,
+                    "valid": true
+                  }
+                ],
+                "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+                "gap_mm": 5.0,
+                "holes_in_solver": false,
+                "mirror": false,
+                "nesting_version": "nesting-1.0.0",
+                "seed": 1,
+                "seed_applied": false,
+                "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+                "time_budget_s": 30.0
+              },
+              "status": "complete",
+              "unplaced": 0
+            }
+          },
+          "metal_area_mm2": 1614191.703,
+          "occupied_extent_by_group_mm": {
+            "steel/2mm": 1910.797
+          },
+          "occupied_extent_mm": 1910.797,
+          "optimization_status": "complete",
+          "placed": 40,
+          "requested": 40,
+          "runtime_s": 17.256,
+          "sheet_area_mm2": 4500000.0,
+          "sheet_count": 1,
+          "unplaced": 0,
+          "utilization": 0.358709
+        },
+        "updated_at": "2026-10-25T21:44:42.862Z"
+      },
+      {
+        "batch_id": "55f74325676d455a9619f174f389ff7d",
+        "created_at": "2026-10-25T21:44:03.703Z",
+        "groups": [
+          {
+            "group_key": "aluminium/3mm",
+            "instance_count": 3,
+            "line_ids": [
+              "flower-alu"
+            ],
+            "material": "aluminium",
+            "thickness_mm": 3.0
+          },
+          {
+            "group_key": "stainless-304/1.5mm",
+            "instance_count": 5,
+            "line_ids": [
+              "ring-ss"
+            ],
+            "material": "stainless-304",
+            "thickness_mm": 1.5
+          },
+          {
+            "group_key": "steel/2mm",
+            "instance_count": 4,
+            "line_ids": [
+              "flower-steel"
+            ],
+            "material": "steel",
+            "thickness_mm": 2.0
+          }
+        ],
+        "job_id": "8cbc446009e14233911a21bfc0df44b2",
+        "name": "multi-material",
+        "status": "completed",
+        "totals": {
+          "definitions": {
+            "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the farthest placed part on the group's last sheet; the total is the maximum",
+            "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count \u00d7 sheet width \u00d7 height)"
+          },
+          "groups": {
+            "aluminium/3mm": {
+              "baseline_metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 81674.6939903195,
+                "occupied_extent_mm": 320.0,
+                "placed": 3,
+                "requested": 3,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 81674.6939903195,
+                    "occupied_extent_mm": 320.0,
+                    "placed": 3,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4418325.30600968,
+                    "utilization": 0.018149931997848777
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4418325.30600968,
+                "utilization": 0.018149931997848777,
+                "valid": true
+              },
+              "engine": "bbox-baseline",
+              "engine_version": "nesting-1.0.0",
+              "metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 81674.6939903195,
+                "occupied_extent_mm": 320.0,
+                "optimization_status": "complete",
+                "placed": 3,
+                "requested": 3,
+                "runtime_s": 6.020275439019315,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 81674.6939903195,
+                    "occupied_extent_mm": 320.0,
+                    "placed": 3,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4418325.30600968,
+                    "utilization": 0.018149931997848777
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4418325.30600968,
+                "utilization": 0.018149931997848777
+              },
+              "runtime_s": 6.020275439019315,
+              "settings": {
+                "attempts": [
+                  {
+                    "collision_contours": [
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "flower-alu",
+                        "max_error_mm": 1.4970647548554195,
+                        "offset_mm": 2.826351593,
+                        "original_vertex_count": 1249,
+                        "part_key": "pk_25887d5948f731c4d5ed17de249c2346",
+                        "simplify_tolerance_mm": 0.1631757965,
+                        "vertex_count": 277
+                      }
+                    ],
+                    "engine": "packingsolver-irregular",
+                    "engine_version": "0.1.1218",
+                    "hard_timeout_s": 6.986862620466854,
+                    "objective": "bin-packing-with-leftovers",
+                    "parameters": {
+                      "item_item_minimum_spacing": 0.0,
+                      "leftover_mode": "bottom"
+                    },
+                    "process": "subprocess python -m artwork_service.solver_adapter",
+                    "runtime_s": 5.913886524969712,
+                    "safety_offset_mm": 0.0,
+                    "sheet_count": 1,
+                    "solutions_seen": 11,
+                    "status": "ok",
+                    "time_limit_s": 5.589490096373484,
+                    "unplaced": 0,
+                    "valid": true
+                  }
+                ],
+                "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+                "gap_mm": 5.0,
+                "holes_in_solver": false,
+                "mirror": false,
+                "nesting_version": "nesting-1.0.0",
+                "seed": 1,
+                "seed_applied": false,
+                "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+                "time_budget_s": 10.0
+              },
+              "status": "complete",
+              "unplaced": 0
+            },
+            "stainless-304/1.5mm": {
+              "baseline_metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 117756.13299186136,
+                "occupied_extent_mm": 220.0,
+                "placed": 5,
+                "requested": 5,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 117756.13299186136,
+                    "occupied_extent_mm": 220.0,
+                    "placed": 5,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4382243.867008138,
+                    "utilization": 0.02616802955374697
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4382243.867008138,
+                "utilization": 0.02616802955374697,
+                "valid": true
+              },
+              "engine": "bbox-baseline",
+              "engine_version": "nesting-1.0.0",
+              "metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 117756.13299186136,
+                "occupied_extent_mm": 220.0,
+                "optimization_status": "complete",
+                "placed": 5,
+                "requested": 5,
+                "runtime_s": 5.972908553900197,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 117756.13299186136,
+                    "occupied_extent_mm": 220.0,
+                    "placed": 5,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4382243.867008138,
+                    "utilization": 0.02616802955374697
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4382243.867008138,
+                "utilization": 0.02616802955374697
+              },
+              "runtime_s": 5.972908553900197,
+              "settings": {
+                "attempts": [
+                  {
+                    "collision_contours": [
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "ring-ss",
+                        "max_error_mm": 1.6012193308819684,
+                        "offset_mm": 2.9,
+                        "original_vertex_count": 346,
+                        "part_key": "pk_3f5815ca8b6bb1e2ccdf51b4352cba44",
+                        "simplify_tolerance_mm": 0.2,
+                        "vertex_count": 118
+                      }
+                    ],
+                    "engine": "packingsolver-irregular",
+                    "engine_version": "0.1.1218",
+                    "hard_timeout_s": 6.9956292833318,
+                    "objective": "bin-packing-with-leftovers",
+                    "parameters": {
+                      "item_item_minimum_spacing": 0.0,
+                      "leftover_mode": "bottom"
+                    },
+                    "process": "subprocess python -m artwork_service.solver_adapter",
+                    "runtime_s": 5.945416503935121,
+                    "safety_offset_mm": 0.0,
+                    "sheet_count": 1,
+                    "solutions_seen": 6,
+                    "status": "ok",
+                    "time_limit_s": 5.59650342666544,
+                    "unplaced": 0,
+                    "valid": true
+                  }
+                ],
+                "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+                "gap_mm": 5.0,
+                "holes_in_solver": false,
+                "mirror": false,
+                "nesting_version": "nesting-1.0.0",
+                "seed": 1,
+                "seed_applied": false,
+                "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+                "time_budget_s": 10.0
+              },
+              "status": "complete",
+              "unplaced": 0
+            },
+            "steel/2mm": {
+              "baseline_metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 108899.59198709267,
+                "occupied_extent_mm": 320.0,
+                "placed": 4,
+                "requested": 4,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 108899.59198709267,
+                    "occupied_extent_mm": 320.0,
+                    "placed": 4,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4391100.408012907,
+                    "utilization": 0.02419990933046504
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4391100.408012907,
+                "utilization": 0.02419990933046504,
+                "valid": true
+              },
+              "engine": "bbox-baseline",
+              "engine_version": "nesting-1.0.0",
+              "metrics": {
+                "extent_axis": "y",
+                "formulas": {
+                  "occupied_extent_mm": "max part coordinate along the sheet long axis on the last sheet, from the sheet origin",
+                  "unused_area_mm2": "sheet_area_mm2 - metal_area_mm2 (not claimed as reusable stock)",
+                  "utilization": "sum(nominal part area, holes excluded) / sum(full sheet area of used sheets)"
+                },
+                "metal_area_mm2": 108899.59198709267,
+                "occupied_extent_mm": 320.0,
+                "optimization_status": "complete",
+                "placed": 4,
+                "requested": 4,
+                "runtime_s": 6.012858547037467,
+                "sheet_area_mm2": 4500000.0,
+                "sheet_count": 1,
+                "sheets": [
+                  {
+                    "index": 0,
+                    "metal_area_mm2": 108899.59198709267,
+                    "occupied_extent_mm": 320.0,
+                    "placed": 4,
+                    "sheet_area_mm2": 4500000.0,
+                    "unused_area_mm2": 4391100.408012907,
+                    "utilization": 0.02419990933046504
+                  }
+                ],
+                "unplaced": 0,
+                "unused_area_mm2": 4391100.408012907,
+                "utilization": 0.02419990933046504
+              },
+              "runtime_s": 6.012858547037467,
+              "settings": {
+                "attempts": [
+                  {
+                    "collision_contours": [
+                      {
+                        "clearance_mm": 2.5,
+                        "line_id": "flower-steel",
+                        "max_error_mm": 1.4970647548554195,
+                        "offset_mm": 2.826351593,
+                        "original_vertex_count": 1249,
+                        "part_key": "pk_25887d5948f731c4d5ed17de249c2346",
+                        "simplify_tolerance_mm": 0.1631757965,
+                        "vertex_count": 277
+                      }
+                    ],
+                    "engine": "packingsolver-irregular",
+                    "engine_version": "0.1.1218",
+                    "hard_timeout_s": 6.984636306157335,
+                    "objective": "bin-packing-with-leftovers",
+                    "parameters": {
+                      "item_item_minimum_spacing": 0.0,
+                      "leftover_mode": "bottom"
+                    },
+                    "process": "subprocess python -m artwork_service.solver_adapter",
+                    "runtime_s": 5.9135629900265485,
+                    "safety_offset_mm": 0.0,
+                    "sheet_count": 1,
+                    "solutions_seen": 8,
+                    "status": "ok",
+                    "time_limit_s": 5.587709044925869,
+                    "unplaced": 0,
+                    "valid": true
+                  }
+                ],
+                "gap_handling": "collision contours inflated by gap/2 and the bin grown by gap/2 per side; solver item_item_minimum_spacing = 0",
+                "gap_mm": 5.0,
+                "holes_in_solver": false,
+                "mirror": false,
+                "nesting_version": "nesting-1.0.0",
+                "seed": 1,
+                "seed_applied": false,
+                "seed_note": "packingsolver 0.1.1218 python bindings do not expose a seed; runs are time-bounded and may differ between runs",
+                "time_budget_s": 10.0
+              },
+              "status": "complete",
+              "unplaced": 0
+            }
+          },
+          "metal_area_mm2": 308330.419,
+          "occupied_extent_by_group_mm": {
+            "aluminium/3mm": 300.0,
+            "stainless-304/1.5mm": 200.0,
+            "steel/2mm": 300.0
+          },
+          "occupied_extent_mm": 300.0,
+          "optimization_status": "complete",
+          "placed": 12,
+          "requested": 12,
+          "runtime_s": 18.006,
+          "sheet_area_mm2": 13500000.0,
+          "sheet_count": 3,
+          "unplaced": 0,
+          "utilization": 0.022839
+        },
+        "updated_at": "2026-10-25T21:44:23.880Z"
+      },
+      {
+        "batch_id": "ee0586e64ea94986972ae0a29b13f611",
+        "created_at": "2026-10-25T21:44:03.688Z",
+        "groups": [
+          {
+            "group_key": "aluminium/3mm",
+            "instance_count": 3,
+            "line_ids": [
+              "flower-alu"
+            ],
+            "material": "aluminium",
+            "thickness_mm": 3.0
+          },
+          {
+            "group_key": "stainless-304/1.5mm",
+            "instance_count": 5,
+            "line_ids": [
+              "ring-ss"
+            ],
+            "material": "stainless-304",
+            "thickness_mm": 1.5
+          },
+          {
+            "group_key": "steel/2mm",
+            "instance_count": 4,
+            "line_ids": [
+              "flower-steel"
+            ],
+            "material": "steel",
+            "thickness_mm": 2.0
+          }
+        ],
+        "job_id": null,
+        "name": "groups preview",
+        "status": "draft",
+        "totals": null,
+        "updated_at": "2026-10-25T21:44:03.688Z"
+      }
+    ]
+  },
+  "error_not_found": {
+    "error": {
+      "code": "NOT_FOUND",
+      "details": {
+        "batch_id": "94697e8e3ce941df8c034638c60db4c0"
+      },
+      "message": "Batch not found."
+    }
+  },
+  "health": {
+    "exporter_version": "artwork-dxf-1.0.0",
+    "queue": {
+      "queued": 0,
+      "running": 0
+    },
+    "service_version": "0.1.0",
+    "solver_version": "0.1.1218",
+    "tracer_version": "opencv-contours/1.0.0",
+    "worker_ready": true
+  },
+  "job_nest_cancelled": {
+    "attempts": 1,
+    "cache_hit": false,
+    "created_at": "2026-10-25T21:44:44.698Z",
+    "error": {
+      "code": "CANCELLED",
+      "details": {},
+      "message": "The job was cancelled."
+    },
+    "heartbeat_at": "2026-10-25T21:44:49.018Z",
+    "id": "d3e738c4c92f4ddb98f12576da0e069f",
+    "kind": "nest",
+    "progress": 0.11931441081487752,
+    "result": null,
+    "stage": "cancelled",
+    "status": "cancelled",
+    "updated_at": "2026-10-25T21:44:49.028Z"
+  },
+  "job_nest_completed": {
+    "attempts": 1,
+    "cache_hit": false,
+    "created_at": "2026-10-25T21:42:45.862Z",
+    "error": null,
+    "heartbeat_at": "2026-10-25T21:42:52.777Z",
+    "id": "feb4535c9ff345ef90471edbe8efe4a1",
+    "kind": "nest",
+    "progress": 1.0,
+    "result": {
+      "batch_id": "7abbd4bde79a4834ad07a808b31b317f"
+    },
+    "stage": "succeeded",
+    "status": "succeeded",
+    "updated_at": "2026-10-25T21:42:52.787Z"
+  },
+  "job_nest_incomplete": {
+    "attempts": 1,
+    "cache_hit": false,
+    "created_at": "2026-10-25T21:43:34.613Z",
+    "error": {
+      "code": "NEST_INCOMPLETE",
+      "details": {
+        "placed": 18,
+        "requested": 54,
+        "unplaced": 36,
+        "unplaced_instance_ids": [
+          "flower-300#0009",
+          "flower-300#0010",
+          "flower-300#0011",
+          "flower-300#0012",
+          "flower-300#0013",
+          "flower-300#0014",
+          "flower-300#0015",
+          "flower-300#0016",
+          "flower-300#0017",
+          "flower-300#0018",
+          "flower-300#0019",
+          "flower-300#0020",
+          "flower-300#0021",
+          "flower-300#0022",
+          "flower-300#0023",
+          "flower-300#0024",
+          "flower-300#0025",
+          "flower-300#0026",
+          "flower-300#0027",
+          "flower-300#0028",
+          "flower-300#0029",
+          "flower-300#0030",
+          "flower-300#0031",
+          "flower-300#0032",
+          "flower-300#0033",
+          "flower-300#0034",
+          "flower-300#0035",
+          "flower-300#0036",
+          "flower-300#0037",
+          "flower-300#0038",
+          "flower-300#0039",
+          "flower-300#0040",
+          "flower-300#0041",
+          "flower-300#0042",
+          "flower-300#0043",
+          "flower-300#0044"
+        ]
+      },
+      "message": "36 of 54 instances could not be placed within the sheet limit and time budget; no production files were published."
+    },
+    "heartbeat_at": "2026-10-25T21:43:37.528Z",
+    "id": "2f514a509a864bc68169b1732713a945",
+    "kind": "nest",
+    "progress": 0.97,
+    "result": {
+      "batch_id": "8f168abd97514b8bac9f9f1b527757ed"
+    },
+    "stage": "failed",
+    "status": "failed",
+    "updated_at": "2026-10-25T21:43:37.540Z"
+  },
+  "job_trace_failed": {
+    "attempts": 1,
+    "cache_hit": false,
+    "created_at": "2026-10-25T21:45:41.137Z",
+    "error": {
+      "code": "UNSUPPORTED_FORMAT",
+      "details": {
+        "reason": "UnidentifiedImageError"
+      },
+      "message": "The first image could not be read; it may be corrupt."
+    },
+    "heartbeat_at": "2026-10-25T21:45:41.348Z",
+    "id": "7e3467b2b9fd4b3686a06587a5fa9c2d",
+    "kind": "trace",
+    "progress": 0.05,
+    "result": null,
+    "stage": "failed",
+    "status": "failed",
+    "updated_at": "2026-10-25T21:45:41.454Z"
+  },
+  "job_trace_succeeded": {
+    "attempts": 1,
+    "cache_hit": false,
+    "created_at": "2026-10-25T21:42:32.597Z",
+    "error": null,
+    "heartbeat_at": "2026-10-25T21:42:37.408Z",
+    "id": "a0e815921e894ec6aa3a758dd06bf2b5",
+    "kind": "trace",
+    "progress": 1.0,
+    "result": {
+      "master_id": "395ecdb7ad2a4857b74265d9a9c4286a"
+    },
+    "stage": "succeeded",
+    "status": "succeeded",
+    "updated_at": "2026-10-25T21:42:37.415Z"
+  },
+  "jobs": {
+    "items": [
+      {
+        "attempts": 1,
+        "cache_hit": false,
+        "created_at": "2026-10-25T21:45:41.683Z",
+        "error": {
+          "code": "SOURCE_HOST_NOT_ALLOWED",
+          "details": {
+            "scheme": "file"
+          },
+          "message": "Only HTTPS catalog media URLs can be fetched."
+        },
+        "heartbeat_at": "2026-10-25T21:45:42.277Z",
+        "id": "01ecd973c22544d88b8f20b93826078a",
+        "kind": "trace",
+        "progress": 0.05,
+        "result": null,
+        "stage": "failed",
+        "status": "failed",
+        "updated_at": "2026-10-25T21:45:42.290Z"
+      },
+      {
+        "attempts": 1,
+        "cache_hit": false,
+        "created_at": "2026-10-25T21:45:41.683Z",
+        "error": {
+          "code": "SOURCE_HOST_NOT_ALLOWED",
+          "details": {
+            "port": 8443
+          },
+          "message": "Catalog media must be served on port 443."
+        },
+        "heartbeat_at": "2026-10-25T21:45:42.264Z",
+        "id": "df146e9f9b7b4fb08a597b5f3a841c21",
+        "kind": "trace",
+        "progress": 0.05,
+        "result": null,
+        "stage": "failed",
+        "status": "failed",
+        "updated_at": "2026-10-25T21:45:42.273Z"
+      },
+      {
+        "attempts": 1,
+        "cache_hit": false,
+        "created_at": "2026-10-25T21:45:41.682Z",
+        "error": {
+          "code": "SOURCE_HOST_NOT_ALLOWED",
+          "details": {
+            "scheme": "http"
+          },
+          "message": "Only HTTPS catalog media URLs can be fetched."
+        },
+        "heartbeat_at": "2026-10-25T21:45:42.099Z",
+        "id": "3d62d1abcab04516bbb2b38923e4ac24",
+        "kind": "trace",
+        "progress": 0.05,
+        "result": null,
+        "stage": "failed",
+        "status": "failed",
+        "updated_at": "2026-10-25T21:45:42.167Z"
+      },
+      {
+        "attempts": 1,
+        "cache_hit": false,
+        "created_at": "2026-10-25T21:45:41.682Z",
+        "error": {
+          "code": "SOURCE_HOST_NOT_ALLOWED",
+          "details": {
+            "host": "evil.example.com"
+          },
+          "message": "The image host is not an allowed catalog media host."
+        },
+        "heartbeat_at": "2026-10-25T21:45:42.164Z",
+        "id": "b8300a11ec814c3687ad7e790bfbbbcb",
+        "kind": "trace",
+        "progress": 0.05,
+        "result": null,
+        "stage": "failed",
+        "status": "failed",
+        "updated_at": "2026-10-25T21:45:42.235Z"
+      },
+      {
+        "attempts": 1,
+        "cache_hit": false,
+        "created_at": "2026-10-25T21:45:41.682Z",
+        "error": {
+          "code": "SOURCE_HOST_NOT_ALLOWED",
+          "details": {
+            "host": "convex.echoray.io",
+            "path_prefix": "/api/storage/"
+          },
+          "message": "The image path is not an allowed catalog media path."
+        },
+        "heartbeat_at": "2026-10-25T21:45:42.187Z",
+        "id": "c43c111606d044cabbdbbb920a199603",
+        "kind": "trace",
+        "progress": 0.05,
+        "result": null,
+        "stage": "failed",
+        "status": "failed",
+        "updated_at": "2026-10-25T21:45:42.204Z"
+      }
+    ]
+  },
+  "master_flower": {
+    "artifacts": {
+      "master_json": "f9db794c7bea4c8da9f93d08740fb94c",
+      "master_svg": "62182f0da2c9409c927fd7afcd987742",
+      "overlay_png": "b06016fad18643c2b6dfa0c4d2d1e1d8",
+      "solid_png": "450edaff262d47ad892154362666b470"
+    },
+    "aspect_ratio": 0.9192539769610532,
+    "components": 1,
+    "created_at": "2026-10-25T21:42:37.414Z",
+    "diagnostics": {
+      "candidates": [
+        {
+          "components": 1,
+          "fraction": 0.15,
+          "holes": 23,
+          "instability": null,
+          "metal_area_px": 327736,
+          "threshold": 64
+        },
+        {
+          "components": 1,
+          "fraction": 0.2,
+          "holes": 22,
+          "instability": 0.02646,
+          "metal_area_px": 329603,
+          "threshold": 75
+        },
+        {
+          "components": 1,
+          "fraction": 0.25,
+          "holes": 22,
+          "instability": 0.0051,
+          "metal_area_px": 331253,
+          "threshold": 85
+        },
+        {
+          "components": 1,
+          "fraction": 0.3,
+          "holes": 22,
+          "instability": 0.00477,
+          "metal_area_px": 332931,
+          "threshold": 96
+        },
+        {
+          "components": 1,
+          "fraction": 0.35,
+          "holes": 22,
+          "instability": 0.00489,
+          "metal_area_px": 334533,
+          "threshold": 107
+        },
+        {
+          "components": 1,
+          "fraction": 0.4,
+          "holes": 22,
+          "instability": 0.0055,
+          "metal_area_px": 336148,
+          "threshold": 117
+        },
+        {
+          "components": 1,
+          "fraction": 0.45,
+          "holes": 22,
+          "instability": 0.00661,
+          "metal_area_px": 338189,
+          "threshold": 128
+        },
+        {
+          "components": 1,
+          "fraction": 0.5,
+          "holes": 22,
+          "instability": 0.00778,
+          "metal_area_px": 340532,
+          "threshold": 138
+        },
+        {
+          "components": 1,
+          "fraction": null,
+          "holes": 22,
+          "instability": null,
+          "metal_area_px": 340795,
+          "threshold": 139
+        }
+      ],
+      "details": {
+        "candidates": [
+          {
+            "components": 1,
+            "fraction": 0.15,
+            "holes": 23,
+            "instability": null,
+            "metal_area_px": 327736,
+            "threshold": 64
+          },
+          {
+            "components": 1,
+            "fraction": 0.2,
+            "holes": 22,
+            "instability": 0.02646,
+            "metal_area_px": 329603,
+            "threshold": 75
+          },
+          {
+            "components": 1,
+            "fraction": 0.25,
+            "holes": 22,
+            "instability": 0.0051,
+            "metal_area_px": 331253,
+            "threshold": 85
+          },
+          {
+            "components": 1,
+            "fraction": 0.3,
+            "holes": 22,
+            "instability": 0.00477,
+            "metal_area_px": 332931,
+            "threshold": 96
+          },
+          {
+            "components": 1,
+            "fraction": 0.35,
+            "holes": 22,
+            "instability": 0.00489,
+            "metal_area_px": 334533,
+            "threshold": 107
+          },
+          {
+            "components": 1,
+            "fraction": 0.4,
+            "holes": 22,
+            "instability": 0.0055,
+            "metal_area_px": 336148,
+            "threshold": 117
+          },
+          {
+            "components": 1,
+            "fraction": 0.45,
+            "holes": 22,
+            "instability": 0.00661,
+            "metal_area_px": 338189,
+            "threshold": 128
+          },
+          {
+            "components": 1,
+            "fraction": 0.5,
+            "holes": 22,
+            "instability": 0.00778,
+            "metal_area_px": 340532,
+            "threshold": 138
+          },
+          {
+            "components": 1,
+            "fraction": null,
+            "holes": 22,
+            "instability": null,
+            "metal_area_px": 340795,
+            "threshold": 139
+          }
+        ],
+        "holes_filled_area_px": 17,
+        "luminance": {
+          "background_flattened": true,
+          "background_mode": 245,
+          "metal_mode": 32,
+          "otsu": 139
+        },
+        "noise_area_limit_px": 12,
+        "noise_removed_area_px": 2,
+        "object_bbox_px": [
+          103,
+          40,
+          1150,
+          1180
+        ],
+        "refinement": {
+          "method": "grayscale-supersampled",
+          "supersample": 4
+        },
+        "runtime_s": 4.452,
+        "segmented_topology": {
+          "components": 1,
+          "holes": 22
+        },
+        "simplification": {
+          "relative_area_change": 0.0006520481421575203,
+          "tolerance_px": 0.25
+        },
+        "threshold": 96,
+        "warnings": [
+          {
+            "code": "SMALL_OPENINGS_FILLED",
+            "details": {
+              "area_px": 17,
+              "count": 17,
+              "noise_area_limit_px": 12
+            },
+            "message": "Filled 17 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+          }
+        ]
+      },
+      "noise_removed_area_px": 2,
+      "threshold": 96,
+      "warnings": [
+        {
+          "code": "SMALL_OPENINGS_FILLED",
+          "details": {
+            "area_px": 17,
+            "count": 17,
+            "noise_area_limit_px": 12
+          },
+          "message": "Filled 17 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+        }
+      ]
+    },
+    "holes": 22,
+    "id": "395ecdb7ad2a4857b74265d9a9c4286a",
+    "normalized_bounds": [
+      0.0,
+      0.0,
+      0.9192539769610533,
+      1.0
+    ],
+    "product_id": "p-flower",
+    "revision": 1,
+    "source": {
+      "byte_sha256": "def78de96f66e7076fff7a983bb04ef3d79908ceff0a46235ddf859e41a1b5da",
+      "fetched_at": "2026-10-25T21:42:32.841Z",
+      "format": "PNG",
+      "gallery_index": 0,
+      "height": 1254,
+      "original_url": "test-fixture://local/flower.png",
+      "product_id": "p-flower",
+      "product_revision": 1,
+      "source_identity": "lib:p-flower",
+      "source_version": "v1",
+      "width": 1254
+    },
+    "trace_engine": "opencv-contours",
+    "trace_settings": {
+      "candidate_fractions": [
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "clip_border_px": 1,
+      "flatten_background": true,
+      "max_simplify_area_change": 0.005,
+      "max_source_pixels": 60000000,
+      "max_supersampled_side_px": 8000,
+      "max_vertices": 400000,
+      "min_mode_separation": 60,
+      "min_object_side_px": 160,
+      "min_source_side_px": 256,
+      "noise_image_fraction": 4e-06,
+      "noise_min_px": 12,
+      "preferred_fraction": 0.25,
+      "simplify_tolerance_px": 0.25,
+      "speck_max_noise_multiple": 4,
+      "supersample": 4
+    },
+    "trace_version": "1.0.0",
+    "transform": {
+      "alpha_composited_on_white": false,
+      "exif_orientation": 1,
+      "flip_y": true,
+      "formula": "x_norm = (x_px - source_bounds_px[0]) * scale; y_norm = (source_bounds_px[3] - y_px) * scale",
+      "image_size_px": [
+        1254,
+        1254
+      ],
+      "scale": 0.000877674163466813,
+      "source_bounds_px": [
+        103.0625,
+        40.3125,
+        1150.4375,
+        1179.6875
+      ]
+    },
+    "vertex_count": 4969
+  },
+  "master_motorcycle": {
+    "artifacts": {
+      "master_json": "95be3fccd88346f1ac078be275066a44",
+      "master_svg": "563c3b6f2c674e8bb9d07f81a23bd054",
+      "overlay_png": "fbb340cfc99942c2b181ec7f6701816a",
+      "solid_png": "35c235a44c9547ae8ddaf10724224553"
+    },
+    "aspect_ratio": 1.4335790582217542,
+    "components": 3,
+    "created_at": "2026-10-25T21:42:44.142Z",
+    "diagnostics": {
+      "candidates": [
+        {
+          "components": 3,
+          "fraction": 0.15,
+          "holes": 200,
+          "instability": null,
+          "metal_area_px": 430982,
+          "threshold": 71
+        },
+        {
+          "components": 3,
+          "fraction": 0.2,
+          "holes": 197,
+          "instability": 0.02205,
+          "metal_area_px": 434021,
+          "threshold": 81
+        },
+        {
+          "components": 3,
+          "fraction": 0.25,
+          "holes": 194,
+          "instability": 0.01588,
+          "metal_area_px": 436636,
+          "threshold": 91
+        },
+        {
+          "components": 3,
+          "fraction": 0.3,
+          "holes": 193,
+          "instability": 0.01293,
+          "metal_area_px": 439108,
+          "threshold": 102
+        },
+        {
+          "components": 3,
+          "fraction": 0.35,
+          "holes": 191,
+          "instability": 0.0104,
+          "metal_area_px": 441426,
+          "threshold": 112
+        },
+        {
+          "components": 3,
+          "fraction": 0.4,
+          "holes": 191,
+          "instability": 0.00745,
+          "metal_area_px": 443519,
+          "threshold": 122
+        },
+        {
+          "components": 3,
+          "fraction": 0.45,
+          "holes": 190,
+          "instability": 0.00759,
+          "metal_area_px": 445589,
+          "threshold": 132
+        },
+        {
+          "components": 3,
+          "fraction": 0.5,
+          "holes": 190,
+          "instability": null,
+          "metal_area_px": 447811,
+          "threshold": 142
+        }
+      ],
+      "details": {
+        "candidates": [
+          {
+            "components": 3,
+            "fraction": 0.15,
+            "holes": 200,
+            "instability": null,
+            "metal_area_px": 430982,
+            "threshold": 71
+          },
+          {
+            "components": 3,
+            "fraction": 0.2,
+            "holes": 197,
+            "instability": 0.02205,
+            "metal_area_px": 434021,
+            "threshold": 81
+          },
+          {
+            "components": 3,
+            "fraction": 0.25,
+            "holes": 194,
+            "instability": 0.01588,
+            "metal_area_px": 436636,
+            "threshold": 91
+          },
+          {
+            "components": 3,
+            "fraction": 0.3,
+            "holes": 193,
+            "instability": 0.01293,
+            "metal_area_px": 439108,
+            "threshold": 102
+          },
+          {
+            "components": 3,
+            "fraction": 0.35,
+            "holes": 191,
+            "instability": 0.0104,
+            "metal_area_px": 441426,
+            "threshold": 112
+          },
+          {
+            "components": 3,
+            "fraction": 0.4,
+            "holes": 191,
+            "instability": 0.00745,
+            "metal_area_px": 443519,
+            "threshold": 122
+          },
+          {
+            "components": 3,
+            "fraction": 0.45,
+            "holes": 190,
+            "instability": 0.00759,
+            "metal_area_px": 445589,
+            "threshold": 132
+          },
+          {
+            "components": 3,
+            "fraction": 0.5,
+            "holes": 190,
+            "instability": null,
+            "metal_area_px": 447811,
+            "threshold": 142
+          }
+        ],
+        "holes_filled_area_px": 86,
+        "luminance": {
+          "background_flattened": true,
+          "background_mode": 245,
+          "metal_mode": 40,
+          "otsu": 142
+        },
+        "noise_area_limit_px": 12,
+        "noise_removed_area_px": 4,
+        "object_bbox_px": [
+          32,
+          169,
+          1223,
+          1000
+        ],
+        "refinement": {
+          "method": "grayscale-supersampled",
+          "supersample": 4
+        },
+        "runtime_s": 1.6,
+        "segmented_topology": {
+          "components": 3,
+          "holes": 191
+        },
+        "simplification": {
+          "relative_area_change": 0.0009203515790842574,
+          "tolerance_px": 0.25
+        },
+        "threshold": 122,
+        "warnings": [
+          {
+            "code": "SMALL_OPENINGS_FILLED",
+            "details": {
+              "area_px": 86,
+              "count": 17,
+              "noise_area_limit_px": 12
+            },
+            "message": "Filled 17 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+          },
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "details": {
+              "components": 3,
+              "islands_in_holes": 2
+            },
+            "message": "The artwork has 3 separate pieces of metal; all are kept."
+          }
+        ]
+      },
+      "noise_removed_area_px": 4,
+      "threshold": 122,
+      "warnings": [
+        {
+          "code": "SMALL_OPENINGS_FILLED",
+          "details": {
+            "area_px": 86,
+            "count": 17,
+            "noise_area_limit_px": 12
+          },
+          "message": "Filled 17 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+        },
+        {
+          "code": "MULTIPLE_COMPONENTS",
+          "details": {
+            "components": 3,
+            "islands_in_holes": 2
+          },
+          "message": "The artwork has 3 separate pieces of metal; all are kept."
+        }
+      ]
+    },
+    "holes": 191,
+    "id": "55103d35606445e5932592f47fb66592",
+    "normalized_bounds": [
+      0.0,
+      0.0,
+      1.0,
+      0.6975548326162241
+    ],
+    "product_id": "p-motorcycle",
+    "revision": 1,
+    "source": {
+      "byte_sha256": "74613ebc7769d727e374b107cab268a166d8d7959224ec0ff99f616b4882b7e4",
+      "fetched_at": "2026-10-25T21:42:42.381Z",
+      "format": "PNG",
+      "gallery_index": 0,
+      "height": 1254,
+      "original_url": "test-fixture://local/motorcycle.png",
+      "product_id": "p-motorcycle",
+      "product_revision": 1,
+      "source_identity": "lib:p-motorcycle",
+      "source_version": "v1",
+      "width": 1254
+    },
+    "trace_engine": "opencv-contours",
+    "trace_settings": {
+      "candidate_fractions": [
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "clip_border_px": 1,
+      "flatten_background": true,
+      "max_simplify_area_change": 0.005,
+      "max_source_pixels": 60000000,
+      "max_supersampled_side_px": 8000,
+      "max_vertices": 400000,
+      "min_mode_separation": 60,
+      "min_object_side_px": 160,
+      "min_source_side_px": 256,
+      "noise_image_fraction": 4e-06,
+      "noise_min_px": 12,
+      "preferred_fraction": 0.25,
+      "simplify_tolerance_px": 0.25,
+      "speck_max_noise_multiple": 4,
+      "supersample": 4
+    },
+    "trace_version": "1.0.0",
+    "transform": {
+      "alpha_composited_on_white": false,
+      "exif_orientation": 1,
+      "flip_y": true,
+      "formula": "x_norm = (x_px - source_bounds_px[0]) * scale; y_norm = (source_bounds_px[3] - y_px) * scale",
+      "image_size_px": [
+        1254,
+        1254
+      ],
+      "scale": 0.000839542449365096,
+      "source_bounds_px": [
+        32.3125,
+        169.0625,
+        1223.4375,
+        999.9375
+      ]
+    },
+    "vertex_count": 10575
+  },
+  "master_trees": {
+    "artifacts": {
+      "master_json": "2f5e9be941204bf0a58d914ab31a66ec",
+      "master_svg": "270288a352bf4ca783aa1a412085a3ee",
+      "overlay_png": "cef9503485884687908889b4d0a5daa3",
+      "solid_png": "1a79286b439f4f38bc17e5e54e0b9295"
+    },
+    "aspect_ratio": 2.549989203195854,
+    "components": 1,
+    "created_at": "2026-10-25T21:42:41.828Z",
+    "diagnostics": {
+      "candidates": [
+        {
+          "components": 2,
+          "fraction": 0.15,
+          "holes": 158,
+          "instability": null,
+          "metal_area_px": 331670,
+          "threshold": 74
+        },
+        {
+          "components": 3,
+          "fraction": 0.2,
+          "holes": 153,
+          "instability": 0.05333,
+          "metal_area_px": 336170,
+          "threshold": 84
+        },
+        {
+          "components": 1,
+          "fraction": 0.25,
+          "holes": 148,
+          "instability": 0.04434,
+          "metal_area_px": 340020,
+          "threshold": 95
+        },
+        {
+          "components": 1,
+          "fraction": 0.3,
+          "holes": 145,
+          "instability": 0.04002,
+          "metal_area_px": 344285,
+          "threshold": 105
+        },
+        {
+          "components": 1,
+          "fraction": 0.35,
+          "holes": 140,
+          "instability": 0.03494,
+          "metal_area_px": 347782,
+          "threshold": 115
+        },
+        {
+          "components": 1,
+          "fraction": 0.4,
+          "holes": 138,
+          "instability": 0.04173,
+          "metal_area_px": 351268,
+          "threshold": 126
+        },
+        {
+          "components": 1,
+          "fraction": 0.45,
+          "holes": 131,
+          "instability": 0.06797,
+          "metal_area_px": 354143,
+          "threshold": 136
+        },
+        {
+          "components": 1,
+          "fraction": 0.5,
+          "holes": 123,
+          "instability": 0.04344,
+          "metal_area_px": 357537,
+          "threshold": 146
+        },
+        {
+          "components": 1,
+          "fraction": null,
+          "holes": 123,
+          "instability": null,
+          "metal_area_px": 358247,
+          "threshold": 148
+        }
+      ],
+      "details": {
+        "candidates": [
+          {
+            "components": 2,
+            "fraction": 0.15,
+            "holes": 158,
+            "instability": null,
+            "metal_area_px": 331670,
+            "threshold": 74
+          },
+          {
+            "components": 3,
+            "fraction": 0.2,
+            "holes": 153,
+            "instability": 0.05333,
+            "metal_area_px": 336170,
+            "threshold": 84
+          },
+          {
+            "components": 1,
+            "fraction": 0.25,
+            "holes": 148,
+            "instability": 0.04434,
+            "metal_area_px": 340020,
+            "threshold": 95
+          },
+          {
+            "components": 1,
+            "fraction": 0.3,
+            "holes": 145,
+            "instability": 0.04002,
+            "metal_area_px": 344285,
+            "threshold": 105
+          },
+          {
+            "components": 1,
+            "fraction": 0.35,
+            "holes": 140,
+            "instability": 0.03494,
+            "metal_area_px": 347782,
+            "threshold": 115
+          },
+          {
+            "components": 1,
+            "fraction": 0.4,
+            "holes": 138,
+            "instability": 0.04173,
+            "metal_area_px": 351268,
+            "threshold": 126
+          },
+          {
+            "components": 1,
+            "fraction": 0.45,
+            "holes": 131,
+            "instability": 0.06797,
+            "metal_area_px": 354143,
+            "threshold": 136
+          },
+          {
+            "components": 1,
+            "fraction": 0.5,
+            "holes": 123,
+            "instability": 0.04344,
+            "metal_area_px": 357537,
+            "threshold": 146
+          },
+          {
+            "components": 1,
+            "fraction": null,
+            "holes": 123,
+            "instability": null,
+            "metal_area_px": 358247,
+            "threshold": 148
+          }
+        ],
+        "holes_filled_area_px": 175,
+        "luminance": {
+          "background_flattened": true,
+          "background_mode": 250,
+          "metal_mode": 43,
+          "otsu": 148
+        },
+        "noise_area_limit_px": 12,
+        "noise_removed_area_px": 17,
+        "object_bbox_px": [
+          62,
+          504,
+          1539,
+          1083
+        ],
+        "refinement": {
+          "method": "grayscale-supersampled",
+          "supersample": 4
+        },
+        "runtime_s": 3.741,
+        "segmented_topology": {
+          "components": 1,
+          "holes": 140
+        },
+        "simplification": {
+          "relative_area_change": 0.001264127977428678,
+          "tolerance_px": 0.25
+        },
+        "threshold": 115,
+        "warnings": [
+          {
+            "code": "SMALL_OPENINGS_FILLED",
+            "details": {
+              "area_px": 175,
+              "count": 46,
+              "noise_area_limit_px": 12
+            },
+            "message": "Filled 46 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+          }
+        ]
+      },
+      "noise_removed_area_px": 17,
+      "threshold": 115,
+      "warnings": [
+        {
+          "code": "SMALL_OPENINGS_FILLED",
+          "details": {
+            "area_px": 175,
+            "count": 46,
+            "noise_area_limit_px": 12
+          },
+          "message": "Filled 46 openings smaller than the 12 px noise limit; inspect fine detail in the overlay."
+        }
+      ]
+    },
+    "holes": 140,
+    "id": "972bf686813643559ade81cbab5737e0",
+    "normalized_bounds": [
+      0.0,
+      0.0,
+      1.0,
+      0.3921585231603015
+    ],
+    "product_id": "p-trees",
+    "revision": 1,
+    "source": {
+      "byte_sha256": "a420e83b85c321b3c04bcd3d454f7fa27f7b26353dac6bd080b1568ff17d8d69",
+      "fetched_at": "2026-10-25T21:42:37.949Z",
+      "format": "PNG",
+      "gallery_index": 0,
+      "height": 1600,
+      "original_url": "test-fixture://local/trees.png",
+      "product_id": "p-trees",
+      "product_revision": 1,
+      "source_identity": "lib:p-trees",
+      "source_version": "v1",
+      "width": 1600
+    },
+    "trace_engine": "opencv-contours",
+    "trace_settings": {
+      "candidate_fractions": [
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
+      ],
+      "clip_border_px": 1,
+      "flatten_background": true,
+      "max_simplify_area_change": 0.005,
+      "max_source_pixels": 60000000,
+      "max_supersampled_side_px": 8000,
+      "max_vertices": 400000,
+      "min_mode_separation": 60,
+      "min_object_side_px": 160,
+      "min_source_side_px": 256,
+      "noise_image_fraction": 4e-06,
+      "noise_min_px": 12,
+      "preferred_fraction": 0.25,
+      "simplify_tolerance_px": 0.25,
+      "speck_max_noise_multiple": 4,
+      "supersample": 4
+    },
+    "trace_version": "1.0.0",
+    "transform": {
+      "alpha_composited_on_white": false,
+      "exif_orientation": 1,
+      "flip_y": true,
+      "formula": "x_norm = (x_px - source_bounds_px[0]) * scale; y_norm = (source_bounds_px[3] - y_px) * scale",
+      "image_size_px": [
+        1600,
+        1600
+      ],
+      "scale": 0.0006774494029977136,
+      "source_bounds_px": [
+        62.3125,
+        503.8125,
+        1538.4375,
+        1082.6875
+      ]
+    },
+    "vertex_count": 9630
+  },
+  "prepare": {
+    "items": [
+      {
+        "error": null,
+        "job_id": "a0e815921e894ec6aa3a758dd06bf2b5",
+        "master_id": null,
+        "product_id": "p-flower",
+        "status": "queued"
+      }
+    ]
+  },
+  "status_failed": {
+    "items": [
+      {
+        "error": {
+          "code": "UNSUPPORTED_FORMAT",
+          "details": {
+            "reason": "UnidentifiedImageError"
+          },
+          "message": "The first image could not be read; it may be corrupt."
+        },
+        "job_id": "7e3467b2b9fd4b3686a06587a5fa9c2d",
+        "master_id": null,
+        "product_id": "p-malformed",
+        "status": "failed"
+      }
+    ]
+  },
+  "status_ready": {
+    "items": [
+      {
+        "error": null,
+        "job_id": "a0e815921e894ec6aa3a758dd06bf2b5",
+        "master_id": "395ecdb7ad2a4857b74265d9a9c4286a",
+        "product_id": "p-flower",
+        "status": "ready"
+      }
+    ]
+  },
+  "status_stale": {
+    "items": [
+      {
+        "error": {
+          "code": "MASTER_STALE",
+          "details": {},
+          "message": "The product's first image changed since its master was traced; prepare it again."
+        },
+        "job_id": "4f3a0805554c4322b278a40ba25cd413",
+        "master_id": "b78192e3259a4b33b224d9b68dc864a5",
+        "product_id": "p-stale",
+        "status": "stale"
+      }
+    ]
+  }
+}

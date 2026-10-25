@@ -1,0 +1,9 @@
+{
+  "name": "artwork-service-dxf-verify",
+  "private": true,
+  "description": "Independent JavaScript DXF read-back check for exported artwork sheets (test-only).",
+  "type": "module",
+  "dependencies": {
+    "dxf-parser": "1.1.2"
+  }
+}

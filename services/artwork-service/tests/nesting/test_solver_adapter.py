@@ -47,14 +47,20 @@ def test_collision_contour_drops_holes():
     assert shapely.union_all(contour.polygons).covers(Polygon(ring_part().geoms[0].exterior))
 
 
-def test_instance_uses_usable_bin_spacing_and_no_mirror():
+def _contour(geometry, stock, **kw):
+    return sa.collision_contour(geometry, tolerance_mm=0.05, clearance_mm=stock.gap_mm / 2, **kw)
+
+
+def test_instance_uses_usable_bin_clearance_and_no_mirror():
     stock = sheet(1500, 3000, margins=(10, 15, 20, 25), gap=6, max_sheets=4)
     parts = [part("P", plate_with_hole(), 3, rotations=(0, 180))]
-    instance = sa.build_instance(parts, stock, [sa.collision_contour(parts[0].geometry, tolerance_mm=0.05)])
+    instance = sa.build_instance(parts, stock, [_contour(parts[0].geometry, stock)])
     assert instance["objective"] == "bin-packing-with-leftovers"
-    assert instance["parameters"] == {"item_item_minimum_spacing": 6, "leftover_mode": "bottom"}
+    # The gap is applied as gap/2 clearance on each contour, never by the solver too.
+    assert instance["parameters"] == {"item_item_minimum_spacing": 0.0, "leftover_mode": "bottom"}
     (bin_type,) = instance["bin_types"]
-    assert (bin_type["x"], bin_type["y"], bin_type["width"], bin_type["height"]) == (10, 20, 1475, 2955)
+    # Usable area grown by the contours' 3 mm clearance on every side.
+    assert (bin_type["x"], bin_type["y"], bin_type["width"], bin_type["height"]) == (7, 17, 1481, 2961)
     assert bin_type["copies"] == 4 and "item_bin_minimum_spacing" not in bin_type
     (item,) = instance["item_types"]
     assert item["copies"] == 3 and "profit" not in item
@@ -86,7 +92,7 @@ def test_certificate_transform_matches_contract_transform():
     geometry = flag_shape()
     parts = [part("F", geometry, 5, rotations=(0, 90, 180, 270))]
     stock = sheet(600, 500, margins=(10, 20, 30, 40), gap=5, max_sheets=3)
-    contour = sa.collision_contour(geometry, tolerance_mm=0.05)
+    contour = _contour(geometry, stock)
     run = sa.run_solver(
         sa.build_instance(parts, stock, [contour]), time_limit_s=2, hard_timeout_s=20, cancel=lambda: False
     )
@@ -106,7 +112,7 @@ def test_certificate_transform_matches_contract_transform():
 def test_cancel_kills_solver_process():
     parts = [part("C", comb(), 60)]
     stock = sheet()
-    instance = sa.build_instance(parts, stock, [sa.collision_contour(parts[0].geometry, tolerance_mm=0.05)])
+    instance = sa.build_instance(parts, stock, [_contour(parts[0].geometry, stock)])
     started = time.monotonic()
     run = sa.run_solver(instance, time_limit_s=60, hard_timeout_s=60, cancel=lambda: time.monotonic() - started > 1.0)
     assert run.status == "cancelled" and run.certificate is None
@@ -118,7 +124,7 @@ def test_cancel_kills_solver_process():
 def test_hard_timeout_kills_solver_and_keeps_best_so_far():
     parts = [part("C", comb(), 60)]
     stock = sheet()
-    instance = sa.build_instance(parts, stock, [sa.collision_contour(parts[0].geometry, tolerance_mm=0.05)])
+    instance = sa.build_instance(parts, stock, [_contour(parts[0].geometry, stock)])
     run = sa.run_solver(instance, time_limit_s=60, hard_timeout_s=4.0, cancel=lambda: False)
     assert run.status in ("timeout", "ok")  # "ok" only if the solver proved optimality first
     assert run.runtime_s < 6.0
@@ -132,3 +138,43 @@ def test_solver_error_is_reported():
     instance = {"objective": "no-such-objective", "parameters": {}, "bin_types": [], "item_types": []}
     run = sa.run_solver(instance, time_limit_s=1, hard_timeout_s=20, cancel=lambda: False)
     assert run.status == "error" and run.error
+
+
+def test_instance_rejects_contours_without_gap_clearance():
+    stock = sheet(gap=6)
+    parts = [part("P", plate_with_hole(), 1)]
+    with pytest.raises(ValueError, match="clearance"):
+        sa.build_instance(parts, stock, [sa.collision_contour(parts[0].geometry, tolerance_mm=0.05)])
+
+
+def test_clearance_contour_contains_the_gap_zone():
+    geometry = flag_shape()
+    contour = sa.collision_contour(geometry, tolerance_mm=0.05, clearance_mm=2.5)
+    hull = shapely.union_all(contour.polygons)
+    assert hull.covers(filled_shell(geometry).buffer(2.5))
+    assert contour.clearance_mm == 2.5 and contour.offset_mm >= 2.5
+
+
+# A comb traced from a photo by the real tracer (acceptance fixture comb.png at
+# 320 mm): near-degenerate chamfers at the tooth roots made PackingSolver's own
+# spacing inflation fail with "face area is not positive" while building the
+# instance, so every such job silently fell back to bounding boxes.
+TRACED_COMB = MultiPolygon([Polygon([
+    (0.0, 289.982), (0.125, 0.0), (319.75, 0.0), (320.0, 0.25), (319.875, 289.982), (300.176, 289.982),
+    (300.176, 30.143), (299.863, 29.83), (260.278, 29.83), (259.84, 30.268), (259.84, 289.982), (240.141, 289.982),
+    (240.141, 30.143), (239.828, 29.83), (200.242, 29.83), (199.805, 30.268), (199.805, 289.982), (180.106, 289.982),
+    (180.106, 30.143), (179.793, 29.83), (140.207, 29.83), (139.769, 30.268), (139.894, 289.857), (120.07, 289.982),
+    (120.07, 30.143), (119.758, 29.83), (80.172, 29.83), (79.859, 30.018), (79.859, 289.857), (60.035, 289.982),
+    (60.035, 30.143), (59.722, 29.83), (19.887, 29.955), (19.699, 30.268), (19.824, 289.857),
+])])
+
+
+def test_traced_comb_instance_builds_and_solves():
+    # The failure needed the full-size job: 40 combs on a 1500 x 3000 mm sheet.
+    stock = sheet(1500, 3000, margins=(10, 10, 10, 10), gap=5, max_sheets=10)
+    parts = [part("C", TRACED_COMB, 40, rotations=(0, 180))]
+    contour = sa.collision_contour(TRACED_COMB, tolerance_mm=sa.default_tolerance_mm(TRACED_COMB), clearance_mm=2.5)
+    run = sa.run_solver(sa.build_instance(parts, stock, [contour]), time_limit_s=2, hard_timeout_s=20,
+                        cancel=lambda: False)
+    assert run.status in ("ok", "timeout") and run.error is None, run.error
+    assert run.certificate and run.certificate["bins"]

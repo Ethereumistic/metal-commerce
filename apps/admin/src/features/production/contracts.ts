@@ -128,7 +128,7 @@ export type Master = {
     threshold: number | null;
     candidates: JsonValue;
     noise_removed_area_px: number | null;
-    warnings: string[];
+    warnings: { code: string; message: string }[];
   };
   artifacts: {
     overlay_png: string | null;
@@ -181,8 +181,9 @@ export type BatchDraft = {
   status: "draft" | "invalid";
   lines: {
     line_id: string;
-    actual_width_mm: number;
-    actual_height_mm: number;
+    // Null when the line has no usable master (unknown or foreign master id).
+    actual_width_mm: number | null;
+    actual_height_mm: number | null;
     fits: boolean;
     errors: ServiceError[];
   }[];
@@ -395,7 +396,10 @@ export function parseMaster(value: unknown): Master {
         "master.diagnostics.noise_removed_area_px",
       ),
       warnings: list(diagnostics.warnings ?? [], "master.diagnostics.warnings").map(
-        (warning, index) => text(warning, `master.diagnostics.warnings[${index}]`),
+        (raw, index) => {
+          const { code, message } = parseServiceError(raw, `master.diagnostics.warnings[${index}]`);
+          return { code, message };
+        },
       ),
     },
     artifacts: {
@@ -431,8 +435,8 @@ export function parseBatchDraft(value: unknown): BatchDraft {
       const line = record(raw, path);
       return {
         line_id: id(line.line_id, `${path}.line_id`),
-        actual_width_mm: number(line.actual_width_mm, `${path}.actual_width_mm`),
-        actual_height_mm: number(line.actual_height_mm, `${path}.actual_height_mm`),
+        actual_width_mm: nullable(number)(line.actual_width_mm, `${path}.actual_width_mm`),
+        actual_height_mm: nullable(number)(line.actual_height_mm, `${path}.actual_height_mm`),
         fits: flag(line.fits, `${path}.fits`),
         errors: list(line.errors ?? [], `${path}.errors`).map((error, i) =>
           parseServiceError(error, `${path}.errors[${i}]`),

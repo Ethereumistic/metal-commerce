@@ -7,7 +7,7 @@ from dataclasses import replace
 import httpx
 import pytest
 
-from artwork_service.catalog_source import HttpSourceFetcher, is_public_ip
+from artwork_service.catalog_source import FixtureDirFetcher, HttpSourceFetcher, build_fetcher, is_public_ip
 from artwork_service.errors import ServiceError
 
 from conftest import synthetic
@@ -121,3 +121,25 @@ def test_size_format_and_status_limits(config) -> None:
 
     slow = make(config, boom)[0]
     assert code(lambda: slow.fetch("https://convex.echoray.io/api/storage/x")) == "TIMEOUT"
+
+
+def test_test_fixture_urls_are_rejected_unless_configured(config) -> None:
+    assert config.test_fixture_dir is None
+    fetcher = build_fetcher(config)
+    assert isinstance(fetcher, HttpSourceFetcher)
+    assert code(lambda: fetcher.fetch("test-fixture://local/ring.png")) == "SOURCE_HOST_NOT_ALLOWED"
+
+
+def test_configured_fixture_dir_serves_plain_names_only(config, tmp_path) -> None:
+    fixtures = tmp_path / "fixtures"
+    fixtures.mkdir()
+    (fixtures / "ring.png").write_bytes(PNG)
+    (tmp_path / "secret.png").write_bytes(PNG)
+    fetcher = build_fetcher(replace(config, test_fixture_dir=fixtures))
+    assert isinstance(fetcher, FixtureDirFetcher)
+    assert fetcher.fetch("test-fixture://local/ring.png").format == "PNG"
+    assert code(lambda: fetcher.fetch("test-fixture://local/../secret.png")) == "SOURCE_HOST_NOT_ALLOWED"
+    assert code(lambda: fetcher.fetch("test-fixture://local/sub/ring.png")) == "SOURCE_HOST_NOT_ALLOWED"
+    assert code(lambda: fetcher.fetch("test-fixture://local/missing.png")) == "SOURCE_UNAVAILABLE"
+    # Everything else still goes through the HTTPS allowlist.
+    assert code(lambda: fetcher.fetch("https://evil.example/x.png")) == "SOURCE_HOST_NOT_ALLOWED"

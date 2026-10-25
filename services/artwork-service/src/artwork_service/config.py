@@ -54,6 +54,13 @@ def _parse_sources(raw: str) -> dict[str, str]:
     return out
 
 
+def _fixture_dir(raw: str) -> Path:
+    path = Path(raw).expanduser().resolve()
+    if not path.is_dir():
+        raise ConfigError(f"ARTWORK_TEST_FIXTURE_DIR is not a directory: {path}")
+    return path
+
+
 @dataclass(frozen=True)
 class Config:
     data_dir: Path
@@ -74,6 +81,10 @@ class Config:
     fetch_max_redirects: int = 3
     max_source_pixels: int = 60_000_000
     allowed_sources: dict[str, str] = field(default_factory=lambda: dict(DEFAULT_ALLOWED_SOURCES))
+    # Acceptance testing only: serve `test-fixture://local/<name>` source URLs
+    # from this directory. Unset (the default) means such URLs are rejected
+    # like any other non-HTTPS URL.
+    test_fixture_dir: Path | None = None
 
     @property
     def db_path(self) -> Path:
@@ -98,12 +109,15 @@ class Config:
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
         data["data_dir"] = str(self.data_dir)
+        data["test_fixture_dir"] = str(self.test_fixture_dir) if self.test_fixture_dir else None
         return data
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Config":
         data = dict(data)
         data["data_dir"] = Path(data["data_dir"])
+        if data.get("test_fixture_dir"):
+            data["test_fixture_dir"] = Path(data["test_fixture_dir"])
         return cls(**data)
 
     @classmethod
@@ -112,6 +126,7 @@ class Config:
         if len(token) < 16:
             raise ConfigError("ARTWORK_SERVICE_TOKEN must be set to a secret of at least 16 characters")
         sources = os.environ.get("ARTWORK_ALLOWED_SOURCES")
+        fixture_dir = os.environ.get("ARTWORK_TEST_FIXTURE_DIR")
         return cls(
             data_dir=Path(os.environ.get("ARTWORK_DATA_DIR") or DEFAULT_DATA_DIR).expanduser(),
             token=token,
@@ -124,4 +139,5 @@ class Config:
             min_free_bytes=_env_int("ARTWORK_MIN_FREE_BYTES", 256 * 1024 * 1024),
             fetch_max_bytes=_env_int("ARTWORK_FETCH_MAX_BYTES", 40 * 1024 * 1024, minimum=1024),
             allowed_sources=_parse_sources(sources) if sources else dict(DEFAULT_ALLOWED_SOURCES),
+            test_fixture_dir=_fixture_dir(fixture_dir) if fixture_dir else None,
         )

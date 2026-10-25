@@ -29,7 +29,8 @@ Omarchy Linux PC, bound to `127.0.0.1`. Interfaces are fixed in
 ```sh
 cd services/artwork-service
 uv sync                 # creates .venv with the locked dependencies
-uv run pytest -q        # full test suite (~30 s); real fixtures: -m real
+uv run pytest -q        # full test suite (~65 s); real fixtures: -m real
+(cd tests/js && npm ci) # optional: enables the JavaScript DXF read-back test
 ```
 
 ## Configuration
@@ -46,6 +47,7 @@ uv run pytest -q        # full test suite (~30 s); real fixtures: -m real
 | `ARTWORK_MIN_FREE_BYTES` | `268435456` | Free space to keep; below it jobs fail with `INSUFFICIENT_DISK` |
 | `ARTWORK_FETCH_MAX_BYTES` | `41943040` | Maximum source image size |
 | `ARTWORK_ALLOWED_SOURCES` | `convex.echoray.io/api/storage/,cdn.echoray.io` | `host[/path-prefix]` list the fetcher may contact (HTTPS, port 443 only) |
+| `ARTWORK_TEST_FIXTURE_DIR` | unset | **Acceptance testing only.** Serves `test-fixture://local/<name>` source URLs from this directory; unset, such URLs fail with `SOURCE_HOST_NOT_ALLOWED`. Logged as a warning at start. Never set it in production |
 
 Use separate data directories for development, tests (pytest uses temporary
 directories) and production, e.g. `.../metal-craft-artwork/dev` and
@@ -83,6 +85,20 @@ Diagnostic trace of a local file (does not touch the database; not an API path):
 ```sh
 uv run python -m artwork_service trace-file tests/fixtures/real/flower.png /tmp/flower-trace
 ```
+
+## Acceptance run
+
+```sh
+(cd tests/js && npm ci)                  # independent JS DXF reader (dxf-parser), test-only
+uv run python scripts/acceptance.py      # ~5 min; needs port 8766 free
+```
+
+The script creates a fresh `~/.local/share/metal-craft-artwork/acceptance`,
+starts the service there with a random token and the test fixture source,
+drives plan section 13 over HTTP (including `kill -9` and restart of the
+service), and writes `acceptance-report.json` plus downloaded packages under
+`evidence/`. Results are recorded in
+[`docs/artwork-production-acceptance.md`](../../docs/artwork-production-acceptance.md).
 
 ## Backup and restore
 

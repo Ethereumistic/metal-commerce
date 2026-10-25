@@ -21,6 +21,7 @@ from datetime import UTC, datetime
 from xml.sax.saxutils import escape
 
 import ezdxf
+import numpy as np
 import shapely
 from ezdxf import units
 from shapely import STRtree
@@ -598,16 +599,21 @@ def _parse_dxf(data: bytes) -> _ParsedDxf:
 def _match_loops(loops: list[dict], expected: list[LinearRing], tolerance: float, violations: list[Violation]) -> float:
     """Pair each DXF loop with an unused expected contour within tolerance; return max error."""
     tree = STRtree(expected)
+    expected_bounds = shapely.bounds(expected)
     used: set[int] = set()
     max_error = 0.0
     for loop in loops:
         ring = LinearRing(loop["points"])
         candidates = tree.query(ring.envelope.buffer(tolerance * 2 + 1e-9))
+        # Bounds differ by at most the Hausdorff distance, so contours whose
+        # bounds differ by more than the tolerance cannot match; skipping them
+        # avoids the (quadratic) Hausdorff computation for interleaved neighbours.
+        bounds = np.asarray(ring.bounds)
         best = None
         for index in sorted(int(c) for c in candidates):
-            if index in used:
+            if index in used or np.abs(expected_bounds[index] - bounds).max() > tolerance:
                 continue
-            error = float(shapely.hausdorff_distance(ring, expected[index], densify=0.25))
+            error = _hausdorff(ring, expected[index])
             if error <= tolerance and (best is None or error < best[0]):
                 best = (error, index)
         if best is None:
@@ -625,6 +631,23 @@ def _match_loops(loops: list[dict], expected: list[LinearRing], tolerance: float
     if missing:
         violations.append(Violation("DXF_MISSING_CONTOUR", f"{missing} expected contours are absent from the DXF"))
     return max_error
+
+
+def _hausdorff(a: LinearRing, b: LinearRing, parts: int = 4) -> float:
+    """Symmetric Hausdorff distance between two rings, sampled like GEOS with
+    ``densify=1/parts`` but measured point-to-segment through a segment index,
+    so large contours cost O(n log m) instead of O(n * m)."""
+    return max(_directed_distance(a, b, parts), _directed_distance(b, a, parts))
+
+
+def _directed_distance(a: LinearRing, b: LinearRing, parts: int) -> float:
+    pa = shapely.get_coordinates(a)
+    pb = shapely.get_coordinates(b)
+    steps = np.arange(parts) / parts
+    samples = (pa[:-1, None, :] + (pa[1:] - pa[:-1])[:, None, :] * steps[None, :, None]).reshape(-1, 2)
+    segments = STRtree(shapely.linestrings(np.stack([pb[:-1], pb[1:]], axis=1)))
+    _, distances = segments.query_nearest(shapely.points(samples), return_distance=True, all_matches=False)
+    return float(distances.max())
 
 
 def _ezdxf_audit(dxf_bytes: bytes, violations: list[Violation]) -> tuple[int, int]:

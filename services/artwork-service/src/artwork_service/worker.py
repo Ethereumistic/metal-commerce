@@ -21,7 +21,7 @@ import traceback
 from typing import Any, Callable
 
 from . import jobs
-from .catalog_source import HttpSourceFetcher, SourceFetcher
+from .catalog_source import SourceFetcher, build_fetcher
 from .config import Config
 from .errors import JobCancelled, JobTimeout, ServiceError
 from .storage import ArtifactStore, Database, new_id, utcnow
@@ -123,7 +123,7 @@ class Worker:
         self.config = config
         self.db = Database(config.db_path)
         self.store = ArtifactStore(config)
-        self.fetcher = fetcher or HttpSourceFetcher(config)
+        self.fetcher = fetcher or build_fetcher(config)
         self.id = worker_id or f"{socket.gethostname()}:{os.getpid()}:{new_id()[:8]}"
         self.handlers = _handlers()
 
@@ -214,6 +214,7 @@ def worker_main(config_data: dict[str, Any], stop_event: Any) -> None:
     """Entry point of a worker process (spawned by the supervisor)."""
     signal.signal(signal.SIGINT, signal.SIG_IGN)  # the supervisor coordinates shutdown
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s worker[%(process)d] %(name)s: %(message)s")
+    logging.getLogger("ezdxf").setLevel(logging.WARNING)  # per-document INFO chatter
     parent = os.getppid()
     worker = Worker(Config.from_dict(config_data))
     # Also stop if the supervisor died without signalling (never orphan a worker).

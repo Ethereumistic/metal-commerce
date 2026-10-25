@@ -88,8 +88,8 @@ export function TracePreview({ masterId }: { masterId: string }) {
       </dl>
       {master.diagnostics.warnings.length > 0 && (
         <ul className="list-disc pl-5 text-xs text-amber-600 dark:text-amber-400">
-          {master.diagnostics.warnings.map((warning) => (
-            <li key={warning}>{warning}</li>
+          {master.diagnostics.warnings.map((warning, index) => (
+            <li key={`${warning.code}-${index}`}>{warning.message || warning.code}</li>
           ))}
         </ul>
       )}

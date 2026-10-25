@@ -55,13 +55,20 @@ first, placements by y then x), taking the caller's `instance_ids` in order.
   returns its best certificate.
 - Objective `bin-packing-with-leftovers`. `leftover_mode` is `bottom` for tall
   sheets (minimise last-sheet y extent) and `left` for wide sheets.
-- **Margins**: one rectangular bin type equal to the usable area, offset with
-  the bin's `x`/`y` by the left and bottom margins, so the certificate is
-  already in sheet coordinates. Per-side margins need no
-  `item_bin_minimum_spacing`, which is not set (its CLI flag is a no-op
-  upstream anyway).
-- **Gap**: `item_item_minimum_spacing = gap_mm`. Collision contours are **not**
-  inflated by the gap, so it is applied once.
+- **Gap**: applied once, by the adapter. Each collision contour is inflated by
+  `gap_mm / 2` (its `clearance_mm`) and `item_item_minimum_spacing` is 0, so
+  two disjoint contours keep the original parts at least `gap_mm` apart. The
+  solver's own spacing is not used: on some traced contours (near-degenerate
+  chamfers at concave corners, e.g. a traced comb on a 1500 x 3000 mm sheet)
+  PackingSolver 0.1.1218 fails while building the instance with "face area is
+  not positive", and the job silently fell back to bounding boxes. A
+  regression test (`test_traced_comb_instance_builds_and_solves`) keeps that
+  contour. `build_instance` refuses contours whose clearance is not `gap / 2`.
+- **Margins**: one rectangular bin type equal to the usable area grown by
+  `gap / 2` on every side (the clearance must not eat into the margins),
+  positioned with the bin's `x`/`y`, so the certificate is already in sheet
+  coordinates. Per-side margins need no `item_bin_minimum_spacing`, which is
+  not set (its CLI flag is a no-op upstream anyway).
 - **Stock**: bin `copies = max_sheets`. Certificate bins with `copies: n` are
   expanded into n separate physical sheets.
 - **Holes**: never sent. The solver sees outer contours only, so no part can
@@ -73,13 +80,14 @@ first, placements by y then x), taking the caller's `instance_ids` in order.
   about the origin, then translate by `(x, y)`. With mirroring off, this is the
   contract transform, so `x`/`y` map directly to `tx_mm`/`ty_mm`. A test checks
   this against the solver's own transformed outlines.
-- **Collision contour**: the filled outline is buffered outward by `2 * tol +
-  safety` (mitre joins), then Douglas-Peucker simplified at `tol`. The
-  simplification moves the boundary by at most `tol`, so the result stays
-  outside the original. Containment is checked with `covers`. The tolerance
+- **Collision contour**: the filled outline is buffered outward by `clearance +
+  2 * tol + safety` (mitre joins), then Douglas-Peucker simplified at `tol`.
+  The simplification moves the boundary by at most `tol`, so the result stays
+  outside the original grown by the clearance. Containment of that clearance
+  zone is checked with `covers`. The tolerance
   starts at `max(0.05, 0.0005 * part size)` mm and doubles until the contour
   has at most 300 vertices (solver preprocessing cost grows steeply with vertex
-  count). The Hausdorff error is recorded per part in
+  count). The Hausdorff error beyond the clearance zone is recorded per part in
   `settings.attempts[].collision_contours[].max_error_mm`.
 - **Seed**: the requested seed is recorded, but `seed_applied: false`. The
   0.1.1218 Python bindings do not expose a seed. The native CLI does (`--seed`),
@@ -136,8 +144,23 @@ geometry and the placements:
 that every entity is an `LWPOLYLINE` on layer `0`, closure, zero widths, no
 bulges, declared versus actual vertex counts, no geometry in blocks, loop count
 = exteriors + holes, overall bounds, and that every loop matches exactly one
-expected contour within tolerance (Hausdorff). It records the maximum error.
-It then runs `ezdxf.read` plus `audit()` as a second opinion.
+expected contour within tolerance (Hausdorff, sampled at quarter segments and
+measured point-to-segment through an STRtree; candidates whose bounds differ
+by more than the tolerance are skipped, since bounds differ by at most the
+Hausdorff distance). It records the maximum error. It then runs `ezdxf.read`
+plus `audit()` as a second opinion.
+
+`tests/js/verify-dxf.mjs` re-reads every DXF of an extracted package with the
+third-party JavaScript reader `dxf-parser` 1.1.2 (installed in `tests/js` with
+`npm ci`), independent of both the exporter's parser and ezdxf. Against
+`manifest.json` it checks SHA-256, `$INSUNITS = 4`, only closed zero-width
+bulge-free `LWPOLYLINE`s on layer `0`, nothing inside blocks, exterior (CCW)
+and hole (CW) loop counts, signed area against placed metal area, every vertex
+inside the usable area, overall bounds, and that each placement's transformed
+bounding box is reproduced by the loops inside it.
+`tests/nesting/test_js_dxf_reader.py` runs it (skipped with a message when
+node or the package is missing), and `scripts/acceptance.py` runs it on every
+downloaded package.
 
 ## Package (`build_package`)
 

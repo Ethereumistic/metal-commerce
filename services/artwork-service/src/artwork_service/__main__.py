@@ -27,6 +27,7 @@ log = logging.getLogger("artwork_service")
 def _setup_logging() -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(processName)s[%(process)d] %(name)s: %(message)s")
+    logging.getLogger("ezdxf").setLevel(logging.WARNING)  # per-document INFO chatter
 
 
 def _recover_at_startup(config: Config) -> None:
@@ -42,6 +43,12 @@ def _recover_at_startup(config: Config) -> None:
         log.info("recovered %d job(s) abandoned by a previous run", recovered)
 
 
+def _warn_test_fixtures(config: Config) -> None:
+    if config.test_fixture_dir is not None:
+        log.warning("ARTWORK_TEST_FIXTURE_DIR is set: test-fixture:// sources are served from %s. "
+                    "Never set this in production.", config.test_fixture_dir)
+
+
 def _exit_on_signal(signum: int, _frame: object) -> None:
     raise SystemExit(128 + signum)
 
@@ -53,6 +60,7 @@ def cmd_serve(config: Config) -> None:
     from .worker import Supervisor
 
     config.ensure_dirs()
+    _warn_test_fixtures(config)
     _recover_at_startup(config)
     app = create_app(config)
     supervisor = Supervisor(config)
@@ -73,6 +81,7 @@ def cmd_worker(config: Config) -> None:
     from .worker import Supervisor
 
     config.ensure_dirs()
+    _warn_test_fixtures(config)
     _recover_at_startup(config)
     supervisor = Supervisor(config)
     supervisor.start()

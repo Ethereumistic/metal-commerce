@@ -10,11 +10,15 @@ Solver input choices (see docs/nesting-and-export.md):
 - objective ``bin-packing-with-leftovers``: every item must be placed; fewer bins
   first, then the last bin's extent along the sheet's long axis
   (``leftover_mode`` ``bottom`` for tall sheets, ``left`` for wide sheets);
-- one rectangular bin type equal to the *usable* sheet area, offset by the left
-  and bottom margins via the bin's ``x``/``y`` so the certificate is already in
-  sheet coordinates and per-side margins need no item-bin spacing;
-- ``item_item_minimum_spacing`` = gap; collision contours are not inflated by
-  the gap (only by the outward approximation error);
+- the gap is applied by the adapter, not the solver: each collision contour is
+  inflated by ``gap / 2`` (plus the outward approximation error) and
+  ``item_item_minimum_spacing`` is 0, so disjoint contours keep originals at
+  least ``gap`` apart. The solver's own spacing inflation fails on some traced
+  contours ("face area is not positive" while building the instance);
+- one rectangular bin type equal to the *usable* sheet area grown by ``gap / 2``
+  on every side (the contours' clearance must not eat into the margins),
+  positioned with the bin's ``x``/``y`` so the certificate is already in sheet
+  coordinates and per-side margins need no item-bin spacing;
 - outer contours only: holes are never sent, so nothing is nested in a hole;
 - discrete rotations, mirroring disabled.
 """
@@ -60,6 +64,7 @@ class CollisionContour:
     max_error_mm: float
     vertex_count: int
     original_vertex_count: int
+    clearance_mm: float = 0.0
 
 
 @dataclass
@@ -90,30 +95,34 @@ def collision_contour(
     *,
     tolerance_mm: float,
     safety_offset_mm: float = 0.0,
+    clearance_mm: float = 0.0,
     max_vertices: int = MAX_COLLISION_VERTICES,
 ) -> CollisionContour:
-    """Build an outer-contour approximation that always contains the original.
+    """Build an outer-contour approximation that always contains the original
+    grown by ``clearance_mm`` (half the part-to-part gap).
 
-    The filled outline is buffered outward by ``2 * tol + safety`` and then
-    simplified with Douglas-Peucker at ``tol``; the simplification moves the
-    boundary by at most ``tol``, so the result stays outside the original. The
-    containment is verified rather than assumed, and the tolerance doubles until
-    the vertex budget is met (solver preprocessing cost grows quickly with
-    vertex count).
+    The filled outline is buffered outward by ``clearance + 2 * tol + safety``
+    and then simplified with Douglas-Peucker at ``tol``; the simplification
+    moves the boundary by at most ``tol``, so the result stays outside the
+    clearance zone. The containment is verified rather than assumed, and the
+    tolerance doubles until the vertex budget is met (solver preprocessing cost
+    grows quickly with vertex count). ``max_error_mm`` is measured against the
+    clearance zone, i.e. it is the approximation error beyond the clearance.
     """
     shell = filled_shell(geometry)
+    target = shell.buffer(clearance_mm) if clearance_mm > 0 else shell
     original_vertices = int(shapely.get_num_coordinates(shell))
     tol = tolerance_mm
     for _ in range(24):
-        offset = 2.0 * tol + safety_offset_mm
+        offset = clearance_mm + 2.0 * tol + safety_offset_mm
         buffered = shell.buffer(offset, join_style="mitre", mitre_limit=2.0)
         simplified = shapely.simplify(buffered, tol, preserve_topology=True)
         polygons = tuple(orient(Polygon(p.exterior), 1.0) for p in as_multipolygon(simplified).geoms if not p.is_empty)
         candidate = shapely.union_all(polygons)
         vertex_count = sum(len(p.exterior.coords) - 1 for p in polygons)
-        if candidate.covers(shell) and vertex_count <= max_vertices:
-            error = float(shapely.hausdorff_distance(candidate.boundary, shell.boundary, densify=0.25))
-            return CollisionContour(polygons, tol, offset, error, vertex_count, original_vertices)
+        if candidate.covers(target) and vertex_count <= max_vertices:
+            error = float(shapely.hausdorff_distance(candidate.boundary, target.boundary, densify=0.25))
+            return CollisionContour(polygons, tol, offset, error, vertex_count, original_vertices, clearance_mm)
         tol *= 2.0
     raise ValueError("could not build a bounded conservative collision contour")
 
@@ -128,6 +137,10 @@ def leftover_mode(stock: StockSpec) -> str:
 
 
 def build_instance(parts: Sequence[PartSpec], stock: StockSpec, contours: Sequence[CollisionContour]) -> dict[str, Any]:
+    """Solver instance; every contour must carry ``clearance_mm = gap / 2``."""
+    clearance = stock.gap_mm / 2.0
+    if any(not math.isclose(c.clearance_mm, clearance, abs_tol=1e-9) for c in contours):
+        raise ValueError(f"collision contours must be built with clearance_mm = gap / 2 = {clearance}")
     item_types = []
     for part, contour in zip(parts, contours, strict=True):
         item_types.append(
@@ -145,16 +158,16 @@ def build_instance(parts: Sequence[PartSpec], stock: StockSpec, contours: Sequen
     return {
         "objective": "bin-packing-with-leftovers",
         "parameters": {
-            "item_item_minimum_spacing": stock.gap_mm,
+            "item_item_minimum_spacing": 0.0,
             "leftover_mode": leftover_mode(stock),
         },
         "bin_types": [
             {
                 "type": "rectangle",
-                "x": stock.usable_min_x,
-                "y": stock.usable_min_y,
-                "width": stock.usable_width,
-                "height": stock.usable_height,
+                "x": stock.usable_min_x - clearance,
+                "y": stock.usable_min_y - clearance,
+                "width": stock.usable_width + 2.0 * clearance,
+                "height": stock.usable_height + 2.0 * clearance,
                 "copies": stock.max_sheets,
             }
         ],

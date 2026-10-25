@@ -81,11 +81,14 @@ test("masters require a positive aspect ratio", () => {
     trace_engine: "opencv",
     trace_version: "1",
     trace_settings: {},
-    diagnostics: { threshold: 128, candidates: [], noise_removed_area_px: 10, warnings: ["w"] },
+    diagnostics: { threshold: 128, candidates: [], noise_removed_area_px: 10, warnings: [{ code: "SMALL_OPENINGS_FILLED", message: "Filled 3 openings.", details: {} }] },
     artifacts: { overlay_png: "a1", solid_png: "a2", master_json: "a3", master_svg: null },
     created_at: "2026-10-25T10:00:00Z",
   };
   assert.equal(parseMaster(master).aspect_ratio, 1.5);
+  assert.deepEqual(parseMaster(master).diagnostics.warnings, [
+    { code: "SMALL_OPENINGS_FILLED", message: "Filled 3 openings." },
+  ]);
   assert.throws(() => parseMaster({ ...master, aspect_ratio: 0 }));
   assert.throws(() => parseMaster({ ...master, artifacts: undefined }));
 });
