@@ -1,11 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PlaceholderPage } from "@/components/placeholder-page";
+import { ProductionHistory } from "@/features/production/history";
 
 export const Route = createFileRoute("/_app/production")({
-  component: () => (
-    <PlaceholderPage
-      title="Production"
-      description="Laser and fabrication jobs for open orders."
-    />
-  ),
+  ssr: false,
+  head: () => ({ meta: [{ title: "Production · Metal Craft Admin" }] }),
+  component: ProductionHistory,
 });

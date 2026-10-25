@@ -21,6 +21,7 @@ import { Route as AppProductionRouteImport } from './routes/_app/production'
 import { Route as AppProductsRouteImport } from './routes/_app/products'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppStudioRouteImport } from './routes/_app/studio'
+import { Route as ApiProductionArtifactsArtifactIdRouteImport } from './routes/api/production/artifacts.$artifactId'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -81,6 +82,12 @@ const AppStudioRoute = AppStudioRouteImport.update({
   path: '/studio',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiProductionArtifactsArtifactIdRoute =
+  ApiProductionArtifactsArtifactIdRouteImport.update({
+    id: '/api/production/artifacts/$artifactId',
+    path: '/api/production/artifacts/$artifactId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
   '/studio': typeof AppStudioRoute
+  '/api/production/artifacts/$artifactId': typeof ApiProductionArtifactsArtifactIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -107,6 +115,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/studio': typeof AppStudioRoute
   '/': typeof AppIndexRoute
+  '/api/production/artifacts/$artifactId': typeof ApiProductionArtifactsArtifactIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,6 +131,7 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/studio': typeof AppStudioRoute
   '/_app/': typeof AppIndexRoute
+  '/api/production/artifacts/$artifactId': typeof ApiProductionArtifactsArtifactIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/settings'
     | '/studio'
+    | '/api/production/artifacts/$artifactId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/studio'
     | '/'
+    | '/api/production/artifacts/$artifactId'
   id:
     | '__root__'
     | '/_app'
@@ -164,11 +176,13 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/studio'
     | '/_app/'
+    | '/api/production/artifacts/$artifactId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ApiProductionArtifactsArtifactIdRoute: typeof ApiProductionArtifactsArtifactIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -257,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStudioRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/production/artifacts/$artifactId': {
+      id: '/api/production/artifacts/$artifactId'
+      path: '/api/production/artifacts/$artifactId'
+      fullPath: '/api/production/artifacts/$artifactId'
+      preLoaderRoute: typeof ApiProductionArtifactsArtifactIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -291,6 +312,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  ApiProductionArtifactsArtifactIdRoute: ApiProductionArtifactsArtifactIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

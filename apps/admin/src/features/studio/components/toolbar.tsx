@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import {
   ChevronDown,
   Copy,
@@ -346,7 +346,8 @@ function ExportPopover() {
   );
 }
 
-export function Toolbar() {
+/** `leading` sits before the editor's controls (Studio puts its workspace switch there). */
+export function Toolbar({ leading }: { leading?: ReactNode }) {
   const doc = useActiveDocument();
   const canUndo = useStudio((state) => state.history.past.length > 0);
   const canRedo = useStudio((state) => state.history.future.length > 0);
@@ -355,6 +356,15 @@ export function Toolbar() {
 
   return (
     <div className="flex h-12 shrink-0 items-center gap-1 border-b px-2">
+      {leading && (
+        <>
+          {leading}
+          <Separator
+            orientation="vertical"
+            className="mx-1 data-vertical:h-5 data-vertical:self-auto"
+          />
+        </>
+      )}
       <Segmented
         className="w-auto"
         value={view.mode}
