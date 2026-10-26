@@ -1,21 +1,27 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { AlertTriangle } from "lucide-react";
+import { create } from "zustand";
+import { Alert, AlertDescription, AlertTitle } from "@workspace/ui/components/alert";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { cn } from "@workspace/ui/lib/utils";
 import { getHealth } from "./api";
 import type { Health, ServiceResult } from "./contracts";
 import { attempt, backoff, usePolling } from "./hooks";
-import { OFFLINE_TITLE } from "./status";
+import { OFFLINE_TITLE, OfflineAlert } from "./status";
 
 const HEALTHY_INTERVAL_MS = 30_000;
 const MAX_RETRY_MS = 60_000;
 
-/** Service health, re-checked periodically and more slowly while it is down. */
-export function useHealth() {
-  const [result, setResult] = useState<ServiceResult<Health> | null>(null);
+// Health lives in its own small store so a check re-renders only the status
+// indicator and the alert, never the stage the operator is typing in.
+const useHealthStore = create<{ result: ServiceResult<Health> | null }>(() => ({ result: null }));
+
+/** Service health, re-checked periodically and more slowly while it is down. Renders nothing. */
+export function HealthMonitor() {
   const retry = useRef(5_000);
   usePolling(async () => {
     const next = await attempt(() => getHealth());
-    setResult(next);
+    useHealthStore.setState({ result: next });
     if (next.ok) {
       retry.current = 5_000;
       return HEALTHY_INTERVAL_MS;
@@ -27,10 +33,32 @@ export function useHealth() {
     retry.current = backoff(delay, MAX_RETRY_MS);
     return delay;
   }, []);
-  return result;
+  return null;
 }
 
-export function ServiceStatus({ health }: { health: ServiceResult<Health> | null }) {
+/** The service problem banner, shown under the workspace header. */
+export function HealthAlert() {
+  const health = useHealthStore((state) => state.result);
+  if (!health || health.ok) return null;
+  return (
+    <div className="border-b p-3">
+      {health.offline ? (
+        <OfflineAlert />
+      ) : (
+        <Alert variant="destructive">
+          <AlertTriangle />
+          <AlertTitle>Production processing unavailable</AlertTitle>
+          <AlertDescription>
+            <span className="font-mono">{health.error.code}</span> · {health.error.message}
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
+  );
+}
+
+export function ServiceStatus() {
+  const health = useHealthStore((state) => state.result);
   const state = !health
     ? { dot: "bg-muted-foreground", label: "Checking service…", detail: null }
     : health.ok

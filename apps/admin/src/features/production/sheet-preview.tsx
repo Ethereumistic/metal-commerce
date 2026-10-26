@@ -8,7 +8,8 @@ import type { Batch, JsonValue, ServiceResult, Sheet } from "./contracts";
 import { attempt } from "./hooks";
 import { actualSize, type SizeInput } from "./sizing";
 import { BatchBadge, ResultAlert, formatMm } from "./status";
-import { useProduction } from "./store";
+import { ProductImage } from "./product-image";
+import { useProduction, type ProductInfo } from "./store";
 import { MasterLoader } from "./trace-preview";
 
 export function useBatch(batchId: string | null, refreshKey: unknown) {
@@ -30,7 +31,7 @@ export function useBatch(batchId: string | null, refreshKey: unknown) {
   };
 }
 
-type FrozenLine = { lineId: string; productId: string; masterId: string; size: SizeInput };
+type FrozenLine = { lineId: string; productId: string; masterId: string; size: SizeInput; quantity: number | null };
 
 /** Reads the frozen request's lines; the service echoes what the admin sent. */
 function frozenLines(request: Batch["request"]): FrozenLine[] {
@@ -48,6 +49,7 @@ function frozenLines(request: Batch["request"]): FrozenLine[] {
             productId: typeof raw.product_id === "string" ? raw.product_id : "",
             masterId: raw.master_id,
             size: { mode, width: num(size.width_mm), height: num(size.height_mm) },
+            quantity: num(raw.quantity),
           },
         ]
       : [];
@@ -286,7 +288,7 @@ function MetricList({ metrics }: { metrics: Sheet["metrics"] }) {
 
 export function SheetPreview({ batch, onReload }: { batch: Batch; onReload: () => void }) {
   const masters = useProduction((state) => state.masters);
-  const names = useProduction((state) => state.lines);
+  const products = useProduction((state) => state.products);
   const [active, setActive] = useState(batch.sheets[0]?.sheet_id ?? "");
   const [view, setView] = useState<"layout" | "rendered">("layout");
   const lines = useMemo(() => frozenLines(batch.request), [batch.request]);
@@ -305,8 +307,15 @@ export function SheetPreview({ batch, onReload }: { batch: Batch; onReload: () =
   const files = batch.artifacts.sheets.find((entry) => entry.sheet_id === sheet?.sheet_id);
   const notes = validationNotes(batch.validation);
   const totals = batch.totals;
-  const nameOf = (lineId: string) =>
-    names.find((line) => line.lineId === lineId)?.productName ?? lineId;
+  const byLine = useMemo(() => new Map(lines.map((line) => [line.lineId, line])), [lines]);
+  const placedCounts = useMemo(
+    () => countBy(batch.sheets.flatMap((entry) => entry.placements.map((placement) => placement.line_id))),
+    [batch.sheets],
+  );
+  const infoOf = (lineId: string) => {
+    const line = byLine.get(lineId);
+    return { line, info: line ? describe(line, products, masters[line.masterId]?.revision) : null };
+  };
 
   return (
     <div className="flex min-h-0 flex-1 gap-4">
@@ -413,23 +422,57 @@ export function SheetPreview({ batch, onReload }: { batch: Batch; onReload: () =
             ))}
           </ul>
         )}
+        {lines.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <h4 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Parts in this batch</h4>
+            <ul className="flex flex-col gap-1.5 text-xs">
+              {lines.map((line) => {
+                const info = describe(line, products, masters[line.masterId]?.revision);
+                const size = sizes.get(line.lineId);
+                const placed = placedCounts.get(line.lineId) ?? 0;
+                return (
+                  <li key={line.lineId} className="flex items-center gap-2">
+                    <Swatch index={colours.get(line.lineId) ?? 0} />
+                    <ProductImage thumbnail={info.thumbnail} masterId={line.masterId} name={info.name} className="size-9" />
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate font-medium">{info.name}</span>
+                      {size && (
+                        <span className="text-muted-foreground tabular-nums">
+                          {formatMm(size.width)} × {formatMm(size.height)} mm
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={line.quantity != null && placed < line.quantity ? "text-destructive tabular-nums" : "tabular-nums"}
+                      title="Placed of requested"
+                    >
+                      {placed}
+                      {line.quantity != null && ` / ${line.quantity}`}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
         {sheet && (
           <div className="flex flex-col gap-2 rounded-lg border p-3">
             <h4 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               Sheet {sheet.index + 1} · {formatMm(sheet.width_mm)} × {formatMm(sheet.height_mm)} mm
             </h4>
             <p className="text-xs text-muted-foreground">{sheet.group_key}</p>
-            <ul className="text-xs">
-              {[...countBy(sheet.placements.map((placement) => placement.line_id))].map(([lineId, count]) => (
-                <li key={lineId} className="flex items-center gap-2">
-                  <span
-                    className="size-2.5 shrink-0 rounded-sm"
-                    style={{ background: `hsl(${hue(colours.get(lineId) ?? 0)} 70% 50%)` }}
-                  />
-                  <span className="min-w-0 flex-1 truncate">{nameOf(lineId)}</span>
-                  <span className="tabular-nums">× {count}</span>
-                </li>
-              ))}
+            <ul className="flex flex-col gap-1 text-xs">
+              {[...countBy(sheet.placements.map((placement) => placement.line_id))].map(([lineId, count]) => {
+                const { line, info } = infoOf(lineId);
+                return (
+                  <li key={lineId} className="flex items-center gap-2">
+                    <Swatch index={colours.get(lineId) ?? 0} />
+                    <ProductImage thumbnail={info?.thumbnail ?? null} masterId={line?.masterId} name={info?.name} className="size-7" />
+                    <span className="min-w-0 flex-1 truncate">{info?.name ?? `Line ${lineId}`}</span>
+                    <span className="tabular-nums">× {count}</span>
+                  </li>
+                );
+              })}
             </ul>
             <MetricList metrics={sheet.metrics} />
             <div className="flex flex-wrap gap-2">
@@ -469,6 +512,22 @@ export function SheetPreview({ batch, onReload }: { batch: Batch; onReload: () =
       </aside>
     </div>
   );
+}
+
+function Swatch({ index }: { index: number }) {
+  return <span className="size-2.5 shrink-0 rounded-sm" style={{ background: `hsl(${hue(index)} 70% 50%)` }} />;
+}
+
+/**
+ * Name and picture of a frozen line, by its product id; the batch may be
+ * older than this browser's rows, so it never depends on the current lines.
+ */
+function describe(line: FrozenLine, products: Record<string, ProductInfo>, revision: number | undefined) {
+  const known = products[line.productId];
+  return {
+    name: known?.name ?? (revision != null ? `Master r${revision} · ${line.masterId}` : `Master ${line.masterId}`),
+    thumbnail: known?.thumbnail ?? null,
+  };
 }
 
 function countBy(values: string[]) {

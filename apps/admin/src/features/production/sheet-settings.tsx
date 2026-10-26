@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { Loader2, Play, ShieldCheck } from "lucide-react";
+import { memo, useState, type ReactNode } from "react";
+import { Loader2, Play } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { NumberField } from "@workspace/ui/components/number-field";
-import { Labelled, Section, Segmented, SelectField } from "../studio/components/fields";
+import { Labelled, Section, Segmented, SelectField, SwitchField } from "../studio/components/fields";
 import { createBatch, startNesting } from "./api";
-import type { BatchRequest, Master, ServiceResult, TimeBudget } from "./contracts";
+import { marginsEqual } from "./batch-logic";
+import type { BatchDraft, BatchRequest, ServiceResult, TimeBudget } from "./contracts";
+import { DraftNumberField } from "./draft-field";
+import { focusField } from "./focus";
 import { attempt, useActionKey } from "./hooks";
-import { lineProblems } from "./batch-editor";
+import { ProductImage } from "./product-image";
 import { actualSize } from "./sizing";
 import { BatchBadge, ErrorText, ResultAlert, formatMm } from "./status";
 import { MasterLoader } from "./trace-preview";
@@ -15,41 +17,17 @@ import {
   SHEET_PRESETS,
   useProduction,
   type BatchLine,
-  type SheetPreset,
+  type Margins,
   type SheetSettings as Settings,
 } from "./store";
-
-type Usable = { width: number; height: number };
-
-function usableArea(sheet: Settings): Usable | null {
-  const { left, right, bottom, top } = sheet.margins;
-  if (left == null || right == null || bottom == null || top == null) return null;
-  return { width: sheet.width - left - right, height: sheet.height - bottom - top };
-}
-
-/** Whether one part fits the usable area in any allowed orientation (no gap applies to a lone part). */
-function fitsSheet(size: { width: number; height: number }, rotations: number[], usable: Usable) {
-  const upright = rotations.some((rotation) => rotation % 180 === 0);
-  const turned = rotations.some((rotation) => rotation % 180 !== 0);
-  return (
-    (upright && size.width <= usable.width && size.height <= usable.height) ||
-    (turned && size.height <= usable.width && size.width <= usable.height)
-  );
-}
-
-function sheetProblems(sheet: Settings): string[] {
-  const problems: string[] = [];
-  const { left, right, bottom, top } = sheet.margins;
-  if ([left, right, bottom, top].some((value) => value == null))
-    problems.push("Enter all four sheet margins (0 is allowed, but must be entered).");
-  if (sheet.gap == null) problems.push("Enter the minimum gap between parts.");
-  if (!sheet.maxSheets || !Number.isInteger(sheet.maxSheets) || sheet.maxSheets < 1)
-    problems.push("Maximum sheets must be a whole number of at least 1.");
-  if (!(sheet.width > 0) || !(sheet.height > 0)) problems.push("Enter the sheet size.");
-  const usable = usableArea(sheet);
-  if (usable && (usable.width <= 0 || usable.height <= 0)) problems.push("The margins leave no usable area.");
-  return problems;
-}
+import {
+  batchIssues,
+  fitsSheet,
+  sheetIssues,
+  usableArea,
+  type LineField,
+  type SheetField,
+} from "./validation";
 
 function lineRequest(line: BatchLine): BatchRequest["lines"][number] {
   return {
@@ -93,102 +71,165 @@ function batchRequest(lines: BatchLine[], sheet: Settings): BatchRequest {
 }
 
 function Mm({
+  field,
   label,
   value,
-  onChange,
+  onCommit,
+  onDraft,
   disabled,
 }: {
-  label: string;
+  field: SheetField;
+  label: ReactNode;
   value: number | null;
-  onChange: (value: number | null) => void;
+  onCommit: (value: number | null) => void;
+  onDraft?: (value: number | null | undefined) => void;
   disabled?: boolean;
 }) {
   return (
-    <NumberField
-      label={label}
-      unit="mm"
-      value={value}
-      min={0}
-      step={1}
-      smallStep={0.1}
-      largeStep={10}
-      disabled={disabled}
-      format={{ maximumFractionDigits: 2, useGrouping: false }}
-      onValueChange={(next) => onChange(next != null && Number.isFinite(next) ? next : null)}
-    />
+    <div data-sheet-field={field}>
+      <DraftNumberField label={label} unit="mm" value={value} disabled={disabled} onCommit={onCommit} onDraft={onDraft} />
+    </div>
   );
 }
+
+const SIDES = ["left", "right", "bottom", "top"] as const;
+type Side = (typeof SIDES)[number];
+const SIDE_LABELS: Record<Side, string> = { left: "Left", right: "Right", bottom: "Bottom", top: "Top" };
+
+/** Products per material group, with their pictures so look-alike names can be told apart. */
+const MaterialGroups = memo(function MaterialGroups({ lines }: { lines: BatchLine[] }) {
+  const groups = new Map<string, { label: string; lines: BatchLine[]; parts: number }>();
+  for (const line of lines) {
+    if (!line.material || !line.thickness) continue;
+    const key = `${line.material}|${line.thickness}`;
+    const group = groups.get(key) ?? { label: `${line.material} · ${line.thickness} mm`, lines: [], parts: 0 };
+    group.lines.push(line);
+    group.parts += line.quantity ?? 0;
+    groups.set(key, group);
+  }
+  if (!groups.size)
+    return <p className="text-sm text-muted-foreground">Groups appear once lines have a material and thickness.</p>;
+  return (
+    <ul className="flex flex-wrap gap-2 text-sm">
+      {[...groups.values()].map((group) => (
+        <li key={group.label} className="flex max-w-md flex-col gap-2 rounded-lg border px-3 py-2">
+          <div>
+            <div className="font-medium">{group.label}</div>
+            <div className="text-xs text-muted-foreground">
+              {group.lines.length} line{group.lines.length === 1 ? "" : "s"} · {group.parts} parts · nested on separate
+              sheets
+            </div>
+          </div>
+          <ul className="flex flex-col gap-1">
+            {group.lines.map((line) => (
+              <li key={line.lineId} className="flex items-center gap-2 text-xs">
+                <ProductImage thumbnail={line.thumbnail} masterId={line.masterId} name={line.productName} className="size-8" />
+                <span className="min-w-0 flex-1 truncate">{line.productName}</span>
+                <span className="text-muted-foreground tabular-nums">
+                  {line.mode === "height" ? `H ${line.height ?? "—"}` : `W ${line.width ?? "—"}`} mm × {line.quantity ?? "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  );
+});
+
+type Problem = { message: string; tone: "muted" | "error"; go?: () => void };
 
 export function SheetSettings({
   canEdit,
   onStarted,
+  onEditLine,
 }: {
   canEdit: boolean;
   onStarted: (run: { jobId: string; batchId: string }) => void;
+  /** Opens the Batch step with that row's field focused. */
+  onEditLine: (lineId: string, field: LineField) => void;
 }) {
   const sheet = useProduction((state) => state.sheet);
   const lines = useProduction((state) => state.lines);
   const masters = useProduction((state) => state.masters);
   const draft = useProduction((state) => state.draft);
-  const { updateSheet, setDraft } = useProduction.getState();
+  const { updateSheet, choosePreset, setDraft } = useProduction.getState();
   const validateKey = useActionKey("batch");
   const nestKey = useActionKey("nest");
   const [busy, setBusy] = useState<"validate" | "nest" | null>(null);
   const [failure, setFailure] = useState<ServiceResult<unknown> | null>(null);
+  // Margins/gap being typed, so the usable area follows the keystrokes.
+  const [typing, setTyping] = useState<Partial<Margins>>({});
 
-  const setMargin = (side: keyof Settings["margins"]) => (value: number | null) =>
-    updateSheet({ margins: { ...sheet.margins, [side]: value } });
-  const choosePreset = (preset: SheetPreset) =>
+  const preview = (side: Side | "all") => (value: number | null | undefined) =>
+    setTyping((current) => {
+      if (value === undefined) return {};
+      return side === "all" ? { left: value, right: value, bottom: value, top: value } : { ...current, [side]: value };
+    });
+  const setMargin = (side: Side) => (value: number | null) =>
+    updateSheet({ margins: { ...useProduction.getState().sheet.margins, [side]: value } });
+  const setAllMargins = (value: number | null) =>
+    updateSheet({ margins: { left: value, right: value, bottom: value, top: value } });
+  const linkMargins = (linked: boolean) => {
+    const { margins } = useProduction.getState().sheet;
+    // Linking adopts the left margin the operator entered for all four sides.
     updateSheet(
-      preset === "custom"
-        ? { preset }
-        : { preset, width: SHEET_PRESETS[preset].width, height: SHEET_PRESETS[preset].height },
+      linked && !marginsEqual(margins)
+        ? { linkMargins: true, margins: { left: margins.left, right: margins.left, bottom: margins.left, top: margins.left } }
+        : { linkMargins: linked },
     );
+  };
 
-  const usable = usableArea(sheet);
-  const masterOf = (line: BatchLine): Master | undefined => masters[line.masterId];
-  const lineIssues = lines.flatMap((line) =>
-    lineProblems(line, masterOf(line)?.aspect_ratio ?? null).map((problem) => `${line.productName}: ${problem}`),
-  );
+  const shown: Settings = { ...sheet, margins: { ...sheet.margins, ...typing } };
+  const usable = usableArea(shown);
   const fitIssues = usable
     ? lines.flatMap((line) => {
-        const master = masterOf(line);
+        const master = masters[line.masterId];
         const size = master && actualSize(master.aspect_ratio, line);
         return size && !fitsSheet(size, line.rotations, usable)
           ? [
-              `${line.productName}: ${formatMm(size.width)} × ${formatMm(size.height)} mm does not fit the usable ${formatMm(usable.width)} × ${formatMm(usable.height)} mm area in any allowed rotation.`,
+              {
+                message: `${line.productName}: ${formatMm(size.width)} × ${formatMm(size.height)} mm does not fit the usable ${formatMm(usable.width)} × ${formatMm(usable.height)} mm area in any allowed rotation.`,
+                tone: "error" as const,
+                go: () => onEditLine(line.lineId, line.mode === "height" ? "height" : "width"),
+              },
             ]
           : [];
       })
     : [];
-  const problems = [...(lines.length ? [] : ["Add at least one batch line."]), ...lineIssues, ...sheetProblems(sheet)];
+  const problems: Problem[] = [
+    ...(lines.length ? [] : [{ message: "Add at least one batch line.", tone: "muted" as const }]),
+    ...batchIssues(lines, masters).map(({ lineId, productName, issue }) => ({
+      message: `${productName}: ${issue.message}`,
+      tone: "muted" as const,
+      go: issue.field ? () => onEditLine(lineId, issue.field!) : undefined,
+    })),
+    ...sheetIssues(sheet).map((issue) => ({
+      message: issue.message,
+      tone: "muted" as const,
+      go: issue.field ? () => focusField({ scope: "sheet", field: issue.field! }) : undefined,
+    })),
+  ];
 
-  const groups = new Map<string, { label: string; lines: number; parts: number }>();
-  for (const line of lines) {
-    if (!line.material || !line.thickness) continue;
-    const key = `${line.material}|${line.thickness}`;
-    const group = groups.get(key) ?? { label: `${line.material} · ${line.thickness} mm`, lines: 0, parts: 0 };
-    group.lines += 1;
-    group.parts += line.quantity ?? 0;
-    groups.set(key, group);
-  }
-
-  async function validate() {
-    const request = batchRequest(lines, sheet);
+  async function validate(): Promise<BatchDraft | null> {
+    const { lines: current, sheet: settings } = useProduction.getState();
+    const request = batchRequest(current, settings);
     setBusy("validate");
-    setFailure(null);
     const result = await attempt(() =>
       createBatch({ data: { request, idempotencyKey: validateKey.key(JSON.stringify(request)) } }),
     );
     validateKey.settle(result);
     setBusy(null);
-    if (result.ok) setDraft(result.data);
-    else setFailure(result);
+    if (!result.ok) {
+      setFailure(result);
+      return null;
+    }
+    setDraft(result.data);
+    return result.data;
   }
 
   async function nest(batchId: string) {
     setBusy("nest");
-    setFailure(null);
     const result = await attempt(() =>
       startNesting({ data: { batchId, idempotencyKey: nestKey.key(batchId) } }),
     );
@@ -199,6 +240,24 @@ export function SheetSettings({
     else setFailure(result);
   }
 
+  /**
+   * One action: check locally, have the service validate (unless this exact
+   * batch was validated already), and start nesting when it is valid.
+   * Reads the store at click time, so a value committed by leaving a field
+   * (the click blurs it) is included.
+   */
+  async function run() {
+    setFailure(null);
+    const state = useProduction.getState();
+    const firstLine = batchIssues(state.lines, state.masters)[0];
+    if (firstLine?.issue.field) return onEditLine(firstLine.lineId, firstLine.issue.field);
+    const firstSheet = sheetIssues(state.sheet)[0];
+    if (firstSheet?.field) return void focusField({ scope: "sheet", field: firstSheet.field });
+    if (!state.lines.length || firstLine || firstSheet) return;
+    const validated = state.draft ?? (await validate());
+    if (validated?.status === "draft") await nest(validated.batch_id);
+  }
+
   return (
     <div className="flex min-h-0 flex-1">
       {[...new Set(lines.map((line) => line.masterId))].map((id) => (
@@ -206,7 +265,7 @@ export function SheetSettings({
       ))}
       <div className="w-96 shrink-0 overflow-y-auto border-r">
         <Section title="Stock sheet">
-          <SelectField<SheetPreset>
+          <SelectField<Settings["preset"]>
             value={sheet.preset}
             options={[
               { value: "current", label: SHEET_PRESETS.current.label },
@@ -224,31 +283,50 @@ export function SheetSettings({
           )}
           <div className="grid grid-cols-2 gap-2">
             <Mm
+              field="width"
               label="W"
               value={sheet.width}
               disabled={sheet.preset !== "custom"}
-              onChange={(width) => width != null && updateSheet({ width })}
+              onCommit={(width) => width != null && updateSheet({ width })}
             />
             <Mm
+              field="height"
               label="H"
               value={sheet.height}
               disabled={sheet.preset !== "custom"}
-              onChange={(height) => height != null && updateSheet({ height })}
+              onCommit={(height) => height != null && updateSheet({ height })}
             />
           </div>
         </Section>
         <Section title="Margins and gap">
           <p className="text-xs text-muted-foreground">
-            No workshop values are confirmed yet, so nothing is pre-filled. Enter the margins and the
-            minimum part-to-part gap for this job.
+            No workshop values are confirmed, so nothing is pre-filled. What you enter is remembered
+            for this sheet size.
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            <Mm label="Left" value={sheet.margins.left} onChange={setMargin("left")} />
-            <Mm label="Right" value={sheet.margins.right} onChange={setMargin("right")} />
-            <Mm label="Bottom" value={sheet.margins.bottom} onChange={setMargin("bottom")} />
-            <Mm label="Top" value={sheet.margins.top} onChange={setMargin("top")} />
-          </div>
-          <Mm label="Gap" value={sheet.gap} onChange={(gap) => updateSheet({ gap })} />
+          <SwitchField label="Same margin on all sides" checked={sheet.linkMargins} onChange={linkMargins} />
+          {sheet.linkMargins ? (
+            <Mm
+              field="margins"
+              label="Margin"
+              value={marginsEqual(sheet.margins) ? sheet.margins.left : null}
+              onDraft={preview("all")}
+              onCommit={setAllMargins}
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {SIDES.map((side) => (
+                <Mm
+                  key={side}
+                  field={side}
+                  label={SIDE_LABELS[side]}
+                  value={sheet.margins[side]}
+                  onDraft={preview(side)}
+                  onCommit={setMargin(side)}
+                />
+              ))}
+            </div>
+          )}
+          <Mm field="gap" label="Gap" value={sheet.gap} onCommit={(gap) => updateSheet({ gap })} />
           {usable && (
             <p className="text-xs text-muted-foreground tabular-nums">
               Usable area {formatMm(usable.width)} × {formatMm(usable.height)} mm
@@ -256,14 +334,15 @@ export function SheetSettings({
           )}
         </Section>
         <Section title="Optimization">
-          <NumberField
-            label="Max sheets"
-            value={sheet.maxSheets}
-            min={1}
-            step={1}
-            format={{ maximumFractionDigits: 0, useGrouping: false }}
-            onValueChange={(maxSheets) => updateSheet({ maxSheets: maxSheets != null && Number.isFinite(maxSheets) ? maxSheets : null })}
-          />
+          <div data-sheet-field="maxSheets">
+            <DraftNumberField
+              label="Max sheets"
+              value={sheet.maxSheets}
+              min={1}
+              digits={0}
+              onCommit={(maxSheets) => updateSheet({ maxSheets })}
+            />
+          </div>
           <Labelled label="Time budget per material group">
             <Segmented<`${TimeBudget}`>
               value={`${sheet.timeBudget}`}
@@ -275,19 +354,23 @@ export function SheetSettings({
               onChange={(value) => updateSheet({ timeBudget: Number(value) as TimeBudget })}
             />
           </Labelled>
-          <NumberField
+          <DraftNumberField
             label="Seed"
             value={sheet.seed}
-            min={0}
-            step={1}
-            format={{ maximumFractionDigits: 0, useGrouping: false }}
-            onValueChange={(seed) => seed != null && Number.isInteger(seed) && seed >= 0 && updateSheet({ seed })}
+            digits={0}
+            onCommit={(seed) => seed != null && Number.isInteger(seed) && seed >= 0 && updateSheet({ seed })}
           />
           <Labelled label="Batch name (optional)">
             <Input
-              value={sheet.name}
+              key={sheet.name}
+              defaultValue={sheet.name}
               maxLength={120}
-              onChange={(event) => updateSheet({ name: event.target.value })}
+              onBlur={(event) => {
+                if (event.target.value !== useProduction.getState().sheet.name) updateSheet({ name: event.target.value });
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") event.currentTarget.blur();
+              }}
             />
           </Labelled>
         </Section>
@@ -296,20 +379,7 @@ export function SheetSettings({
       <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
         <div>
           <h3 className="mb-2 text-sm font-semibold">Material groups</h3>
-          {groups.size ? (
-            <ul className="flex flex-wrap gap-2 text-sm">
-              {[...groups.values()].map((group) => (
-                <li key={group.label} className="rounded-lg border px-3 py-2">
-                  <div className="font-medium">{group.label}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {group.lines} line{group.lines === 1 ? "" : "s"} · {group.parts} parts · nested on separate sheets
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-muted-foreground">Groups appear once lines have a material and thickness.</p>
-          )}
+          <MaterialGroups lines={lines} />
           <p className="mt-2 text-xs text-muted-foreground">
             The sheet count is only known after nesting completes.
           </p>
@@ -317,13 +387,18 @@ export function SheetSettings({
 
         {(problems.length > 0 || fitIssues.length > 0) && (
           <div>
-            <h3 className="mb-1 text-sm font-semibold">Before validating</h3>
+            <h3 className="mb-1 text-sm font-semibold">Before running</h3>
             <ul className="list-disc pl-5 text-xs">
-              {problems.map((problem) => (
-                <li key={problem} className="text-muted-foreground">{problem}</li>
-              ))}
-              {fitIssues.map((issue) => (
-                <li key={issue} className="text-destructive">{issue}</li>
+              {[...problems, ...fitIssues].map((problem) => (
+                <li key={problem.message} className={problem.tone === "error" ? "text-destructive" : "text-muted-foreground"}>
+                  {problem.go ? (
+                    <button type="button" className="text-left underline-offset-2 hover:underline" onClick={problem.go}>
+                      {problem.message}
+                    </button>
+                  ) : (
+                    problem.message
+                  )}
+                </li>
               ))}
             </ul>
           </div>
@@ -332,21 +407,13 @@ export function SheetSettings({
         <ResultAlert result={failure} title="The service did not accept the request" />
 
         <div className="flex items-center gap-2">
-          <Button
-            variant={draft ? "outline" : "default"}
-            disabled={!canEdit || problems.length > 0 || busy != null}
-            onClick={() => void validate()}
-          >
-            {busy === "validate" ? <Loader2 className="animate-spin" /> : <ShieldCheck />} Validate batch
+          <Button disabled={!canEdit || busy != null} onClick={() => void run()}>
+            {busy ? <Loader2 className="animate-spin" /> : <Play />}{" "}
+            {busy === "validate" ? "Validating…" : busy === "nest" ? "Starting…" : "Run nesting"}
           </Button>
-          {draft && (
-            <Button
-              disabled={!canEdit || draft.status !== "draft" || busy != null}
-              onClick={() => void nest(draft.batch_id)}
-            >
-              {busy === "nest" ? <Loader2 className="animate-spin" /> : <Play />} Start nesting
-            </Button>
-          )}
+          <span className="text-xs text-muted-foreground">
+            Validates the batch with the service, then starts nesting if it is valid.
+          </span>
         </div>
 
         {draft && (
@@ -369,7 +436,13 @@ export function SheetSettings({
                 const name = lines.find((entry) => entry.lineId === line.line_id)?.productName ?? line.line_id;
                 return (
                   <div key={line.line_id}>
-                    <p className="text-xs font-medium">{name}</p>
+                    <button
+                      type="button"
+                      className="text-xs font-medium underline-offset-2 hover:underline"
+                      onClick={() => onEditLine(line.line_id, "width")}
+                    >
+                      {name}
+                    </button>
                     {line.errors.map((error, index) => (
                       <ErrorText key={index} error={error} />
                     ))}
@@ -377,7 +450,7 @@ export function SheetSettings({
                 );
               })}
             {draft.status === "invalid" && (
-              <p className="text-xs text-destructive">Fix the lines above and validate again.</p>
+              <p className="text-xs text-destructive">Fix the lines above, then run again.</p>
             )}
           </div>
         )}

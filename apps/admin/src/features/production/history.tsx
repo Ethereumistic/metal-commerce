@@ -14,7 +14,7 @@ import { PageHeader } from "@/components/placeholder-page";
 import { listBatches, listJobs } from "./api";
 import type { BatchSummary, Job, ServiceResult } from "./contracts";
 import { attempt } from "./hooks";
-import { ServiceStatus, useHealth } from "./service-status";
+import { HealthMonitor, ServiceStatus } from "./service-status";
 import { BatchBadge, JobBadge, ResultAlert, formatDate } from "./status";
 
 const LIMIT = 25;
@@ -44,7 +44,6 @@ const linkClass = buttonVariants({ variant: "ghost", size: "sm" });
 
 /** Job and batch history kept on the artwork service, linking into Studio › Production. */
 export function ProductionHistory() {
-  const health = useHealth();
   const { batches, jobs, reload } = useHistory();
   const offline = (batches && !batches.ok && batches.offline) || (jobs && !jobs.ok && jobs.offline);
   return (
@@ -55,7 +54,8 @@ export function ProductionHistory() {
           description="Tracing and nesting runs on the workshop PC. Open a batch to see its sheets and downloads."
         />
         <div className="flex items-center gap-2">
-          <ServiceStatus health={health} />
+          <HealthMonitor />
+          <ServiceStatus />
           <Link to="/studio" search={{ workspace: "production" }} className={buttonVariants({ size: "sm" })}>
             Open Production workspace
           </Link>
