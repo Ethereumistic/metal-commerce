@@ -24,7 +24,7 @@ import ezdxf
 import numpy as np
 import shapely
 from ezdxf import units
-from shapely import STRtree
+from shapely import STRtree, affinity
 from shapely.geometry import LinearRing, Polygon
 from shapely.geometry.polygon import orient
 
@@ -38,6 +38,7 @@ from .nesting_types import (
     Violation,
     as_multipolygon,
     place_geometry,
+    rotate_about_origin,
 )
 from .validation import validate_layout
 
@@ -47,6 +48,9 @@ INSUNITS_MM = 4
 _DEDUPE_MM = 1e-6
 _FIXED_GUID = "{00000000-0000-0000-0000-000000000000}"
 _ZIP_DATE = (1980, 1, 1, 0, 0, 0)
+# Deflate level 6: on traced sheets (~9 MB DXF each) level 9 took 5x longer for
+# about 2.5 % smaller output. Output stays deterministic for a fixed zlib.
+_ZIP_LEVEL = 6
 
 
 def export_sheet_dxf(
@@ -88,16 +92,26 @@ def export_sheet_dxf(
 def sheet_rings(
     parts: Sequence[PartSpec], placements: Sequence[Placement], *, chord_tolerance_mm: float
 ) -> list[LinearRing]:
-    """All cutting loops of a sheet (exteriors CCW, holes CW), in placement order."""
+    """All cutting loops of a sheet (exteriors CCW, holes CW), in placement order.
+
+    A part is simplified once per rotation in its own frame and then translated
+    to each placement: copies of a traced part (thousands of vertices) would
+    otherwise be simplified and error-checked once per copy. Translation only
+    adds floating point noise far below the verification tolerance.
+    """
     by_instance = _by_instance(parts)
+    simplified: dict[tuple[int, int], list[Polygon]] = {}
     rings: list[LinearRing] = []
     for placement in placements:
         part = by_instance[placement.instance_id]
-        world = place_geometry(part.geometry, placement.rotation_deg, placement.tx_mm, placement.ty_mm)
-        for polygon in as_multipolygon(world).geoms:
-            polygon = orient(_simplify_polygon(polygon, chord_tolerance_mm), 1.0)
-            rings.append(polygon.exterior)
-            rings.extend(polygon.interiors)
+        key = (id(part), placement.rotation_deg)
+        if key not in simplified:
+            rotated = as_multipolygon(rotate_about_origin(part.geometry, placement.rotation_deg))
+            simplified[key] = [orient(p, 1.0) for p in _simplify_polygons(rotated.geoms, chord_tolerance_mm)]
+        for polygon in simplified[key]:
+            moved = affinity.translate(polygon, placement.tx_mm, placement.ty_mm)
+            rings.append(moved.exterior)
+            rings.extend(moved.interiors)
     return rings
 
 
@@ -435,18 +449,49 @@ def _by_instance(parts: Sequence[PartSpec]) -> dict[str, PartSpec]:
     return {i: p for p in parts for i in p.instance_ids}
 
 
-def _simplify_polygon(polygon: Polygon, tolerance: float) -> Polygon:
-    """Drop duplicate/zero-length segments and vertices within ``tolerance`` of the contour."""
-    cleaned = Polygon(_dedupe(polygon.exterior.coords), [_dedupe(r.coords) for r in polygon.interiors])
-    simplified = shapely.simplify(cleaned, tolerance, preserve_topology=True)
-    if (
-        isinstance(simplified, Polygon)
-        and simplified.is_valid
-        and len(simplified.interiors) == len(cleaned.interiors)
-        and not simplified.is_empty
-    ):
-        return simplified
-    return cleaned
+def _simplify_polygons(polygons: Sequence[Polygon], tolerance: float) -> list[Polygon]:
+    """Drop duplicate/zero-length segments and vertices within ``tolerance`` of the contour.
+
+    GEOS' topology-preserving simplifier can move a small ring by more than the
+    tolerance (seen on traced holes a few millimetres across), so every
+    simplified ring is measured against its original and the original ring is
+    kept wherever the error exceeds the tolerance that ``verify_dxf`` enforces.
+    A polygon keeps its cleaned original rings whenever simplifying would change
+    its topology or validity.
+    """
+    cleaned = [Polygon(_dedupe(p.exterior.coords), [_dedupe(r.coords) for r in p.interiors]) for p in polygons]
+    candidates: list[Polygon | None] = []
+    pairs: list[tuple[LinearRing, LinearRing]] = []
+    for original in cleaned:
+        simplified = shapely.simplify(original, tolerance, preserve_topology=True)
+        if (
+            isinstance(simplified, Polygon)
+            and simplified.is_valid
+            and not simplified.is_empty
+            and len(simplified.interiors) == len(original.interiors)
+        ):
+            candidates.append(simplified)
+            pairs.extend(
+                zip([simplified.exterior, *simplified.interiors], [original.exterior, *original.interiors], strict=True)
+            )
+        else:
+            candidates.append(None)
+    within = iter(_ring_errors(pairs, tolerance) <= tolerance)
+    out = []
+    for original, simplified in zip(cleaned, candidates, strict=True):
+        if simplified is None:
+            out.append(original)
+            continue
+        rings = [simplified.exterior, *simplified.interiors]
+        originals = [original.exterior, *original.interiors]
+        keep = [next(within) for _ in rings]
+        if all(keep):
+            out.append(simplified)
+            continue
+        kept = [s if ok else o for s, o, ok in zip(rings, originals, keep, strict=True)]
+        mixed = Polygon(kept[0], kept[1:])
+        out.append(mixed if mixed.is_valid else original)
+    return out
 
 
 def _dedupe(coords) -> list[tuple[float, float]]:
@@ -598,24 +643,30 @@ def _parse_dxf(data: bytes) -> _ParsedDxf:
 
 def _match_loops(loops: list[dict], expected: list[LinearRing], tolerance: float, violations: list[Violation]) -> float:
     """Pair each DXF loop with an unused expected contour within tolerance; return max error."""
-    tree = STRtree(expected)
+    rings = [LinearRing(loop["points"]) for loop in loops]
+    loop_bounds = shapely.bounds(rings)
     expected_bounds = shapely.bounds(expected)
+    # Bounds differ by at most the Hausdorff distance, so only contours whose
+    # bounds are all within the tolerance can match; everything else (for
+    # example interleaved neighbours) is skipped before measuring.
+    boxes = shapely.box(*(loop_bounds + np.array([-tolerance, -tolerance, tolerance, tolerance])).T)
+    left, right = STRtree(expected).query(boxes)
+    close = np.abs(loop_bounds[left] - expected_bounds[right]).max(axis=1) <= tolerance
+    left, right = left[close], right[close]
+    errors = _ring_errors([(rings[i], expected[j]) for i, j in zip(left, right, strict=True)], tolerance)
+    candidates: dict[int, list[tuple[int, float]]] = {}
+    for i, j, error in zip(left.tolist(), right.tolist(), errors.tolist(), strict=True):
+        candidates.setdefault(i, []).append((j, error))
+
     used: set[int] = set()
     max_error = 0.0
-    for loop in loops:
-        ring = LinearRing(loop["points"])
-        candidates = tree.query(ring.envelope.buffer(tolerance * 2 + 1e-9))
-        # Bounds differ by at most the Hausdorff distance, so contours whose
-        # bounds differ by more than the tolerance cannot match; skipping them
-        # avoids the (quadratic) Hausdorff computation for interleaved neighbours.
-        bounds = np.asarray(ring.bounds)
+    for index, (loop, ring) in enumerate(zip(loops, rings, strict=True)):
         best = None
-        for index in sorted(int(c) for c in candidates):
-            if index in used or np.abs(expected_bounds[index] - bounds).max() > tolerance:
+        for candidate, error in sorted(candidates.get(index, [])):
+            if candidate in used:
                 continue
-            error = _hausdorff(ring, expected[index])
             if error <= tolerance and (best is None or error < best[0]):
-                best = (error, index)
+                best = (error, candidate)
         if best is None:
             violations.append(
                 Violation(
@@ -633,21 +684,72 @@ def _match_loops(loops: list[dict], expected: list[LinearRing], tolerance: float
     return max_error
 
 
-def _hausdorff(a: LinearRing, b: LinearRing, parts: int = 4) -> float:
-    """Symmetric Hausdorff distance between two rings, sampled like GEOS with
-    ``densify=1/parts`` but measured point-to-segment through a segment index,
-    so large contours cost O(n log m) instead of O(n * m)."""
-    return max(_directed_distance(a, b, parts), _directed_distance(b, a, parts))
+# Source segments per spatial query; bounds memory on traced sheets with
+# hundreds of thousands of vertices.
+_SEGMENT_CHUNK = 100_000
 
 
-def _directed_distance(a: LinearRing, b: LinearRing, parts: int) -> float:
-    pa = shapely.get_coordinates(a)
-    pb = shapely.get_coordinates(b)
-    steps = np.arange(parts) / parts
-    samples = (pa[:-1, None, :] + (pa[1:] - pa[:-1])[:, None, :] * steps[None, :, None]).reshape(-1, 2)
-    segments = STRtree(shapely.linestrings(np.stack([pb[:-1], pb[1:]], axis=1)))
-    _, distances = segments.query_nearest(shapely.points(samples), return_distance=True, all_matches=False)
-    return float(distances.max())
+def _ring_errors(pairs: Sequence[tuple[LinearRing, LinearRing]], tolerance: float, parts: int = 4) -> np.ndarray:
+    """Symmetric Hausdorff distance per ring pair, or ``inf`` where it exceeds ``tolerance``.
+
+    Sampled like GEOS with ``densify=1/parts`` (every segment at quarter steps)
+    but measured point-to-segment, and only up to the tolerance, in one bulk
+    segment-index query for all pairs instead of one nearest-neighbour search
+    per sample and contour.
+    """
+    if not pairs:
+        return np.zeros(0)
+    a = [p[0] for p in pairs]
+    b = [p[1] for p in pairs]
+    errors = np.maximum(_directed_errors(a, b, tolerance, parts), _directed_errors(b, a, tolerance, parts))
+    return np.where(errors <= tolerance, errors, np.inf)
+
+
+def _directed_errors(sources, targets, tolerance: float, parts: int) -> np.ndarray:
+    """Per pair, the largest distance from a sampled point of ``sources[k]`` to ``targets[k]``;
+    any value above ``tolerance`` only means "farther than the tolerance".
+
+    Candidate segment pairs come from one envelope query of the source
+    segments, grown by the tolerance, against all target segments: a sample
+    within the tolerance of a target segment lies on a source segment whose
+    grown envelope meets that segment's envelope, so no candidate is missed.
+    Sample-to-segment distances are then plain vector arithmetic.
+    """
+    count = len(sources)
+    t_start, t_end, t_owner = _segments(targets)
+    tree = STRtree(shapely.linestrings(np.stack([t_start, t_end], axis=1)))
+    s_start, s_end, s_owner = _segments(sources)
+    nearest = np.full((len(s_start), parts), np.inf)
+    for lo in range(0, len(s_start), _SEGMENT_CHUNK):
+        hi = min(lo + _SEGMENT_CHUNK, len(s_start))
+        low = np.minimum(s_start[lo:hi], s_end[lo:hi]) - tolerance
+        high = np.maximum(s_start[lo:hi], s_end[lo:hi]) + tolerance
+        src, tgt = tree.query(shapely.box(low[:, 0], low[:, 1], high[:, 0], high[:, 1]))
+        src = src + lo
+        same = s_owner[src] == t_owner[tgt]
+        src, tgt = src[same], tgt[same]
+        a, b = t_start[tgt], t_end[tgt]
+        for k in range(parts):
+            point = s_start[src] + (s_end[src] - s_start[src]) * (k / parts)
+            np.minimum.at(nearest[:, k], src, _point_segment_distance(point, a, b))
+    errors = np.zeros(count)
+    np.maximum.at(errors, s_owner, nearest.max(axis=1))
+    return errors
+
+
+def _segments(rings) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Start points, end points and owning ring index of every ring segment."""
+    coords = [shapely.get_coordinates(r) for r in rings]
+    owner = np.repeat(np.arange(len(coords)), [len(c) - 1 for c in coords])
+    return np.concatenate([c[:-1] for c in coords]), np.concatenate([c[1:] for c in coords]), owner
+
+
+def _point_segment_distance(point: np.ndarray, a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    ab = b - a
+    length2 = np.einsum("ij,ij->i", ab, ab)
+    t = np.einsum("ij,ij->i", point - a, ab) / np.where(length2 > 0, length2, 1.0)
+    closest = a + ab * np.clip(t, 0.0, 1.0)[:, None]
+    return np.hypot(*(point - closest).T)
 
 
 def _ezdxf_audit(dxf_bytes: bytes, violations: list[Violation]) -> tuple[int, int]:
@@ -695,7 +797,7 @@ def _deterministic_zip(files: Sequence[PackageFile]) -> bytes:
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             info.create_system = 3
-            archive.writestr(info, f.content, compresslevel=9)
+            archive.writestr(info, f.content, compresslevel=_ZIP_LEVEL)
     return buffer.getvalue()
 
 

@@ -182,8 +182,13 @@ def run_solver(
     hard_timeout_s: float,
     cancel: Callable[[], bool],
     progress: Callable[[float], None] | None = None,
+    on_solution: Callable[[dict], None] | None = None,
 ) -> SolverRun:
-    """Run the solver in a killable child process and return its best certificate."""
+    """Run the solver in a killable child process and return its best certificate.
+
+    ``on_solution`` (optional) receives each improving certificate as the child
+    reports it, from the polling loop; it must return quickly.
+    """
     settings = {
         "time_limit_s": time_limit_s,
         "hard_timeout_s": hard_timeout_s,
@@ -204,6 +209,8 @@ def run_solver(
                 start_new_session=True,
             )
         outcome = "ok"
+        reported = 0
+        offered: dict | None = None
         try:
             while True:
                 try:
@@ -211,6 +218,13 @@ def run_solver(
                     break
                 except subprocess.TimeoutExpired:
                     pass
+                if on_solution is not None:
+                    count = len(_read_progress(work)["solution_times_s"])
+                    if count > reported:
+                        certificate = _read_json(work / "best.json")
+                        if certificate is not None and certificate.get("bins"):
+                            reported, offered = count, certificate
+                            on_solution(certificate)
                 elapsed = time.monotonic() - started
                 if cancel():
                     outcome = "cancelled"
@@ -225,7 +239,10 @@ def run_solver(
                 proc.kill()
                 proc.wait()
         runtime = time.monotonic() - started
-        solutions_seen = _read_count(work)
+        child = _read_progress(work)
+        settings["build_s"] = child["build_s"]
+        settings["solution_times_s"] = child["solution_times_s"]
+        solutions_seen = len(child["solution_times_s"])
         if outcome == "cancelled":
             return SolverRun("cancelled", None, runtime, solutions_seen, settings=settings, pid=proc.pid)
 
@@ -245,6 +262,8 @@ def run_solver(
         if best is None or not best.get("bins"):
             status = "no_solution" if outcome == "ok" else outcome
             return SolverRun(status, None, runtime, solutions_seen, settings=settings, pid=proc.pid)
+        if on_solution is not None and best != offered:
+            on_solution(best)
         return SolverRun(outcome, best, runtime, solutions_seen, settings=settings, pid=proc.pid)
 
 
@@ -282,6 +301,8 @@ def _child_main(workdir: str, time_limit_s: float) -> None:
     import io
 
     work = Path(workdir)
+    started = time.monotonic()
+    progress: dict[str, Any] = {"build_s": None, "solution_times_s": []}
     try:
         import packingsolver.irregular as psi
 
@@ -292,12 +313,13 @@ def _child_main(workdir: str, time_limit_s: float) -> None:
         params.time_limit = time_limit_s
         params.verbosity_level = 0
         params.messages_to_stdout = False
-        count = [0]
+        progress["build_s"] = round(time.monotonic() - started, 3)
+        _atomic_write(work / "progress.json", json.dumps(progress))
 
         def on_solution(output) -> None:
-            count[0] += 1
+            progress["solution_times_s"].append(round(time.monotonic() - started, 3))
             _write_certificate(work / "best.json", output.solution)
-            _atomic_write(work / "count.txt", str(count[0]))
+            _atomic_write(work / "progress.json", json.dumps(progress))
 
         params.new_solution_callback = on_solution
         output = psi.optimize(instance, params)
@@ -335,11 +357,11 @@ def _read_text(path: Path) -> str | None:
         return None
 
 
-def _read_count(work: Path) -> int:
-    try:
-        return int((work / "count.txt").read_text())
-    except (FileNotFoundError, ValueError):
-        return 0
+def _read_progress(work: Path) -> dict[str, Any]:
+    """Child progress: instance build time and the time of every improving solution
+    (seconds since the child started)."""
+    data = _read_json(work / "progress.json") or {}
+    return {"build_s": data.get("build_s"), "solution_times_s": list(data.get("solution_times_s") or [])}
 
 
 if __name__ == "__main__":

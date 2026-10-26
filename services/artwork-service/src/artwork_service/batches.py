@@ -349,12 +349,14 @@ def run_nest_job(ctx: "JobContext") -> None:
             extent = _sheet_extent(shapes, stock_req)
             extents[key] = extent
             sheet_area = stock_req["width_mm"] * stock_req["height_mm"]
+            leftover = outcomes[key].metrics["sheets"][index]["leftover_usable_area_mm2"]
             sheet_records.append({
                 "sheet_id": new_id(), "group_key": key, "index": index, "number": number,
                 "placements": placements,
                 "metrics": {"parts": len(placements), "metal_area_mm2": round(metal, 3),
                             "sheet_area_mm2": sheet_area, "utilization": round(metal / sheet_area, 6),
-                            "occupied_extent_mm": round(extent, 3)},
+                            "occupied_extent_mm": round(extent, 3),
+                            "leftover_usable_area_mm2": round(leftover, 3)},
             })
     sheet_area_total = len(sheet_records) * stock_req["width_mm"] * stock_req["height_mm"]
     totals = {
@@ -367,6 +369,10 @@ def run_nest_job(ctx: "JobContext") -> None:
         "utilization": round(metal_total / sheet_area_total, 6) if sheet_area_total else 0.0,
         "occupied_extent_mm": round(max(extents.values()), 3) if extents else 0.0,
         "occupied_extent_by_group_mm": {k: round(v, 3) for k, v in extents.items()},
+        "leftover_usable_area_mm2": round(sum(o.metrics["leftover_usable_area_mm2"] for o in outcomes.values()), 3),
+        "leftover_usable_area_by_group_mm2": {k: round(o.metrics["leftover_usable_area_mm2"], 3)
+                                              for k, o in outcomes.items()},
+        "engine_by_group": {k: o.engine for k, o in outcomes.items()},
         "runtime_s": round(sum(o.runtime_s for o in outcomes.values()), 3),
         "optimization_status": "complete" if complete else "incomplete",
         "groups": {k: {"engine": o.engine, "engine_version": o.engine_version, "status": o.status,
@@ -377,6 +383,12 @@ def run_nest_job(ctx: "JobContext") -> None:
             "utilization": "sum of placed nominal part areas (holes excluded) / (sheet_count × sheet width × height)",
             "occupied_extent_mm": "per group, length along the sheet's long axis from the usable edge to the "
                                   "farthest placed part on the group's last sheet; the total is the maximum",
+            "leftover_usable_area_mm2": "per sheet, usable area outside the occupied box (from the usable origin "
+                                        "corner to the farthest part plus the gap, on both axes): the uncut strip "
+                                        "beyond the parts plus the free side column; the total sums all sheets",
+            "engine_by_group": "nesting engine that produced each group's layout: packingsolver-irregular or "
+                               "bbox-baseline (the fallback); gap filling may have moved parts afterwards "
+                               "(groups.<key>.metrics.gap_fill_moves)",
         },
     }
     validation = {k: r.to_dict() for k, r in reports.items()}

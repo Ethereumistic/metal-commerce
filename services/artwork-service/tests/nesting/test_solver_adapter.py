@@ -109,6 +109,25 @@ def test_certificate_transform_matches_contract_transform():
     assert checked == 5
 
 
+def test_improving_solutions_are_timed_and_handed_over():
+    parts = [part("F", flag_shape(), 12)]
+    stock = sheet(700, 700, margins=(10, 10, 10, 10), gap=5, max_sheets=3)
+    seen: list[dict] = []
+    run = sa.run_solver(
+        sa.build_instance(parts, stock, [_contour(parts[0].geometry, stock)]),
+        time_limit_s=1.5,
+        hard_timeout_s=20,
+        cancel=lambda: False,
+        on_solution=seen.append,
+    )
+    assert run.status == "ok" and run.solutions_seen >= 1
+    times = run.settings["solution_times_s"]
+    assert len(times) == run.solutions_seen and times == sorted(times)
+    assert 0 <= run.settings["build_s"] <= times[0]
+    # Every certificate handed over has bins, and the last one is the run's result.
+    assert seen and all(c["bins"] for c in seen) and seen[-1] == run.certificate
+
+
 def test_cancel_kills_solver_process():
     parts = [part("C", comb(), 60)]
     stock = sheet()

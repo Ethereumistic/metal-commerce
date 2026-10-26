@@ -115,7 +115,23 @@ def nest_group(parts, stock, *, time_budget_s, seed, cancel, progress):
             row_h = max(row_h, h)
     progress(1.0, "done")
     sheets = [s for s in sheets if s]
-    return NestOutcome(sheets, unplaced, "incomplete" if unplaced else "complete")
+    metrics = _metrics(parts, stock, sheets)
+    return NestOutcome(sheets, unplaced, "incomplete" if unplaced else "complete", metrics=metrics)
+
+
+def _metrics(parts, stock, sheets) -> dict:
+    """The leftover fields batches.py reads (rotation 0 only, like the packer above)."""
+    sizes = {p.part_key: p.geometry.bounds[2:] for p in parts}
+    usable_w = stock.width_mm - stock.margin_left - stock.margin_right
+    usable_h = stock.height_mm - stock.margin_bottom - stock.margin_top
+    per_sheet = []
+    for sheet in sheets:
+        max_x = max(pl.tx_mm + sizes[pl.part_key][0] for pl in sheet)
+        max_y = max(pl.ty_mm + sizes[pl.part_key][1] for pl in sheet)
+        box_w = min(usable_w, max_x + stock.gap_mm - stock.margin_left)
+        box_h = min(usable_h, max_y + stock.gap_mm - stock.margin_bottom)
+        per_sheet.append({"leftover_usable_area_mm2": usable_w * usable_h - box_w * box_h})
+    return {"sheets": per_sheet, "leftover_usable_area_mm2": sum(s["leftover_usable_area_mm2"] for s in per_sheet)}
 
 
 def validate_layout(parts, stock, sheets, *, allow_unplaced=False, tolerance_mm=1e-6):

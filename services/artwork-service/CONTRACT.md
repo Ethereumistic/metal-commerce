@@ -31,6 +31,7 @@ fastapi 0.162.0, pydantic 2.14.1, uvicorn 0.54.0, numpy 2.5.4, opencv-python-hea
 - `GET /v1/jobs?kind=&limit=` → recent jobs for history.
 - `POST /v1/jobs/{id}/cancel` → idempotent, returns job.
 - `GET /v1/batches/{id}` → `{batch_id, status: draft|invalid|queued|nesting|completed|incomplete|failed|cancelled, request (frozen), groups, sheets: [{sheet_id, group_key, index, width_mm, height_mm, placements: [{instance_id, line_id, product_id, rotation_deg, tx_mm, ty_mm}], metrics}], totals: {requested, placed, unplaced, sheet_count, metal_area_mm2, sheet_area_mm2, utilization, occupied_extent_mm, runtime_s, optimization_status}, validation, artifacts: {zip|null, manifest, sheets: [{sheet_id, dxf, svg}]}}`. ZIP only present when status completed (all instances placed + validated).
+  - Additive (nesting 1.1): `sheets[].metrics.leftover_usable_area_mm2`; `totals.leftover_usable_area_mm2`, `totals.leftover_usable_area_by_group_mm2: {group_key: mm2}`, `totals.engine_by_group: {group_key: "packingsolver-irregular"|"bbox-baseline"}`; `totals.groups.<key>.metrics` gains `leftover_usable_area_mm2`, `last_sheet_leftover_usable_area_mm2`, `engine`, `gap_fill_moves` and per-sheet `leftover_usable_area_mm2`; `totals.groups.<key>.settings` gains `selection`, `gap_fill` and per-attempt `build_s`/`solution_times_s`. Leftover usable area = usable area outside the occupied box (usable origin corner to the farthest part + gap on both axes): the uncut strip beyond the parts plus the free side column. Definitions in docs/nesting-and-export.md (Metrics).
 - `GET /v1/batches?limit=` → history list.
 - `GET /v1/artifacts/{id}` → streamed bytes, correct Content-Type, `Content-Disposition: attachment; filename="batch-<id>-sheet-001-1500x3000mm.dxf"` etc. Scoped by business.
 
@@ -64,7 +65,7 @@ class NestOutcome:
     status: str     # "complete" | "incomplete" | "cancelled" | "failed"
     engine: str     # "packingsolver-irregular" | "bbox-baseline"
     engine_version: str; settings: dict; runtime_s: float
-    metrics: dict   # per-sheet and total, formulas documented
+    metrics: dict   # per-sheet and total, formulas documented (incl. leftover_usable_area_mm2, engine, gap_fill_moves)
     baseline_metrics: dict   # bbox baseline comparison
 
 def nest_group(parts: list[PartSpec], stock: StockSpec, *, time_budget_s: float, seed: int,
