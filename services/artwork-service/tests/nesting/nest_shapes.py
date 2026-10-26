@@ -89,6 +89,92 @@ def two_component_part() -> MultiPolygon:
     )
 
 
+def _at_origin(polygon: Polygon) -> MultiPolygon:
+    min_x, min_y, _, _ = polygon.bounds
+    return MultiPolygon([affinity.translate(polygon, -min_x, -min_y)])
+
+
+def wave_art(size: float = 800.0, waves: int = 3, depth: float = 70.0, steps: int = 48) -> MultiPolygon:
+    """Near-square wall art whose four edges dip inward in waves (concave outer outline).
+
+    Mimics the owner's large "wave" pieces: the bounding box is a full square, but
+    every edge has ``waves`` pockets up to ``depth`` mm deep that small parts can use.
+    Two interior cut-outs make it a realistic part with holes.
+    """
+    edge = []
+    for k in range(steps):
+        t = k / steps
+        inset = depth * 0.5 * (1 - math.cos(2 * math.pi * waves * t))
+        edge.append((t * size, inset))
+    coords = []
+    for quarter in range(4):
+        for x, y in edge:
+            # Rotate the bottom edge onto each side of the square (CCW).
+            if quarter == 0:
+                coords.append((x, y))
+            elif quarter == 1:
+                coords.append((size - y, x))
+            elif quarter == 2:
+                coords.append((size - x, size - y))
+            else:
+                coords.append((y, size - x))
+    c = size / 2
+    holes = [
+        [(c - 150, c - 40), (c - 40, c - 40), (c - 40, c + 40), (c - 150, c + 40)],
+        [(c + 40, c - 40), (c + 150, c - 40), (c + 150, c + 40), (c + 40, c + 40)],
+    ]
+    return _at_origin(Polygon(coords, holes))
+
+
+def star(size: float = 300.0, points: int = 5, inner: float = 0.42) -> MultiPolygon:
+    """A star with deep concave pockets between the arms."""
+    coords = []
+    for k in range(2 * points):
+        r = 1.0 if k % 2 == 0 else inner
+        t = math.pi / 2 + math.pi * k / points
+        coords.append((r * math.cos(t), r * math.sin(t)))
+    poly = Polygon(coords)
+    min_x, min_y, max_x, max_y = poly.bounds
+    factor = size / max(max_x - min_x, max_y - min_y)
+    return _at_origin(affinity.scale(poly, factor, factor, origin=(0, 0)))
+
+
+def shuriken(size: float = 100.0) -> MultiPolygon:
+    """Four-blade throwing star with a round centre hole."""
+    blade = star(size, points=4, inner=0.3).geoms[0]
+    c = size / 2
+    hole = Polygon([(c + 0.12 * size * math.cos(a), c + 0.12 * size * math.sin(a)) for a in
+                    (2 * math.pi * k / 16 for k in range(16))])
+    return MultiPolygon([Polygon(blade.exterior, [hole.exterior])])
+
+
+def ninja_blade(length: float = 150.0) -> MultiPolygon:
+    """Kunai: a long diamond blade on a thin grip with a ring pommel."""
+    w = length * 0.2
+    coords = [
+        (0, w / 2), (length * 0.55, 0), (length * 0.62, w * 0.35), (length * 0.85, w * 0.4),
+        (length, w / 2), (length * 0.85, w * 0.6), (length * 0.62, w * 0.65), (length * 0.55, w),
+    ]
+    return _at_origin(Polygon(coords))
+
+
+def owner_batch(*, fillers: bool) -> list[PartSpec]:
+    """The owner's reported batch: 10 large wave pieces at 800 mm and 44 concave stars
+    near 300 mm, optionally with 30 small shurikens and blades (60-150 mm) as fillers."""
+    parts = [
+        part("wave", wave_art(), 10),
+        part("star5", star(300, 5), 24),
+        part("star6", star(280, 6, inner=0.5), 20),
+    ]
+    if fillers:
+        parts += [
+            part("shuriken-100", shuriken(100), 12),
+            part("shuriken-60", shuriken(60), 10),
+            part("kunai-150", ninja_blade(150), 8),
+        ]
+    return parts
+
+
 def scaled(geometry: MultiPolygon, factor: float) -> MultiPolygon:
     return affinity.scale(geometry, factor, factor, origin=(0, 0))
 

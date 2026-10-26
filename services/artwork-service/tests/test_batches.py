@@ -131,6 +131,14 @@ def test_nest_job_completes_with_exact_counts(client, masters, worker, monkeypat
     assert sum(1 for i in instances if i.startswith("b#")) == 10
     assert {s["group_key"] for s in view["sheets"]} == {"steel/2mm", "aluminium/3mm"}
     assert 0 < view["totals"]["utilization"] < 1
+    # Additive metrics: engine and leftover usable area per group, per sheet and in total.
+    totals = view["totals"]
+    assert totals["engine_by_group"] == {"steel/2mm": "stub-shelf", "aluminium/3mm": "stub-shelf"}
+    per_sheet = [s["metrics"]["leftover_usable_area_mm2"] for s in view["sheets"]]
+    assert all(v >= 0 for v in per_sheet)
+    assert totals["leftover_usable_area_mm2"] == pytest.approx(sum(per_sheet), abs=0.01)
+    assert sum(totals["leftover_usable_area_by_group_mm2"].values()) == pytest.approx(
+        totals["leftover_usable_area_mm2"], abs=0.01)
     # Parts handed to the engine are sized from the master in mm with bbox origin at 0,0.
     star_part = next(p for c in stub_engine.calls for p in c["parts"] if p.line_id == "a")
     assert star_part.geometry.bounds[:2] == (0, 0) and star_part.geometry.bounds[2] == pytest.approx(120)
@@ -196,3 +204,9 @@ def test_real_engine_end_to_end(client, masters, worker) -> None:
     view = client.get(f"/v1/batches/{batch_id}", headers=headers()).json()
     assert view["status"] == "completed", view["error"]
     assert view["totals"]["placed"] == 10 and view["artifacts"]["zip"]
+    totals = view["totals"]
+    assert totals["engine_by_group"]["steel/2mm"] in ("packingsolver-irregular", "bbox-baseline")
+    group = totals["groups"]["steel/2mm"]
+    assert group["engine"] == totals["engine_by_group"]["steel/2mm"]
+    assert group["metrics"]["leftover_usable_area_mm2"] == pytest.approx(totals["leftover_usable_area_mm2"], abs=0.01)
+    assert "gap_fill_moves" in group["metrics"] and "gap_fill" in group["settings"]

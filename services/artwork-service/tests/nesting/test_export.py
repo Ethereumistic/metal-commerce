@@ -152,6 +152,38 @@ def test_verify_dxf_catches_wrong_units_and_open_loop(layout):
     assert {"DXF_UNITS", "DXF_OPEN_LOOP", "DXF_LOOP_COUNT"} <= codes
 
 
+# A 9 x 4 mm hole from the traced "trees" fixture at 300 mm. GEOS' topology-
+# preserving simplifier moves it by 0.066 mm at a 0.05 mm tolerance, which made
+# the DXF fail read-back (EXPORT_INVALID) for the whole batch.
+_TRACED_HOLE = [
+    (6.605133, 3.836058), (7.062411, 4.039293), (7.189434, 3.963078), (7.189434, 3.836058), (6.986199, 3.607419),
+    (6.935388, 3.429588), (7.341858, 3.175545), (8.332629, 2.870691), (8.535864, 2.921502), (8.815311, 3.175545),
+    (8.993142, 3.226353), (9.018546, 2.97231), (8.63748, 2.489628), (8.205606, 2.235582), (6.452706, 0.660513),
+    (5.792193, 0.457278), (4.801422, 0.304851), (4.623594, 0.203235), (3.302568, 0.0), (1.854519, 0.0),
+    (0.127023, 0.254043), (0.0, 0.381066), (0.0, 0.508086), (0.330258, 0.838344), (0.965367, 1.295622),
+    (1.7529, 2.057754), (1.930731, 2.108562), (2.210178, 2.362605), (2.591244, 2.464221), (2.819883, 2.616648),
+    (4.521975, 3.073926), (4.852233, 3.277161), (5.792193, 3.531204), (6.122451, 3.734439),
+]
+
+
+def test_simplification_never_moves_a_contour_beyond_the_tolerance():
+    hole = affinity.translate(LinearRing(_TRACED_HOLE), 5, 5)
+    assert shapely.hausdorff_distance(
+        shapely.simplify(Polygon(hole), TOL, preserve_topology=True).exterior, hole, densify=0.25
+    ) > TOL  # the GEOS behaviour this guards against
+    geometry = shapely.MultiPolygon([Polygon([(0, 0), (20, 0), (20, 14), (0, 14)], [hole])])
+    parts = [part("T", geometry, 3)]
+    stock = sheet(200, 200)
+    placements = [
+        Placement(i, "T", "T", "product-T", rotation, 40.0 + 40 * n, 60.0)
+        for n, (i, rotation) in enumerate(zip(parts[0].instance_ids, (0, 90, 180), strict=True))
+    ]
+    dxf = export_sheet_dxf(parts, stock, placements, chord_tolerance_mm=TOL)
+    report = verify_dxf(dxf, parts, placements, TOL + 1e-6)
+    assert report.valid, [v.to_dict() for v in report.violations]
+    assert report.loop_count == 6 and report.max_vertex_error_mm <= TOL
+
+
 def test_dxf_is_reproducible_with_fixed_timestamp(layout):
     parts, stock, placements = layout
     a = export_sheet_dxf(parts, stock, placements, chord_tolerance_mm=TOL, created_at=CREATED)

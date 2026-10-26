@@ -18,7 +18,7 @@ Omarchy Linux PC, bound to `127.0.0.1`. Interfaces are fixed in
 | `tracing.py`, `geometry.py` | Deterministic image → vector master tracing (`opencv-contours` engine behind an adapter) |
 | `sizing.py` | Aspect-locked sizing, usable-sheet fit checks, feature-width checks |
 | `products.py`, `batches.py` | Preparation/master cache and the trace job; batch snapshots and the nest job |
-| `nesting.py`, `validation.py`, `dxf_export.py` | Nesting, independent layout validation and DXF/ZIP export (separate work unit; imported lazily by the nest job) |
+| `nesting.py`, `gap_fill.py`, `validation.py`, `dxf_export.py` | Nesting, gap filling, independent layout validation and DXF/ZIP export (separate work unit; imported lazily by the nest job) |
 
 ## Requirements
 
