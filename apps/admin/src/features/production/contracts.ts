@@ -90,6 +90,8 @@ export type PrepareRequest = {
     product_revision: number;
     name: string;
     slug: string;
+    /** Additive (history 1.1): kept with the trace job so history can show it later. */
+    thumbnail_url: string | null;
     source: SourceSnapshot | null;
   }[];
   reprocess: boolean;
@@ -190,6 +192,14 @@ export type BatchDraft = {
   groups: BatchGroup[];
 };
 
+/** The product a trace job was queued for, as the service recorded it then. */
+export type JobProduct = {
+  id: string;
+  name: string | null;
+  slug: string | null;
+  thumbnail: string | null;
+};
+
 export type Job = {
   id: string;
   kind: JobKind;
@@ -201,6 +211,8 @@ export type Job = {
   cache_hit: boolean;
   error: ServiceError | null;
   result: { master_id?: string; batch_id?: string } | null;
+  /** Trace jobs only; null for nest jobs and for services older than history 1.1. */
+  product: JobProduct | null;
   created_at: string;
   updated_at: string;
 };
@@ -238,6 +250,10 @@ export type BatchTotals = {
   /** Per material group: engine, status, metrics (free-form; read by results-logic.ts). */
   groups: JsonValue;
   occupied_extent_by_group_mm: JsonValue;
+  /** Additive (nesting 1.1): usable area outside the occupied box, summed over sheets; null from older services. */
+  leftover_usable_area_mm2: number | null;
+  /** Additive (nesting 1.1): the same per material group, `{group_key: mm2}`. */
+  leftover_usable_area_by_group_mm2: JsonValue;
 };
 
 /** Process check of one part's features against the fabrication profile. */
@@ -497,8 +513,25 @@ export function parseJob(value: unknown, path = "job"): Job {
         ? { batch_id: id(result.batch_id, `${path}.result.batch_id`) }
         : {}),
     },
+    product: parseJobProduct(job, path),
     created_at: text(job.created_at, `${path}.created_at`),
     updated_at: text(job.updated_at, `${path}.updated_at`),
+  };
+}
+
+const WEB_URL = /^https?:\/\//i;
+
+function parseJobProduct(job: JsonObject, path: string): JobProduct | null {
+  const productId = nullable(text)(job.product_id, `${path}.product_id`);
+  if (!productId) return null;
+  const thumbnail = nullable(text)(job.product_thumbnail_url, `${path}.product_thumbnail_url`);
+  const name = nullable(text)(job.product_name, `${path}.product_name`);
+  return {
+    id: productId,
+    name: name?.trim() || null,
+    slug: nullable(text)(job.product_slug, `${path}.product_slug`) || null,
+    // Rendered as an image source; anything but a web URL is dropped.
+    thumbnail: thumbnail && WEB_URL.test(thumbnail) ? thumbnail : null,
   };
 }
 
@@ -534,6 +567,11 @@ function parseTotals(value: unknown, path: string): BatchTotals {
     ),
     groups: json(totals.groups),
     occupied_extent_by_group_mm: json(totals.occupied_extent_by_group_mm),
+    leftover_usable_area_mm2: nullable(number)(
+      totals.leftover_usable_area_mm2,
+      `${path}.leftover_usable_area_mm2`,
+    ),
+    leftover_usable_area_by_group_mm2: json(totals.leftover_usable_area_by_group_mm2),
   };
 }
 

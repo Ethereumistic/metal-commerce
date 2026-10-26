@@ -21,11 +21,15 @@ import { ProductImage } from "./product-image";
 import { useRepeatBatch } from "./repeat";
 import {
   ENGINE_TEXT,
+  formatArea,
   formatDuration,
   formatMm,
   formatPercent,
   groupSummaries,
+  leftoverSummary,
   leftoverText,
+  METAL_FREE_DEFINITION,
+  USABLE_LEFTOVER_DEFINITION,
   partColour,
   plural,
   qualification,
@@ -240,6 +244,10 @@ export function SheetPreview({
   const sheetGroup = groups.find((group) => group.groupKey === sheet?.group_key);
   const sheetMetrics = sheet?.metrics ?? {};
   const sheetUtil = typeof sheetMetrics.utilization === "number" ? sheetMetrics.utilization : null;
+  const leftover = leftoverSummary(batch, groups);
+  // While the job runs, every rail section is already in place with a short
+  // note, so finishing fills them in without moving the ones below.
+  const pendingRun = batch.status === "queued" || batch.status === "nesting";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 lg:flex-row">
@@ -341,11 +349,17 @@ export function SheetPreview({
           <Check state={checks.geometry.state} title={checks.geometry.title}>
             {checks.geometry.detail}
           </Check>
-          {batch.sheets.length > 0 && (
+          {batch.sheets.length > 0 ? (
             <Check state={checks.features.state} title={checks.features.title}>
               {checks.features.detail}
               {affected.length > 0 && <> Affects {affected.join(", ")}.</>}
             </Check>
+          ) : (
+            pendingRun && (
+              <Check state="pending" title="Feature widths">
+                Checked against the fabrication profile when nesting finishes.
+              </Check>
+            )
           )}
           {uniqueWarnings.length > 0 && (
             <Check state="attention" title={`${plural(uniqueWarnings.length, "tracing warning")}`}>
@@ -397,11 +411,32 @@ export function SheetPreview({
               <FileText /> Manifest (JSON)
             </a>
           )}
-          {!batch.artifacts.zip && batch.status !== "completed" && (
+          {pendingRun && (
+            <>
+              <Button disabled>
+                <Package /> Download all sheets (ZIP)
+              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" disabled>
+                  <Download /> Sheet 1 DXF
+                </Button>
+                <Button variant="ghost" size="sm" disabled>
+                  <Download /> Sheet 1 preview SVG
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">Files are written and checked when nesting finishes.</p>
+            </>
+          )}
+          {!batch.artifacts.zip && batch.status !== "completed" && !pendingRun && (
             <p className="text-xs text-muted-foreground">No production files are offered for an unfinished or partial batch.</p>
           )}
         </Block>
 
+        {!sheet && pendingRun && (
+          <Block title="Sheet 1">
+            <p className="text-xs text-muted-foreground">Sheet size and the parts on it appear when nesting finishes.</p>
+          </Block>
+        )}
         {sheet && (
           <Block title={`Sheet ${sheetNumber} of ${batch.sheets.length}`}>
             <p className="text-xs text-muted-foreground tabular-nums">
@@ -446,6 +481,49 @@ export function SheetPreview({
                 );
               })}
             </ul>
+          </Block>
+        )}
+
+        {pendingRun && !batch.sheets.length && (
+          <Block title="How it was nested">
+            <p className="text-xs text-muted-foreground">The engine used and the leftover stock appear when nesting finishes.</p>
+          </Block>
+        )}
+
+        {(leftover.usableMm2 != null || leftover.metalFreeMm2 != null) && (
+          <Block title="Leftover stock">
+            <dl className="flex flex-col gap-2 text-xs">
+              {leftover.usableMm2 != null && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <dt className="font-medium text-foreground">Usable leftover</dt>
+                    <dd className="tabular-nums font-medium text-foreground">{formatArea(leftover.usableMm2)}</dd>
+                  </div>
+                  <p className="text-muted-foreground">{USABLE_LEFTOVER_DEFINITION}</p>
+                  {groups.length > 1 && (
+                    <ul className="flex flex-col gap-0.5 text-muted-foreground">
+                      {groups.map((group) => (
+                        <li key={group.groupKey} className="flex justify-between gap-2">
+                          <span className="truncate">{group.label}</span>
+                          <span className="tabular-nums">
+                            {group.usableLeftoverMm2 != null ? formatArea(group.usableLeftoverMm2) : "not reported"}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+              {leftover.metalFreeMm2 != null && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <dt className="font-medium text-foreground">Metal-free area</dt>
+                    <dd className="tabular-nums">{formatArea(leftover.metalFreeMm2)}</dd>
+                  </div>
+                  <p className="text-muted-foreground">{METAL_FREE_DEFINITION}</p>
+                </div>
+              )}
+            </dl>
           </Block>
         )}
 

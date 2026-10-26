@@ -152,8 +152,43 @@ def get_job(conn: sqlite3.Connection, business_id: str, job_id: str) -> sqlite3.
     return row
 
 
-def job_view(row: sqlite3.Row) -> dict[str, Any]:
+_NO_PRODUCT = {"product_id": None, "product_name": None, "product_slug": None, "product_thumbnail_url": None}
+
+
+def _trace_products(conn: sqlite3.Connection, rows: list[sqlite3.Row]) -> dict[str, dict[str, Any]]:
+    """Product identity per trace job, from the source snapshot the job was queued with.
+
+    Every trace job ever queued points at its own snapshot, so a later prepare
+    of the same product never changes how an older job is named.
+    """
+    payloads = {row["id"]: loads(row["payload"]) for row in rows if row["kind"] == "trace"}
+    source_ids = sorted({p["source_id"] for p in payloads.values() if p.get("source_id")})
+    sources: dict[str, sqlite3.Row] = {}
+    for start in range(0, len(source_ids), 500):
+        chunk = source_ids[start:start + 500]
+        query = f"SELECT id, product_id, name, slug FROM product_sources WHERE id IN ({', '.join('?' * len(chunk))})"
+        sources.update({src["id"]: src for src in conn.execute(query, chunk)})
+    products = {}
+    for job_id, payload in payloads.items():
+        src = sources.get(payload.get("source_id"))
+        products[job_id] = {
+            "product_id": payload.get("product_id") or (src["product_id"] if src else None),
+            "product_name": src["name"] if src else None,
+            "product_slug": src["slug"] if src else None,
+            # Jobs queued before thumbnails were recorded have none.
+            "product_thumbnail_url": payload.get("thumbnail_url"),
+        }
+    return products
+
+
+def job_views(conn: sqlite3.Connection, rows: list[sqlite3.Row]) -> list[dict[str, Any]]:
+    products = _trace_products(conn, rows)
+    return [job_view(row, products.get(row["id"], _NO_PRODUCT)) for row in rows]
+
+
+def job_view(row: sqlite3.Row, product: dict[str, Any] = _NO_PRODUCT) -> dict[str, Any]:
     return {
+        **product,
         "id": row["id"],
         "kind": row["kind"],
         "status": row["status"],

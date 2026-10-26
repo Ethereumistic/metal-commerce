@@ -19,6 +19,10 @@ type SignInResult = { tokens?: Tokens | null; started?: boolean };
 
 const REFRESH_MAX_AGE = 30 * 86400;
 const EXPIRY_MARGIN_MS = 60_000;
+// Every call to core is bounded: an unanswered sign-in check must fail as
+// "unavailable" in seconds rather than hold the page (and the production
+// status check that depends on it) for minutes.
+const CORE_TIMEOUT_MS = 15_000;
 
 export class AuthError extends Error {
   constructor(readonly code: AuthErrorCode) {
@@ -67,8 +71,17 @@ export function clearTokens() {
   deleteCookie(names.refresh, { path: "/", secure: names.secure });
 }
 
+/** fetch for the core client with a deadline, still honouring any signal the client passes. */
+const boundedFetch: typeof fetch = (input, init) => {
+  const deadline = AbortSignal.timeout(CORE_TIMEOUT_MS);
+  return fetch(input, {
+    ...init,
+    signal: init?.signal ? AbortSignal.any([init.signal, deadline]) : deadline,
+  });
+};
+
 function client(token?: string) {
-  const convex = new ConvexHttpClient(config().backend);
+  const convex = new ConvexHttpClient(config().backend, { fetch: boundedFetch });
   if (token) convex.setAuth(token);
   return convex;
 }

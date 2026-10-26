@@ -88,6 +88,8 @@ export type GroupSummary = {
   runtimeS: number | null;
   /** Sheet area not covered by parts, across the group's sheets (offcut, not reusable stock). */
   unusedAreaMm2: number | null;
+  /** Usable area outside the occupied box, summed over the group's sheets (reusable stock); null from older services. */
+  usableLeftoverMm2: number | null;
   /** Free strip at the far end of the group's last sheet, across the full usable width. */
   remnant: { widthMm: number; lengthMm: number } | null;
 };
@@ -123,6 +125,7 @@ export function groupSummaries(batch: Batch): GroupSummary[] {
   const numbers = sheetNumbers(batch.sheets);
   const outcomes = asRecord(batch.totals?.groups ?? null);
   const extents = asRecord(batch.totals?.occupied_extent_by_group_mm ?? null);
+  const usable = asRecord(batch.totals?.leftover_usable_area_by_group_mm2 ?? null);
   const stock = stockOf(batch.request);
   const keys = [
     ...new Set([...batch.groups.map((group) => group.group_key), ...batch.sheets.map((sheet) => sheet.group_key)]),
@@ -153,6 +156,7 @@ export function groupSummaries(batch: Batch): GroupSummary[] {
       engineVersion: typeof outcome?.engine_version === "string" ? outcome.engine_version : null,
       runtimeS: asNumber(outcome?.runtime_s),
       unusedAreaMm2: asNumber(metrics?.unused_area_mm2),
+      usableLeftoverMm2: asNumber(usable?.[key]) ?? asNumber(metrics?.leftover_usable_area_mm2),
       remnant,
     };
   });
@@ -166,9 +170,37 @@ export function leftoverText(summary: GroupSummary): string {
       `The last sheet has a clear strip of about ${Math.floor(summary.remnant.widthMm)} × ${Math.floor(summary.remnant.lengthMm)} mm (${formatArea(summary.remnant.widthMm * summary.remnant.lengthMm)}) after the last part.`,
     );
   else if (summary.remnant) parts.push("The last sheet is used to its far end; no clear strip is left.");
-  if (summary.unusedAreaMm2 != null)
-    parts.push(`${formatArea(summary.unusedAreaMm2)} of sheet area is not covered by parts, mostly offcut between them.`);
   return parts.join(" ");
+}
+
+export type LeftoverSummary = {
+  /** Reusable stock: usable area outside the occupied box on each sheet, summed (null when not reported). */
+  usableMm2: number | null;
+  /** Every part of the sheets not covered by parts, gaps between parts included. */
+  metalFreeMm2: number | null;
+};
+
+export const USABLE_LEFTOVER_DEFINITION =
+  "The clear strip beyond the parts plus the free side column on every sheet: usable sheet area outside the box that runs from the usable corner to the farthest part, plus one gap. It can be cut later as offcut stock.";
+export const METAL_FREE_DEFINITION =
+  "All sheet area not covered by parts, including the gaps between them, which is mostly scrap.";
+
+/**
+ * The batch's leftover in two separate figures, so reusable offcut is never
+ * confused with the scrap between parts. Usable leftover comes from the
+ * service (totals, else the groups' own figures); metal-free area is the
+ * sheet area less the metal placed.
+ */
+export function leftoverSummary(batch: Batch, groups: readonly GroupSummary[]): LeftoverSummary {
+  const totals = batch.totals;
+  if (!totals || !batch.sheets.length) return { usableMm2: null, metalFreeMm2: null };
+  const groupUsable = groups.map((group) => group.usableLeftoverMm2);
+  const usableMm2 =
+    totals.leftover_usable_area_mm2 ??
+    (groupUsable.length && groupUsable.every((value) => value != null)
+      ? groupUsable.reduce<number>((sum, value) => sum + value!, 0)
+      : null);
+  return { usableMm2, metalFreeMm2: Math.max(0, totals.sheet_area_mm2 - totals.metal_area_mm2) };
 }
 
 export type CheckState = "good" | "attention" | "blocked" | "pending";
@@ -306,6 +338,25 @@ export type HealthView = {
 
 /** How long a not-ready worker is called "starting" before it is reported as not responding. */
 export const WORKER_GRACE_MS = 90_000;
+
+/** A status check still unanswered after this long is reported as stalled. */
+export const STATUS_STALL_MS = 10_000;
+
+/**
+ * How fresh the service reading is. `stalled` when the running check has
+ * gone unanswered for a while or the last one timed out, so the indicator
+ * can say how old its reading is and offer to check again.
+ */
+export function healthFreshness(
+  checkedAtMs: number | null,
+  checkingSinceMs: number | null,
+  timedOut: boolean,
+  nowMs: number,
+): { stalled: boolean; text: string } {
+  const stalled = timedOut || (checkingSinceMs != null && nowMs - checkingSinceMs >= STATUS_STALL_MS);
+  const ago = checkedAtMs == null ? "Not checked yet" : `Last checked ${formatDuration((nowMs - checkedAtMs) / 1000)} ago`;
+  return { stalled, text: stalled ? `${ago}. The latest check is not answering.` : `${ago}.` };
+}
 
 /**
  * The service indicator's wording. A worker that is not ready while jobs run

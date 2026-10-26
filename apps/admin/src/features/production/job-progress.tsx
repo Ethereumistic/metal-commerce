@@ -79,8 +79,9 @@ const PHASE_LABELS: Record<(typeof NEST_PHASES)[number], string> = {
   exporting: "Exporting",
 };
 
-function Phases({ current }: { current: ReturnType<typeof nestPhase>["key"] }) {
-  const reached = current === "finished" ? NEST_PHASES.length : NEST_PHASES.indexOf(current);
+/** `null` while the job is unknown or after it stopped early: no phase is marked. */
+function Phases({ current }: { current: ReturnType<typeof nestPhase>["key"] | null }) {
+  const reached = current == null ? -1 : current === "finished" ? NEST_PHASES.length : NEST_PHASES.indexOf(current);
   return (
     <ol className="grid grid-cols-5 gap-1 text-[11px]" aria-label="Nesting phases">
       {NEST_PHASES.map((phase, index) => (
@@ -143,7 +144,7 @@ export function JobProgress({
   const heartbeatAge = job?.heartbeat_at ? Date.now() - Date.parse(job.heartbeat_at) : null;
   return (
     <section className="flex flex-col gap-2 border bg-ws-panel p-3" aria-label="Nesting job" title={`Job ${jobId}`}>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+      <div className="flex min-h-7 flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         {running && <Loader2 className="size-4 animate-spin text-ws-temper" aria-hidden />}
         <span className="font-medium">
           {cancelRequested && running ? "Cancelling…" : job ? (running ? phase?.label : JOB_DONE[job.status]) : "Loading job…"}
@@ -167,28 +168,39 @@ export function JobProgress({
           </Button>
         )}
       </div>
-      {job && running && (
-        <>
-          <Phases current={phase!.key} />
-          <div
-            className="h-1.5 overflow-hidden bg-muted"
-            role="progressbar"
-            aria-label="Nesting progress"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-          >
-            <div className="h-full bg-ws-temper transition-[width] duration-500" style={{ width: `${percent}%` }} />
-          </div>
-          <p className="text-xs text-muted-foreground tabular-nums">
-            {percent}% done
-            {job.attempts > 1 && `, attempt ${job.attempts}`}
-            {job.cache_hit && ", reusing a cached result"}
-            {heartbeatAge != null && heartbeatAge > STALE_HEARTBEAT_MS &&
-              `. No progress report for ${formatDuration(heartbeatAge / 1000)}; the solver may be busy.`}
-          </p>
-        </>
-      )}
+      {/* The phases, bar and summary line stay mounted from the first poll to the
+          end, so finishing swaps text in place instead of collapsing the panel
+          and moving the results below it. */}
+      <Phases current={!job ? null : job.status === "succeeded" ? "finished" : running ? phase!.key : null} />
+      <div
+        className="h-1.5 overflow-hidden bg-muted"
+        role="progressbar"
+        aria-label="Nesting progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent}
+      >
+        <div
+          className={cn(
+            "h-full transition-[width] duration-500",
+            !job || running || job.status === "succeeded" ? "bg-ws-temper" : "bg-muted-foreground/50",
+          )}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <p className="min-h-4 text-xs text-muted-foreground tabular-nums">
+        {!job
+          ? "Reading the job from the workshop PC…"
+          : running
+            ? <>
+                {percent}% done
+                {job.attempts > 1 && `, attempt ${job.attempts}`}
+                {job.cache_hit && ", reusing a cached result"}
+                {heartbeatAge != null && heartbeatAge > STALE_HEARTBEAT_MS &&
+                  `. No progress report for ${formatDuration(heartbeatAge / 1000)}; the solver may be busy.`}
+              </>
+            : JOB_SUMMARY[job.status]?.(percent)}
+      </p>
       {job?.error && !["NEST_INCOMPLETE", "CANCELLED"].includes(job.error.code) && <ErrorText error={job.error} />}
       {failure && !failure.ok && failure.offline && (
         <OfflineAlert>
@@ -213,4 +225,10 @@ const JOB_DONE: Record<string, string> = {
   succeeded: "Nesting finished",
   failed: "Nesting stopped",
   cancelled: "Nesting cancelled",
+};
+
+const JOB_SUMMARY: Record<string, (percent: number) => string> = {
+  succeeded: () => "All phases done. The sheets and files are below.",
+  failed: (percent) => `Stopped at ${percent}% done.`,
+  cancelled: (percent) => `Cancelled at ${percent}% done.`,
 };

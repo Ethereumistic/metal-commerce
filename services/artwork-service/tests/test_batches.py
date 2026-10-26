@@ -122,6 +122,7 @@ def test_nest_job_completes_with_exact_counts(client, masters, worker, monkeypat
 
     job = client.get(f"/v1/jobs/{job_id}", headers=headers()).json()
     assert job["status"] == "succeeded" and job["result"] == {"batch_id": batch_id}
+    assert job["product_id"] is None and job["product_name"] is None  # nest jobs have no single product
     view = client.get(f"/v1/batches/{batch_id}", headers=headers()).json()
     assert view["status"] == "completed"
     assert view["totals"]["requested"] == view["totals"]["placed"] == 57 and view["totals"]["unplaced"] == 0

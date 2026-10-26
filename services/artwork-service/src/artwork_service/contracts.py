@@ -36,6 +36,8 @@ class PrepareProduct(Strict):
     product_revision: int | None = Field(default=None, ge=0)
     name: str | None = Field(default=None, max_length=500)
     slug: str | None = Field(default=None, max_length=500)
+    # Additive: the catalog thumbnail the admin showed, kept with the trace job for history.
+    thumbnail_url: str | None = Field(default=None, min_length=8, max_length=4000, pattern=r"^https?://")
     source: SourceSnapshot | None
 
 

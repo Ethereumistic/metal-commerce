@@ -189,13 +189,13 @@ def create_app(config: Config) -> FastAPI:
             else:
                 rows = conn.execute("SELECT * FROM jobs WHERE business_id = ? ORDER BY created_at DESC, id LIMIT ?",
                                     (ctx.business_id, limit))
-            return {"items": [jobs.job_view(r) for r in rows]}
+            return {"items": jobs.job_views(conn, rows.fetchall())}
 
     @app.get("/v1/jobs/{job_id}")
     def get_job(request: Request, job_id: str) -> dict[str, Any]:
         ctx = context(request)
         with db.read() as conn:
-            return jobs.job_view(jobs.get_job(conn, ctx.business_id, job_id))
+            return jobs.job_views(conn, [jobs.get_job(conn, ctx.business_id, job_id)])[0]
 
     @app.post("/v1/jobs/{job_id}/cancel")
     async def cancel_job(request: Request, job_id: str) -> JSONResponse:
@@ -203,7 +203,7 @@ def create_app(config: Config) -> FastAPI:
             row = jobs.request_cancel(conn, ctx.business_id, job_id)
             if row["status"] == "cancelled":
                 _after_cancel(conn, row)
-            return 200, jobs.job_view(row)
+            return 200, jobs.job_views(conn, [row])[0]
 
         return await mutation(request, None, handler)
 

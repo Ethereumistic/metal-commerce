@@ -46,6 +46,13 @@ const ARTIFACT_TIMEOUT_MS = 60_000;
 // Cloudflare answers these when the tunnel or origin is down (530: tunnel not connected).
 const UNREACHABLE = new Set([502, 503, 504, 520, 521, 522, 523, 524, 530]);
 const LOOPBACK = /^(localhost|127\.0\.0\.1|\[::1\])$/;
+const WEB_URL = /^https?:\/\//i;
+const MAX_THUMBNAIL_URL = 4000;
+
+/** The service rejects the whole prepare for a bad thumbnail, so send only one it accepts. */
+function historyThumbnail(url: string) {
+  return WEB_URL.test(url) && url.length <= MAX_THUMBNAIL_URL ? url : null;
+}
 
 const OFFLINE = { ok: false, offline: true } as const;
 
@@ -331,6 +338,7 @@ export async function prepare(input: {
       product_revision: product.revision,
       name: product.name,
       slug: product.slug,
+      thumbnail_url: first.ok ? historyThumbnail(first.thumbnail) : null,
       source: first.ok ? first.source : null,
     });
   }

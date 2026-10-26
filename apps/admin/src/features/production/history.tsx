@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/placeholder-page";
 import { getBatch, listBatches, listJobs } from "./api";
 import type { BatchStatus, BatchSummary, Job, JsonValue, ServiceResult } from "./contracts";
 import { attempt } from "./hooks";
+import { traceSubject } from "./history-logic";
 import { ProductImage } from "./product-image";
 import { useRepeatBatch } from "./repeat";
 import { formatDuration, formatPercent, plural } from "./results-logic";
@@ -64,27 +65,31 @@ function details(value: JsonValue | undefined) {
   return text === "{}" ? null : text;
 }
 
-/** A trace job, named by the product this browser asked to prepare with it. */
+/** A trace job, named by the product snapshot the service kept with it (this browser's memory for older jobs). */
 function TraceSubject({ job }: { job: Job }) {
   const productId = useProduction(
-    (state) => Object.values(state.preparation).find((entry) => entry.job_id === job.id)?.product_id ?? null,
+    (state) =>
+      job.product?.id ??
+      Object.values(state.preparation).find((entry) => entry.job_id === job.id)?.product_id ??
+      null,
   );
   const info = useProduction((state) => (productId ? state.products[productId] : undefined));
-  const product = productId ? { name: info?.name ?? null, thumbnail: info?.thumbnail ?? null } : null;
+  const local = productId && info ? { id: productId, name: info.name ?? null, thumbnail: info.thumbnail ?? null } : null;
+  const product = traceSubject(job, local);
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <ProductImage thumbnail={product?.thumbnail ?? null} name={product?.name ?? undefined} className="size-9" />
+      <ProductImage thumbnail={product.thumbnail} name={product.name ?? undefined} className="size-9" />
       <div className="flex min-w-0 flex-col">
-        <span className="truncate font-medium">{product?.name ?? "Product not recorded in this browser"}</span>
+        <span className="truncate font-medium">{product.name ?? "Product not recorded"}</span>
         <span className="truncate text-xs text-muted-foreground">Tracing, {formatDate(job.updated_at)}</span>
       </div>
       {job.status === "failed" && (
         <Link
           to="/studio"
-          search={{ workspace: "production", stage: "products", ...(product?.name ? { q: product.name } : {}) }}
+          search={{ workspace: "production", stage: "products", ...(product.search ? { q: product.search } : {}) }}
           className={cn(linkClass, "ml-auto shrink-0")}
         >
-          {product?.name ? "Find and trace again" : "Open Products"} <ArrowRight />
+          {product.search ? "Find and trace again" : "Open Products"} <ArrowRight />
         </Link>
       )}
     </div>

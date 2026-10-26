@@ -17,7 +17,10 @@ import {
   WORKER_GRACE_MS,
   describeHealth,
   formatDuration,
+  STATUS_STALL_MS,
   groupSummaries,
+  healthFreshness,
+  leftoverSummary,
   leftoverText,
   nestPhase,
   plural,
@@ -243,4 +246,47 @@ test("counts and durations read naturally", () => {
   assert.equal(plural(4, "sheet"), "4 sheets");
   assert.equal(formatDuration(42), "42 s");
   assert.equal(formatDuration(185), "3 min 05 s");
+});
+
+test("usable leftover is reported apart from metal-free area", () => {
+  const raw = structuredClone(samples.batch_completed) as {
+    totals: Record<string, unknown> & { groups: Record<string, { metrics: Record<string, unknown> }> };
+  };
+  const key = Object.keys(raw.totals.groups)[0]!;
+  // Older services: no usable figure, metal-free area still known.
+  const old = parseBatch(raw);
+  const oldSummary = leftoverSummary(old, groupSummaries(old));
+  assert.equal(oldSummary.usableMm2, null);
+  assert.equal(oldSummary.metalFreeMm2, old.totals!.sheet_area_mm2 - old.totals!.metal_area_mm2);
+
+  raw.totals.leftover_usable_area_mm2 = 6_442_440.3;
+  raw.totals.leftover_usable_area_by_group_mm2 = { [key]: 6_442_440.3 };
+  const current = parseBatch(raw);
+  const groups = groupSummaries(current);
+  assert.equal(groups[0]!.usableLeftoverMm2, 6_442_440.3);
+  assert.equal(leftoverSummary(current, groups).usableMm2, 6_442_440.3);
+  // The group text keeps the clear strip only; the metal-free figure lives in its own row.
+  assert.doesNotMatch(leftoverText(groups[0]!), /not covered by parts/);
+
+  // Without a batch total, the groups' own figures are summed.
+  delete raw.totals.leftover_usable_area_mm2;
+  delete raw.totals.leftover_usable_area_by_group_mm2;
+  raw.totals.groups[key]!.metrics.leftover_usable_area_mm2 = 1_000_000;
+  const fromGroups = parseBatch(raw);
+  assert.equal(leftoverSummary(fromGroups, groupSummaries(fromGroups)).usableMm2, 1_000_000);
+  assert.throws(() => parseBatch({ ...raw, totals: { ...raw.totals, leftover_usable_area_mm2: "big" } }));
+});
+
+test("service status says how old its reading is and when a check stalls", () => {
+  const now = 1_000_000;
+  assert.deepEqual(healthFreshness(now - 45_000, null, false, now), {
+    stalled: false,
+    text: "Last checked 45 s ago.",
+  });
+  assert.equal(healthFreshness(now - 45_000, now - 2_000, false, now).stalled, false);
+  const stalled = healthFreshness(now - 140_000, now - STATUS_STALL_MS, false, now);
+  assert.equal(stalled.stalled, true);
+  assert.match(stalled.text, /Last checked 2 min 20 s ago\. The latest check is not answering\./);
+  assert.equal(healthFreshness(now - 60_000, null, true, now).stalled, true);
+  assert.match(healthFreshness(null, now - 20_000, false, now).text, /^Not checked yet/);
 });

@@ -143,3 +143,41 @@ def test_signed_url_query_is_not_exposed(client, worker, fetcher) -> None:
                                                                 "source_version": "v1"}]}, headers=headers())
     m = client.get(f"/v1/masters/{st.json()['items'][0]['master_id']}", headers=headers())
     assert "secret-signature" not in m.text
+
+
+def test_trace_jobs_keep_their_product_identity_after_a_retry(client, worker, fetcher) -> None:
+    missing = "https://convex.echoray.io/api/storage/missing"
+    first = {**product("p1", missing), "name": "Leaf Shuriken", "slug": "leaf-shuriken",
+             "thumbnail_url": "https://convex.echoray.io/api/storage/thumb-1"}
+    client.post("/v1/prepare", json={"products": [first]}, headers=headers())
+    worker.run_until_empty()
+    # The retry renames the product and points at a new image and thumbnail.
+    retry = {**product("p1", fetcher.add("p1", synthetic("ring")), identity="lib:p1-new"),
+             "name": "Leaf Four-Point Shuriken", "slug": "leaf-four-point",
+             "thumbnail_url": "https://convex.echoray.io/api/storage/thumb-2"}
+    client.post("/v1/prepare", json={"products": [retry]}, headers=headers())
+    worker.run_until_empty()
+
+    items = client.get("/v1/jobs?kind=trace", headers=headers()).json()["items"]
+    by_status = {job["status"]: job for job in items}
+    failed, succeeded = by_status["failed"], by_status["succeeded"]
+    assert {k: failed[k] for k in ("product_id", "product_name", "product_slug", "product_thumbnail_url")} == {
+        "product_id": "p1", "product_name": "Leaf Shuriken", "product_slug": "leaf-shuriken",
+        "product_thumbnail_url": "https://convex.echoray.io/api/storage/thumb-1"}
+    assert succeeded["product_name"] == "Leaf Four-Point Shuriken"
+    assert succeeded["product_thumbnail_url"] == "https://convex.echoray.io/api/storage/thumb-2"
+    single = client.get(f"/v1/jobs/{failed['id']}", headers=headers()).json()
+    assert single["product_name"] == "Leaf Shuriken" and single["product_slug"] == "leaf-shuriken"
+
+
+def test_trace_job_without_thumbnail_still_names_its_product(client, worker, fetcher) -> None:
+    prepare_ready(client, worker, fetcher, "p1", "ring")
+    job = client.get("/v1/jobs", headers=headers()).json()["items"][0]
+    assert job["product_id"] == "p1" and job["product_name"] == "Product p1" and job["product_slug"] == "p1"
+    assert job["product_thumbnail_url"] is None
+
+
+def test_thumbnail_url_must_be_http(client, fetcher) -> None:
+    body = {"products": [{**product("p1", fetcher.add("p1", synthetic("ring"))), "thumbnail_url": "javascript:x"}]}
+    r = client.post("/v1/prepare", json=body, headers=headers())
+    assert r.status_code == 422 and r.json()["error"]["code"] == "VALIDATION_ERROR"

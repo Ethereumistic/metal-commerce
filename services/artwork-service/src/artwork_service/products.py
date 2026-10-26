@@ -105,7 +105,8 @@ def prepare(conn: sqlite3.Connection, business_id: str, req: PrepareRequest, con
              src.source_identity, src.source_version, src.original_url, src.width, src.height, utcnow()),
         )
         job_id = jobs.enqueue(conn, business_id=business_id, kind="trace",
-                              payload={"source_id": source_id, "product_id": pid, "reprocess": req.reprocess},
+                              payload={"source_id": source_id, "product_id": pid, "reprocess": req.reprocess,
+                                       "thumbnail_url": product.thumbnail_url},
                               max_attempts=config.max_attempts, timeout_s=config.trace_timeout_s)
         _upsert_state(conn, business_id, pid, status="queued", job_id=job_id, pending_source_id=source_id,
                       error=None)

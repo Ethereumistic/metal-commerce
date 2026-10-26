@@ -414,12 +414,6 @@ export function SheetSettings({
               onChange={(value) => updateSheet({ timeBudget: Number(value) as TimeBudget })}
             />
           </Labelled>
-          <DraftNumberField
-            label="Seed"
-            value={sheet.seed}
-            digits={0}
-            onCommit={(seed) => seed != null && Number.isInteger(seed) && seed >= 0 && updateSheet({ seed })}
-          />
           <Labelled label="Batch name (optional)">
             <Input
               key={sheet.name}
@@ -433,6 +427,26 @@ export function SheetSettings({
               }}
             />
           </Labelled>
+          {/* The seed is still sent and recorded, but the current solver ignores
+              it (manifests report seed_applied: false), so it is not offered as
+              an everyday setting. */}
+          <details className="group text-sm">
+            <summary className="cursor-pointer text-xs text-muted-foreground select-none hover:text-foreground">
+              Advanced
+            </summary>
+            <div className="mt-2 flex flex-col gap-1">
+              <DraftNumberField
+                label="Seed"
+                value={sheet.seed}
+                digits={0}
+                onCommit={(seed) => seed != null && Number.isInteger(seed) && seed >= 0 && updateSheet({ seed })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Recorded with the batch for future solvers. The current irregular solver ignores it, so changing it
+                does not change the layout.
+              </p>
+            </div>
+          </details>
         </Panel>
       </div>
 
