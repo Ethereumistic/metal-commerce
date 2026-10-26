@@ -103,6 +103,10 @@ type ProductionState = PersistedProduction & {
   updateSheet: (patch: Partial<SheetSettings>) => void;
   choosePreset: (preset: SheetPreset) => void;
   setDraft: (draft: BatchDraft | null) => void;
+  /** Empties the batch (rows and products waiting to join) for a fresh one; the selection stays. */
+  clearBatch: () => void;
+  /** Replaces the batch rows and sheet settings, e.g. with a repeated batch's frozen settings. */
+  replaceDraft: (lines: NewLine[], sheet: SheetSettings) => void;
   setTracePollOffline: (offline: boolean) => void;
 };
 
@@ -236,6 +240,15 @@ export const useProduction = create<ProductionState>()(
       choosePreset: (preset) =>
         set((state) => ({ sheet: sheetForPreset(state.sheet, state.sheetMemory, preset), draft: null })),
       setDraft: (draft) => set({ draft }),
+      clearBatch: () => set({ lines: [], pendingAdds: {}, draft: null }),
+      replaceDraft: (lines, sheet) =>
+        set((state) => ({
+          lines: lines.map((line) => ({ ...line, lineId: newLineId() })),
+          pendingAdds: {},
+          sheet,
+          sheetMemory: rememberSheet(state.sheetMemory, sheet),
+          draft: null,
+        })),
       setTracePollOffline: (offline) => set((state) => (state.tracePollOffline === offline ? state : { tracePollOffline: offline })),
     }),
     {

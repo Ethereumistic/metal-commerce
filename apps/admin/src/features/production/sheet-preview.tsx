@@ -1,14 +1,42 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent, type ReactNode, type WheelEvent } from "react";
-import { Download, Maximize2, Minus, Package, Plus, RefreshCw } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Download,
+  FileText,
+  Package,
+  RefreshCw,
+  Repeat2,
+  SquareDashed,
+  XCircle,
+} from "lucide-react";
 import { Button, buttonVariants } from "@workspace/ui/components/button";
-import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
-import { Segmented } from "../studio/components/fields";
+import { Toggle } from "@workspace/ui/components/toggle";
+import { cn } from "@workspace/ui/lib/utils";
 import { artifactUrl, getBatch } from "./api";
-import type { Batch, JsonValue, ServiceResult, Sheet } from "./contracts";
+import { LIMITS } from "./batch-logic";
+import type { Batch, JsonValue, Master, ServiceResult } from "./contracts";
 import { attempt } from "./hooks";
-import { actualSize, type SizeInput } from "./sizing";
-import { BatchBadge, ResultAlert, formatMm } from "./status";
 import { ProductImage } from "./product-image";
+import { useRepeatBatch } from "./repeat";
+import {
+  ENGINE_TEXT,
+  formatDuration,
+  formatMm,
+  formatPercent,
+  groupSummaries,
+  leftoverText,
+  partColour,
+  plural,
+  qualification,
+  sheetNumbers,
+  shortOfSheets,
+  suggestedSheetLimit,
+  type CheckState,
+} from "./results-logic";
+import { SheetViewport, type PartLook } from "./sheet-viewport";
+import { actualSize, type SizeInput } from "./sizing";
+import { BatchBadge, ResultAlert, formatDate } from "./status";
 import { useProduction, type ProductInfo } from "./store";
 import { MasterLoader } from "./trace-preview";
 
@@ -56,187 +84,6 @@ function frozenLines(request: Batch["request"]): FrozenLine[] {
   });
 }
 
-const hue = (index: number) => (index * 137.508) % 360;
-
-type Box = { x: number; y: number; w: number; h: number };
-
-/** Sheet layout with wheel zoom, drag pan and fit-to-view. Coordinates are mm. */
-function ZoomPan({ sheet, children }: { sheet: { width: number; height: number }; children: ReactNode }) {
-  const pad = Math.max(sheet.width, sheet.height) * 0.03;
-  const fit = useMemo<Box>(
-    () => ({ x: -pad, y: -pad, w: sheet.width + pad * 2, h: sheet.height + pad * 2 }),
-    [sheet.width, sheet.height, pad],
-  );
-  const [view, setView] = useState<Box>(fit);
-  const svg = useRef<SVGSVGElement>(null);
-  const drag = useRef<{ x: number; y: number; view: Box } | null>(null);
-  useEffect(() => setView(fit), [fit]);
-
-  const zoom = (factor: number, center?: { x: number; y: number }) =>
-    setView((current) => {
-      const cx = center?.x ?? current.x + current.w / 2;
-      const cy = center?.y ?? current.y + current.h / 2;
-      const w = Math.min(Math.max(current.w * factor, fit.w / 50), fit.w * 4);
-      const h = (w / current.w) * current.h;
-      return { x: cx - ((cx - current.x) * w) / current.w, y: cy - ((cy - current.y) * h) / current.h, w, h };
-    });
-
-  const toWorld = (clientX: number, clientY: number) => {
-    const rect = svg.current!.getBoundingClientRect();
-    const scale = Math.max(view.w / rect.width, view.h / rect.height);
-    // preserveAspectRatio xMidYMid meet: the view box is centred in the element.
-    const offsetX = (rect.width * scale - view.w) / 2;
-    const offsetY = (rect.height * scale - view.h) / 2;
-    return {
-      x: view.x - offsetX + (clientX - rect.left) * scale,
-      y: view.y - offsetY + (clientY - rect.top) * scale,
-      scale,
-    };
-  };
-
-  return (
-    <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border bg-muted/30">
-      <svg
-        ref={svg}
-        className="size-full cursor-grab touch-none select-none active:cursor-grabbing"
-        viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`}
-        onWheel={(event: WheelEvent) => {
-          const point = toWorld(event.clientX, event.clientY);
-          zoom(event.deltaY > 0 ? 1.15 : 1 / 1.15, point);
-        }}
-        onPointerDown={(event: PointerEvent<SVGSVGElement>) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          drag.current = { x: event.clientX, y: event.clientY, view };
-        }}
-        onPointerMove={(event: PointerEvent<SVGSVGElement>) => {
-          const start = drag.current;
-          if (!start) return;
-          const { scale } = toWorld(event.clientX, event.clientY);
-          setView({
-            ...start.view,
-            x: start.view.x - (event.clientX - start.x) * scale,
-            y: start.view.y - (event.clientY - start.y) * scale,
-          });
-        }}
-        onPointerUp={() => (drag.current = null)}
-        onPointerCancel={() => (drag.current = null)}
-      >
-        {children}
-      </svg>
-      <div className="absolute top-2 right-2 flex gap-1">
-        <Button variant="outline" size="icon-sm" aria-label="Zoom in" onClick={() => zoom(1 / 1.4)}>
-          <Plus />
-        </Button>
-        <Button variant="outline" size="icon-sm" aria-label="Zoom out" onClick={() => zoom(1.4)}>
-          <Minus />
-        </Button>
-        <Button variant="outline" size="icon-sm" aria-label="Fit sheet" onClick={() => setView(fit)}>
-          <Maximize2 />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-type Sizes = Map<string, { width: number; height: number }>;
-
-/**
- * Placements drawn as each part's bounding box at its placed rotation, from
- * the service's coordinates (sheet lower-left origin, Y up). True contours
- * are in the rendered SVG and the DXF.
- */
-function PlacementLayer({
-  sheet,
-  sizes,
-  colours,
-  margins,
-}: {
-  sheet: Sheet;
-  sizes: Sizes;
-  colours: Map<string, number>;
-  margins: { left: number; right: number; bottom: number; top: number } | null;
-}) {
-  const stroke = Math.max(sheet.width_mm, sheet.height_mm) / 800;
-  const font = Math.max(sheet.width_mm, sheet.height_mm) / 90;
-  return (
-    <>
-      <rect
-        width={sheet.width_mm}
-        height={sheet.height_mm}
-        fill="var(--background)"
-        stroke="var(--foreground)"
-        strokeWidth={stroke * 2}
-      />
-      {margins && (
-        <rect
-          x={margins.left}
-          y={margins.top}
-          width={sheet.width_mm - margins.left - margins.right}
-          height={sheet.height_mm - margins.bottom - margins.top}
-          fill="none"
-          stroke="var(--muted-foreground)"
-          strokeDasharray={`${stroke * 6} ${stroke * 4}`}
-          strokeWidth={stroke}
-        />
-      )}
-      {/* Flip to the service's Y-up frame for the parts. */}
-      <g transform={`translate(0 ${sheet.height_mm}) scale(1 -1)`}>
-        {sheet.placements.map((placement) => {
-          const size = sizes.get(placement.line_id);
-          const colour = hue(colours.get(placement.line_id) ?? 0);
-          if (!size)
-            return (
-              <circle
-                key={placement.instance_id}
-                cx={placement.tx_mm}
-                cy={placement.ty_mm}
-                r={font / 2}
-                fill={`hsl(${colour} 70% 50%)`}
-              />
-            );
-          return (
-            <g
-              key={placement.instance_id}
-              transform={`translate(${placement.tx_mm} ${placement.ty_mm}) rotate(${placement.rotation_deg})`}
-            >
-              <rect
-                width={size.width}
-                height={size.height}
-                fill={`hsl(${colour} 70% 55% / 0.25)`}
-                stroke={`hsl(${colour} 70% 40%)`}
-                strokeWidth={stroke}
-              >
-                <title>{`${placement.instance_id} · ${placement.rotation_deg}°`}</title>
-              </rect>
-            </g>
-          );
-        })}
-      </g>
-      {sheet.placements.map((placement) => {
-        const size = sizes.get(placement.line_id);
-        if (!size) return null;
-        const angle = (placement.rotation_deg * Math.PI) / 180;
-        const cx = placement.tx_mm + (size.width / 2) * Math.cos(angle) - (size.height / 2) * Math.sin(angle);
-        const cy = placement.ty_mm + (size.width / 2) * Math.sin(angle) + (size.height / 2) * Math.cos(angle);
-        return (
-          <text
-            key={placement.instance_id}
-            x={cx}
-            y={sheet.height_mm - cy}
-            fontSize={font}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="var(--foreground)"
-            className="pointer-events-none"
-          >
-            {placement.instance_id.split("#").pop()}
-          </text>
-        );
-      })}
-    </>
-  );
-}
-
 function marginsOf(request: Batch["request"]) {
   const stock = request.stock;
   if (!stock || typeof stock !== "object" || Array.isArray(stock)) return null;
@@ -248,284 +95,14 @@ function marginsOf(request: Batch["request"]) {
     : null;
 }
 
-function validationNotes(validation: JsonValue): string[] {
-  if (!validation || typeof validation !== "object" || Array.isArray(validation)) return [];
-  const notes: string[] = [];
-  for (const key of ["errors", "warnings"] as const) {
-    const entries = validation[key];
-    if (!Array.isArray(entries)) continue;
-    for (const entry of entries)
-      notes.push(
-        typeof entry === "string"
-          ? entry
-          : entry && typeof entry === "object" && !Array.isArray(entry) && typeof entry.message === "string"
-            ? `${typeof entry.code === "string" ? `${entry.code} · ` : ""}${entry.message}`
-            : JSON.stringify(entry),
-      );
-  }
-  return notes;
-}
-
-function MetricList({ metrics }: { metrics: Sheet["metrics"] }) {
-  const entries = Object.entries(metrics).filter(
-    (entry): entry is [string, number | string] =>
-      typeof entry[1] === "number" || typeof entry[1] === "string",
-  );
-  if (!entries.length) return null;
-  return (
-    <dl className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
-      {entries.map(([key, value]) => (
-        <div key={key} className="contents">
-          <dt className="text-muted-foreground">{key.replaceAll("_", " ")}</dt>
-          <dd className="tabular-nums">
-            {typeof value === "number" ? Number(value.toFixed(4)) : value}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-export function SheetPreview({ batch, onReload }: { batch: Batch; onReload: () => void }) {
-  const masters = useProduction((state) => state.masters);
-  const products = useProduction((state) => state.products);
-  const [active, setActive] = useState(batch.sheets[0]?.sheet_id ?? "");
-  const [view, setView] = useState<"layout" | "rendered">("layout");
-  const lines = useMemo(() => frozenLines(batch.request), [batch.request]);
-  const colours = useMemo(() => new Map(lines.map((line, index) => [line.lineId, index])), [lines]);
-  const sizes = useMemo(() => {
-    const result: Sizes = new Map();
-    for (const line of lines) {
-      const master = masters[line.masterId];
-      const size = master && actualSize(master.aspect_ratio, line.size);
-      if (size) result.set(line.lineId, size);
-    }
-    return result;
-  }, [lines, masters]);
-  const margins = marginsOf(batch.request);
-  const sheet = batch.sheets.find((entry) => entry.sheet_id === active) ?? batch.sheets[0];
-  const files = batch.artifacts.sheets.find((entry) => entry.sheet_id === sheet?.sheet_id);
-  const notes = validationNotes(batch.validation);
-  const totals = batch.totals;
-  const byLine = useMemo(() => new Map(lines.map((line) => [line.lineId, line])), [lines]);
-  const placedCounts = useMemo(
-    () => countBy(batch.sheets.flatMap((entry) => entry.placements.map((placement) => placement.line_id))),
-    [batch.sheets],
-  );
-  const infoOf = (lineId: string) => {
-    const line = byLine.get(lineId);
-    return { line, info: line ? describe(line, products, masters[line.masterId]?.revision) : null };
-  };
-
-  return (
-    <div className="flex min-h-0 flex-1 gap-4">
-      {[...new Set(lines.map((line) => line.masterId))].map((id) => (
-        <MasterLoader key={id} masterId={id} />
-      ))}
-      <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className="flex items-center gap-2">
-          {batch.sheets.length > 0 && (
-            <Tabs value={sheet?.sheet_id} onValueChange={(value) => setActive(String(value))}>
-              <TabsList>
-                {batch.sheets.map((entry) => (
-                  <TabsTrigger key={entry.sheet_id} value={entry.sheet_id}>
-                    Sheet {entry.index + 1}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          )}
-          <span className="flex-1" />
-          <Segmented
-            className="w-auto"
-            value={view}
-            options={[
-              { value: "layout", label: "Layout" },
-              { value: "rendered", label: "Rendered contours" },
-            ]}
-            onChange={setView}
-          />
-        </div>
-        {sheet ? (
-          view === "rendered" && files?.svg ? (
-            <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto rounded-lg border bg-white">
-              <img
-                src={artifactUrl(files.svg)}
-                alt={`Rendered sheet ${sheet.index + 1}`}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-          ) : (
-            <ZoomPan sheet={{ width: sheet.width_mm, height: sheet.height_mm }}>
-              <PlacementLayer sheet={sheet} sizes={sizes} colours={colours} margins={margins} />
-            </ZoomPan>
-          )
-        ) : (
-          <div className="flex flex-1 items-center justify-center rounded-lg border text-sm text-muted-foreground">
-            No sheets yet.
-          </div>
-        )}
-        {view === "layout" && (
-          <p className="text-xs text-muted-foreground">
-            Boxes are each part's bounding box at its placed rotation; the dashed line is the margin.
-            Preview guides never appear in the DXF. Switch to Rendered contours for the real outlines.
-          </p>
-        )}
-      </div>
-
-      <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-y-auto">
-        <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium">Batch {batch.batch_id}</span>
-          <BatchBadge status={batch.status} />
-          <Button variant="ghost" size="icon-sm" aria-label="Reload batch" onClick={onReload}>
-            <RefreshCw />
-          </Button>
-        </div>
-        {totals && (
-          <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-            <dt className="text-muted-foreground">Requested</dt>
-            <dd className="tabular-nums">{totals.requested}</dd>
-            <dt className="text-muted-foreground">Placed</dt>
-            <dd className="tabular-nums">{totals.placed}</dd>
-            <dt className="text-muted-foreground">Unplaced</dt>
-            <dd className={totals.unplaced ? "text-destructive tabular-nums" : "tabular-nums"}>{totals.unplaced}</dd>
-            <dt className="text-muted-foreground">Sheets</dt>
-            <dd className="tabular-nums">{totals.sheet_count}</dd>
-            <dt className="text-muted-foreground">Utilization</dt>
-            <dd className="tabular-nums">{(totals.utilization * 100).toFixed(1)}%</dd>
-            <dt className="text-muted-foreground">Runtime</dt>
-            <dd className="tabular-nums">{totals.runtime_s != null ? `${totals.runtime_s.toFixed(1)} s` : "—"}</dd>
-            {totals.optimization_status && (
-              <>
-                <dt className="text-muted-foreground">Optimizer</dt>
-                <dd>{totals.optimization_status}</dd>
-              </>
-            )}
-          </dl>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Utilization is the metal area of the placed parts divided by the area of the sheets used,
-          as computed by the service
-          {totals
-            ? `: ${formatMm(totals.metal_area_mm2 / 1e6)} m² of ${formatMm(totals.sheet_area_mm2 / 1e6)} m².`
-            : "."}
-        </p>
-        {batch.status === "incomplete" && (
-          <p className="text-xs text-destructive">
-            Not every part was placed. No complete package is offered for a partial result.
-          </p>
-        )}
-        {notes.length > 0 && (
-          <ul className="list-disc pl-5 text-xs text-amber-600 dark:text-amber-400">
-            {notes.map((note, index) => (
-              <li key={index}>{note}</li>
-            ))}
-          </ul>
-        )}
-        {lines.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <h4 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Parts in this batch</h4>
-            <ul className="flex flex-col gap-1.5 text-xs">
-              {lines.map((line) => {
-                const info = describe(line, products, masters[line.masterId]?.revision);
-                const size = sizes.get(line.lineId);
-                const placed = placedCounts.get(line.lineId) ?? 0;
-                return (
-                  <li key={line.lineId} className="flex items-center gap-2">
-                    <Swatch index={colours.get(line.lineId) ?? 0} />
-                    <ProductImage thumbnail={info.thumbnail} masterId={line.masterId} name={info.name} className="size-9" />
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate font-medium">{info.name}</span>
-                      {size && (
-                        <span className="text-muted-foreground tabular-nums">
-                          {formatMm(size.width)} × {formatMm(size.height)} mm
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={line.quantity != null && placed < line.quantity ? "text-destructive tabular-nums" : "tabular-nums"}
-                      title="Placed of requested"
-                    >
-                      {placed}
-                      {line.quantity != null && ` / ${line.quantity}`}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-        {sheet && (
-          <div className="flex flex-col gap-2 rounded-lg border p-3">
-            <h4 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-              Sheet {sheet.index + 1} · {formatMm(sheet.width_mm)} × {formatMm(sheet.height_mm)} mm
-            </h4>
-            <p className="text-xs text-muted-foreground">{sheet.group_key}</p>
-            <ul className="flex flex-col gap-1 text-xs">
-              {[...countBy(sheet.placements.map((placement) => placement.line_id))].map(([lineId, count]) => {
-                const { line, info } = infoOf(lineId);
-                return (
-                  <li key={lineId} className="flex items-center gap-2">
-                    <Swatch index={colours.get(lineId) ?? 0} />
-                    <ProductImage thumbnail={info?.thumbnail ?? null} masterId={line?.masterId} name={info?.name} className="size-7" />
-                    <span className="min-w-0 flex-1 truncate">{info?.name ?? `Line ${lineId}`}</span>
-                    <span className="tabular-nums">× {count}</span>
-                  </li>
-                );
-              })}
-            </ul>
-            <MetricList metrics={sheet.metrics} />
-            <div className="flex flex-wrap gap-2">
-              {files?.dxf && (
-                <a href={artifactUrl(files.dxf)} download className={buttonVariants({ size: "sm" })}>
-                  <Download /> Sheet DXF
-                </a>
-              )}
-              {files?.svg && (
-                <a
-                  href={artifactUrl(files.svg)}
-                  download
-                  className={buttonVariants({ variant: "outline", size: "sm" })}
-                >
-                  <Download /> SVG
-                </a>
-              )}
-            </div>
-          </div>
-        )}
-        <div className="flex flex-col gap-2">
-          {batch.status === "completed" && batch.artifacts.zip && (
-            <a href={artifactUrl(batch.artifacts.zip)} download className={buttonVariants()}>
-              <Package /> Download all (ZIP)
-            </a>
-          )}
-          {batch.artifacts.manifest && (
-            <a
-              href={artifactUrl(batch.artifacts.manifest)}
-              download
-              className={buttonVariants({ variant: "outline", size: "sm" })}
-            >
-              <Download /> Manifest
-            </a>
-          )}
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function Swatch({ index }: { index: number }) {
-  return <span className="size-2.5 shrink-0 rounded-sm" style={{ background: `hsl(${hue(index)} 70% 50%)` }} />;
-}
-
 /**
  * Name and picture of a frozen line, by its product id; the batch may be
  * older than this browser's rows, so it never depends on the current lines.
  */
-function describe(line: FrozenLine, products: Record<string, ProductInfo>, revision: number | undefined) {
+function describe(line: FrozenLine, products: Record<string, ProductInfo>, master: Master | undefined) {
   const known = products[line.productId];
   return {
-    name: known?.name ?? (revision != null ? `Master r${revision} · ${line.masterId}` : `Master ${line.masterId}`),
+    name: known?.name ?? (master ? `Product traced as master r${master.revision}` : "Product from an earlier batch"),
     thumbnail: known?.thumbnail ?? null,
   };
 }
@@ -536,9 +113,432 @@ function countBy(values: string[]) {
   return counts;
 }
 
-export function BatchResult({ batchId, refreshKey }: { batchId: string; refreshKey: unknown }) {
+function Swatch({ colour }: { colour: string }) {
+  return <span className="size-3 shrink-0" style={{ background: colour }} aria-hidden />;
+}
+
+const STATE_ICON: Record<CheckState, ReactNode> = {
+  good: <CheckCircle2 className="size-4 shrink-0 text-ws-cut" aria-label="Done" />,
+  attention: <AlertTriangle className="size-4 shrink-0 text-ws-hazard-ink" aria-label="Needs checking" />,
+  blocked: <XCircle className="size-4 shrink-0 text-ws-spark" aria-label="Blocked" />,
+  pending: <RefreshCw className="size-4 shrink-0 text-muted-foreground" aria-label="Pending" />,
+};
+
+function Check({ state, title, children }: { state: CheckState; title: string; children: ReactNode }) {
+  return (
+    <div
+      className={cn(
+        "flex gap-2 border-l-4 py-1.5 pr-1 pl-2",
+        state === "good" && "border-l-ws-cut",
+        state === "attention" && "border-l-ws-hazard bg-ws-hazard/10",
+        state === "blocked" && "border-l-ws-spark bg-ws-spark/10",
+        state === "pending" && "border-l-border",
+      )}
+    >
+      {STATE_ICON[state]}
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <span className="text-sm font-medium">{title}</span>
+        <div className="text-xs text-muted-foreground">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/** A rail section: a plain heading over ruled content, no card chrome. */
+function Block({ title, children, className }: { title: ReactNode; children: ReactNode; className?: string }) {
+  return (
+    <section className={cn("flex flex-col gap-2 border-t pt-3 first:border-t-0 first:pt-0", className)}>
+      <h3 className="text-xs font-semibold text-muted-foreground">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function Figure({ value, label, tone }: { value: ReactNode; label: string; tone?: "bad" }) {
+  return (
+    <div className="flex min-w-0 flex-col">
+      <span className={cn("ws-numeral text-[28px] tracking-wide", tone === "bad" && "text-ws-spark")}>{value}</span>
+      <span className="text-xs text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+export function SheetPreview({
+  batch,
+  onReload,
+  onOpenDraft,
+  draftRows,
+}: {
+  batch: Batch;
+  onReload: () => void;
+  onOpenDraft: () => void;
+  draftRows: number;
+}) {
+  const masters = useProduction((state) => state.masters);
+  const products = useProduction((state) => state.products);
+  const [active, setActive] = useState(batch.sheets[0]?.sheet_id ?? "");
+  const [boxes, setBoxes] = useState(false);
+  const { repeat, dialog, problem } = useRepeatBatch();
+
+  const lines = useMemo(() => frozenLines(batch.request), [batch.request]);
+  const numbers = useMemo(() => sheetNumbers(batch.sheets), [batch.sheets]);
+  const serviceLines = useMemo(() => new Map(batch.lines.map((line) => [line.line_id, line])), [batch.lines]);
+  const colours = useMemo(() => new Map(lines.map((line, index) => [line.lineId, partColour(index)])), [lines]);
+  const info = useMemo(
+    () => new Map(lines.map((line) => [line.lineId, describe(line, products, masters[line.masterId])])),
+    [lines, products, masters],
+  );
+  const looks = useMemo(() => {
+    const result = new Map<string, PartLook>();
+    for (const line of lines) {
+      const master = masters[line.masterId];
+      const service = serviceLines.get(line.lineId);
+      // The service's own sized dimensions win over a local recomputation.
+      const size =
+        service?.actual_width_mm != null && service.actual_height_mm != null
+          ? { width: service.actual_width_mm, height: service.actual_height_mm }
+          : master
+            ? actualSize(master.aspect_ratio, line.size)
+            : null;
+      if (!size) continue;
+      result.set(line.lineId, {
+        name: info.get(line.lineId)?.name ?? "Part",
+        colour: colours.get(line.lineId) ?? partColour(0),
+        width: size.width,
+        height: size.height,
+        mask: master?.artifacts.master_svg ? artifactUrl(master.artifacts.master_svg) : null,
+      });
+    }
+    return result;
+  }, [lines, masters, serviceLines, colours, info]);
+
+  const margins = marginsOf(batch.request);
+  const sheet = batch.sheets.find((entry) => entry.sheet_id === active) ?? batch.sheets[0];
+  const sheetNumber = sheet ? (numbers.get(sheet.sheet_id) ?? 1) : 0;
+  const files = batch.artifacts.sheets.find((entry) => entry.sheet_id === sheet?.sheet_id);
+  const totals = batch.totals;
+  const placedCounts = useMemo(
+    () => countBy(batch.sheets.flatMap((entry) => entry.placements.map((placement) => placement.line_id))),
+    [batch.sheets],
+  );
+  const checks = qualification(batch);
+  const groups = useMemo(() => groupSummaries(batch), [batch]);
+  const traceWarnings = lines.flatMap((line) =>
+    (masters[line.masterId]?.diagnostics.warnings ?? []).map((warning) => ({
+      lineId: line.lineId,
+      text: `${info.get(line.lineId)?.name}: ${warning.message || warning.code}`,
+    })),
+  );
+  const uniqueWarnings = [...new Map(traceWarnings.map((warning) => [warning.text, warning])).values()];
+  // Name the affected parts only when it is some of them, not all.
+  const affected =
+    checks.features.state !== "good" && checks.features.lineIds.length < lines.length
+      ? checks.features.lineIds.flatMap((id) => info.get(id)?.name ?? [])
+      : [];
+  const short = shortOfSheets(batch);
+  const nextLimit = short ? suggestedSheetLimit(batch, LIMITS.maxSheets) : null;
+  const sheetGroup = groups.find((group) => group.groupKey === sheet?.group_key);
+  const sheetMetrics = sheet?.metrics ?? {};
+  const sheetUtil = typeof sheetMetrics.utilization === "number" ? sheetMetrics.utilization : null;
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-3 lg:flex-row">
+      {[...new Set(lines.map((line) => line.masterId))].map((id) => (
+        <MasterLoader key={id} masterId={id} />
+      ))}
+      {dialog}
+
+      <div className="flex min-h-[420px] min-w-0 flex-1 flex-col gap-2">
+        <header className="flex flex-wrap items-end gap-x-6 gap-y-2">
+          <div className="flex min-w-0 flex-col">
+            <div className="flex items-center gap-2">
+              <h2 className="truncate text-base font-semibold" title={batch.batch_id}>
+                {batch.name ?? "Untitled batch"}
+              </h2>
+              <BatchBadge status={batch.status} />
+              <Button variant="ghost" size="icon-sm" aria-label="Reload batch" onClick={onReload}>
+                <RefreshCw />
+              </Button>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {batch.created_at ? `Created ${formatDate(batch.created_at)}` : `Batch ${batch.batch_id}`}
+            </span>
+          </div>
+          {totals && (
+            <div className="flex flex-wrap gap-x-6 gap-y-1">
+              <Figure
+                value={`${totals.placed}/${totals.requested}`}
+                label="parts placed"
+                tone={totals.unplaced ? "bad" : undefined}
+              />
+              <Figure value={totals.sheet_count} label={totals.sheet_count === 1 ? "sheet" : "sheets"} />
+              <Figure value={formatPercent(totals.utilization)} label="metal coverage" />
+              {totals.runtime_s != null && <Figure value={formatDuration(totals.runtime_s)} label="solver time" />}
+            </div>
+          )}
+        </header>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {batch.sheets.length > 0 && (
+            <div role="tablist" aria-label="Sheets" className="flex max-w-full gap-1 overflow-x-auto">
+              {batch.sheets.map((entry) => {
+                const number = numbers.get(entry.sheet_id) ?? 0;
+                const selected = entry.sheet_id === sheet?.sheet_id;
+                return (
+                  <button
+                    key={entry.sheet_id}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    aria-label={`Sheet ${number}`}
+                    onClick={() => setActive(entry.sheet_id)}
+                    className={cn(
+                      "flex shrink-0 items-baseline gap-1 border-b-2 px-2 pt-1 pb-0.5 text-xs text-muted-foreground hover:text-foreground",
+                      selected ? "border-ws-temper text-foreground" : "border-transparent",
+                    )}
+                  >
+                    Sheet <span className="ws-numeral text-lg">{number}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <span className="flex-1" />
+          <Toggle
+            variant="outline"
+            size="sm"
+            pressed={boxes}
+            onPressedChange={setBoxes}
+            aria-label="Show bounding-box guides"
+          >
+            <SquareDashed /> Box guides
+          </Toggle>
+        </div>
+
+        {sheet ? (
+          <SheetViewport
+            key={sheet.sheet_id}
+            sheet={sheet}
+            label={`Sheet ${sheetNumber}, ${plural(sheet.placements.length, "part")}`}
+            looks={looks}
+            margins={margins}
+            boxes={boxes}
+          />
+        ) : (
+          <div className="flex min-h-0 flex-1 items-center justify-center border bg-ws-surface p-6 text-center text-sm text-muted-foreground">
+            {batch.status === "queued" || batch.status === "nesting"
+              ? "Sheets appear here when nesting finishes."
+              : "No sheets were laid out for this batch."}
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Real cut outlines, coloured by product. The dashed line is the sheet margin; guides never appear in the DXF.
+        </p>
+      </div>
+
+      <aside className="flex w-full shrink-0 flex-col gap-3 overflow-y-auto lg:w-[17rem] xl:w-80">
+        <Block title="Ready to cut?">
+          <Check state={checks.geometry.state} title={checks.geometry.title}>
+            {checks.geometry.detail}
+          </Check>
+          {batch.sheets.length > 0 && (
+            <Check state={checks.features.state} title={checks.features.title}>
+              {checks.features.detail}
+              {affected.length > 0 && <> Affects {affected.join(", ")}.</>}
+            </Check>
+          )}
+          {uniqueWarnings.length > 0 && (
+            <Check state="attention" title={`${plural(uniqueWarnings.length, "tracing warning")}`}>
+              <ul className="flex flex-col gap-0.5">
+                {uniqueWarnings.slice(0, 6).map((warning) => (
+                  <li key={warning.text}>{warning.text}</li>
+                ))}
+              </ul>
+            </Check>
+          )}
+          {short && nextLimit != null && (
+            <Button onClick={() => repeat(batch, { maxSheets: nextLimit, run: true })}>
+              <Repeat2 /> Raise limit to {nextLimit} sheets and retry
+            </Button>
+          )}
+        </Block>
+
+        <Block title="Files">
+          {batch.status === "completed" && !checks.readyToCut && (
+            <p className="text-xs text-ws-hazard-ink">
+              The files are geometrically complete. Check the points above before cutting.
+            </p>
+          )}
+          {batch.artifacts.zip && (
+            <a href={artifactUrl(batch.artifacts.zip)} download className={buttonVariants()}>
+              <Package /> Download all sheets (ZIP)
+            </a>
+          )}
+          {sheet && (files?.dxf || files?.svg) && (
+            <div className="flex flex-wrap gap-2">
+              {files?.dxf && (
+                <a href={artifactUrl(files.dxf)} download className={buttonVariants({ variant: "outline", size: "sm" })}>
+                  <Download /> Sheet {sheetNumber} DXF
+                </a>
+              )}
+              {files?.svg && (
+                <a href={artifactUrl(files.svg)} download className={buttonVariants({ variant: "ghost", size: "sm" })}>
+                  <Download /> Sheet {sheetNumber} preview SVG
+                </a>
+              )}
+            </div>
+          )}
+          {batch.artifacts.manifest && (
+            <a
+              href={artifactUrl(batch.artifacts.manifest)}
+              download
+              className={buttonVariants({ variant: "ghost", size: "sm", className: "self-start" })}
+            >
+              <FileText /> Manifest (JSON)
+            </a>
+          )}
+          {!batch.artifacts.zip && batch.status !== "completed" && (
+            <p className="text-xs text-muted-foreground">No production files are offered for an unfinished or partial batch.</p>
+          )}
+        </Block>
+
+        {sheet && (
+          <Block title={`Sheet ${sheetNumber} of ${batch.sheets.length}`}>
+            <p className="text-xs text-muted-foreground tabular-nums">
+              {formatMm(sheet.width_mm)} × {formatMm(sheet.height_mm)} mm{sheetGroup ? `, ${sheetGroup.label}` : ""}
+              {sheetUtil != null ? `, ${formatPercent(sheetUtil)} covered by parts` : ""}
+            </p>
+            <ul className="flex flex-col gap-1 text-xs">
+              {[...countBy(sheet.placements.map((placement) => placement.line_id))].map(([lineId, count]) => (
+                <li key={lineId} className="flex items-center gap-2">
+                  <Swatch colour={colours.get(lineId) ?? partColour(0)} />
+                  <span className="min-w-0 flex-1 truncate">{info.get(lineId)?.name ?? "Part"}</span>
+                  <span className="tabular-nums">× {count}</span>
+                </li>
+              ))}
+            </ul>
+          </Block>
+        )}
+
+        {batch.sheets.length > 0 && groups.length > 0 && (
+          <Block title={groups.length === 1 ? "How it was nested" : "How each material group was nested"}>
+            <ul className="flex flex-col gap-3 text-xs">
+              {groups.map((group) => {
+                const engine = ENGINE_TEXT[group.engine];
+                const range =
+                  group.sheetNumbers.length > 1
+                    ? `sheets ${group.sheetNumbers[0]}–${group.sheetNumbers[group.sheetNumbers.length - 1]}`
+                    : group.sheetNumbers.length === 1
+                      ? `sheet ${group.sheetNumbers[0]}`
+                      : "no sheets";
+                return (
+                  <li key={group.groupKey} className="flex flex-col gap-1">
+                    <span className="font-medium text-foreground">
+                      {group.label}, {range}
+                    </span>
+                    <span className={cn(group.engine === "bbox" && "text-ws-hazard-ink")}>
+                      <span className="font-medium">{engine.label}</span>
+                      {group.engineVersion ? ` ${group.engineVersion}` : ""}
+                      {group.runtimeS != null ? `, ${formatDuration(group.runtimeS)}` : ""}. {engine.detail}
+                    </span>
+                    {leftoverText(group) && <span className="text-muted-foreground">{leftoverText(group)}</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </Block>
+        )}
+
+        {lines.length > 0 && (
+          <Block title="Parts">
+            <ul className="flex flex-col gap-1.5 text-xs">
+              {lines.map((line) => {
+                const look = looks.get(line.lineId);
+                const placed = placedCounts.get(line.lineId) ?? 0;
+                const feature = serviceLines.get(line.lineId)?.feature_check;
+                const name = info.get(line.lineId)?.name ?? "Part";
+                return (
+                  <li key={line.lineId} className="flex items-center gap-2">
+                    <Swatch colour={colours.get(line.lineId) ?? partColour(0)} />
+                    <ProductImage
+                      thumbnail={info.get(line.lineId)?.thumbnail ?? null}
+                      masterId={line.masterId}
+                      name={name}
+                      className="size-9"
+                    />
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate font-medium" title={name}>
+                        {name}
+                      </span>
+                      {look && (
+                        <span className="text-muted-foreground tabular-nums">
+                          {formatMm(look.width)} × {formatMm(look.height)} mm
+                          {feature?.status === "fail" ? ", features too thin" : ""}
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={cn("tabular-nums", line.quantity != null && placed < line.quantity && "text-ws-spark")}
+                      title="Placed of requested"
+                    >
+                      {placed}
+                      {line.quantity != null && ` of ${line.quantity}`}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </Block>
+        )}
+
+        <Block title="Next">
+          <Button variant="outline" onClick={() => repeat(batch)}>
+            <Repeat2 /> Repeat this batch
+          </Button>
+          <Button variant="ghost" onClick={onOpenDraft}>
+            {draftRows ? `Open current draft (${plural(draftRows, "row")})` : "Start a new batch"}
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            Repeat loads this batch's exact rows and sheet settings into a new draft. The current draft is kept until
+            you confirm.
+          </p>
+          {problem && <p className="text-xs text-ws-spark">{problem}</p>}
+        </Block>
+      </aside>
+    </div>
+  );
+}
+
+export function BatchResult({
+  batchId,
+  refreshKey,
+  onOpenDraft,
+}: {
+  batchId: string;
+  refreshKey: unknown;
+  onOpenDraft: () => void;
+}) {
   const { result, reload } = useBatch(batchId, refreshKey);
-  if (!result) return <p className="text-sm text-muted-foreground">Loading batch…</p>;
+  const draftRows = useProduction((state) => state.lines.length);
+  if (!result)
+    return (
+      <div className="flex min-h-0 flex-1 gap-3" aria-busy="true" aria-label="Loading batch">
+        <div className="min-h-[420px] flex-1 animate-pulse bg-ws-surface" />
+        <div className="hidden w-80 flex-col gap-3 lg:flex">
+          <div className="h-24 animate-pulse bg-muted" />
+          <div className="h-16 animate-pulse bg-muted" />
+          <div className="h-40 animate-pulse bg-muted" />
+        </div>
+      </div>
+    );
   if (!result.ok) return <ResultAlert result={result} title="Batch unavailable" />;
-  return <SheetPreview key={result.data.batch_id} batch={result.data} onReload={reload} />;
+  return (
+    <SheetPreview
+      key={result.data.batch_id}
+      batch={result.data}
+      onReload={reload}
+      onOpenDraft={onOpenDraft}
+      draftRows={draftRows}
+    />
+  );
 }

@@ -1,3 +1,4 @@
+import { useLayoutEffect, useState } from "react";
 import {
   createFileRoute,
   Outlet,
@@ -37,14 +38,34 @@ export const Route = createFileRoute("/_app")({
   component: AppLayout,
 });
 
+/** Below this width the sidebar starts as an icon rail so dense pages keep their room. */
+const WIDE_QUERY = "(min-width: 1280px)";
+
+/**
+ * Sidebar open on wide screens, collapsed to icons on narrower ones. The
+ * operator's own toggle wins until the window crosses the breakpoint again.
+ */
+function useResponsiveSidebar() {
+  const [open, setOpen] = useState(true);
+  useLayoutEffect(() => {
+    const query = window.matchMedia(WIDE_QUERY);
+    const sync = () => setOpen(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+  return [open, setOpen] as const;
+}
+
 function AppLayout() {
   const { session } = Route.useRouteContext();
   const { pathname } = useLocation();
   const fullBleed = useMatches({
     select: (matches) => matches.some((match) => match.staticData.fullBleed),
   });
+  const [sidebarOpen, setSidebarOpen] = useResponsiveSidebar();
   return (
-    <SidebarProvider>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <AppSidebar session={session} />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">

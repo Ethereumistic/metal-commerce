@@ -1,18 +1,19 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
-import { FilePlus2 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
 import { Tabs, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
 import { cn } from "@workspace/ui/lib/utils";
 import { BatchEditor, BatchFooter } from "./batch-editor";
 import { requestFocus } from "./focus";
-import { isTerminal, JobProgress, useJob } from "./job-progress";
+import { JobProgress, useJob } from "./job-progress";
 import { PreparationFollower, ProductPicker } from "./product-picker";
 import type { Stage, StudioSearch } from "./search";
 import { HealthAlert, HealthMonitor, ServiceStatus } from "./service-status";
 import { BatchResult } from "./sheet-preview";
 import { SheetSettings } from "./sheet-settings";
+import { batchLimitProblems } from "./batch-logic";
+import { lineIssues } from "./validation";
 import { flushProductionState, readActiveRun, useProduction, writeActiveRun } from "./store";
 
 function useProductionSearch() {
@@ -37,34 +38,43 @@ function ResultsStage({
   jobId,
   batch,
   canEdit,
-  onStartNew,
+  onOpenDraft,
 }: {
   jobId: string | null;
   batch: string | null;
   canEdit: boolean;
-  onStartNew: () => void;
+  onOpenDraft: () => void;
 }) {
   const jobState = useJob(jobId);
   const job = jobState.job;
   const batchId = batch ?? job?.result?.batch_id ?? null;
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 p-3">
+    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 lg:overflow-hidden">
       {jobId && <JobProgress jobId={jobId} state={jobState} canEdit={canEdit} />}
       {batchId ? (
-        <BatchResult batchId={batchId} refreshKey={job?.status ?? null} />
+        <BatchResult batchId={batchId} refreshKey={job?.status ?? null} onOpenDraft={onOpenDraft} />
       ) : (
         !jobId && (
-          <p className="text-sm text-muted-foreground">
-            No nesting run yet. Run nesting on the Sheets step.
-          </p>
+          <div className="flex flex-1 flex-col items-start gap-2 p-6 text-sm text-muted-foreground">
+            <p>No nesting run is open. Run nesting from the Sheets step, or open a batch from Production history.</p>
+            <Button variant="outline" size="sm" onClick={onOpenDraft}>
+              Go to the current draft
+            </Button>
+          </div>
         )
       )}
-      {(isTerminal(job) || (!jobId && batchId)) && (
-        <Button variant="outline" size="sm" className="self-start" onClick={onStartNew}>
-          <FilePlus2 /> Start another batch
-        </Button>
-      )}
     </div>
+  );
+}
+
+function StageLabel({ number, label, count, attention }: { number: number; label: string; count?: number; attention?: boolean }) {
+  return (
+    <>
+      <span className="ws-numeral text-base text-muted-foreground group-data-active/tab:text-ws-temper">{number}</span>
+      <span>{label}</span>
+      {count ? <span className="text-xs text-muted-foreground tabular-nums">{count}</span> : null}
+      {attention && <span className="size-1.5 rounded-full bg-ws-hazard" aria-label="needs attention" />}
+    </>
   );
 }
 
@@ -75,6 +85,13 @@ export function ProductionWorkspace({ switcher }: { switcher: ReactNode }) {
   const stage: Stage = search.stage ?? (search.job || search.batch ? "results" : "products");
   const selectedCount = useProduction((state) => Object.keys(state.selected).length);
   const lineCount = useProduction((state) => state.lines.length);
+  // Only rows whose master is loaded are judged, so the dot never flashes while masters load.
+  const needsAttention = useProduction((state) =>
+    state.lines.some((line) => {
+      const master = state.masters[line.masterId];
+      return !!master && lineIssues(line, master.aspect_ratio).length > 0;
+    }) || batchLimitProblems(state.lines).length > 0,
+  );
   // The picker stays mounted (hidden) once opened, so its search, loaded
   // pages and scroll position survive a trip to another step.
   const pickerOpened = useRef(false);
@@ -93,35 +110,48 @@ export function ProductionWorkspace({ switcher }: { switcher: ReactNode }) {
     if (search.job) writeActiveRun({ jobId: search.job, batchId: search.batch ?? null });
   }, [search.job, search.batch]);
 
-  const startNew = () => {
+  // Leaves the run on screen for the draft the browser holds (resume, not repeat).
+  const openDraft = () => {
     writeActiveRun(null);
-    setSearch({ job: undefined, batch: undefined, stage: "batch" });
+    setSearch({ job: undefined, batch: undefined, stage: lineCount ? "batch" : "products" });
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="workshop flex min-h-0 flex-1 flex-col">
       <HealthMonitor />
       <PreparationFollower />
-      <div className="flex h-12 shrink-0 items-center gap-2 border-b px-2">
+      <div className="flex min-h-12 shrink-0 flex-wrap items-center gap-x-2 border-b px-2 py-1">
         {switcher}
         <Separator orientation="vertical" className="mx-1 data-vertical:h-5 data-vertical:self-auto" />
         <Tabs value={stage} onValueChange={(value) => setSearch({ stage: value as Stage })}>
-          <TabsList>
-            <TabsTrigger value="products">1 · Products{selectedCount ? ` (${selectedCount})` : ""}</TabsTrigger>
-            <TabsTrigger value="batch">2 · Batch{lineCount ? ` (${lineCount})` : ""}</TabsTrigger>
-            <TabsTrigger value="sheets">3 · Sheets</TabsTrigger>
-            <TabsTrigger value="results">4 · Results</TabsTrigger>
+          <TabsList variant="line" aria-label="Production steps" className="gap-1">
+            <TabsTrigger value="products" className="group/tab gap-1.5 px-2">
+              <StageLabel number={1} label="Products" count={selectedCount} />
+            </TabsTrigger>
+            <TabsTrigger value="batch" className="group/tab gap-1.5 px-2">
+              <StageLabel number={2} label="Batch" count={lineCount} attention={needsAttention} />
+            </TabsTrigger>
+            <TabsTrigger value="sheets" className="group/tab gap-1.5 px-2">
+              <StageLabel number={3} label="Sheets" />
+            </TabsTrigger>
+            <TabsTrigger value="results" className="group/tab gap-1.5 px-2">
+              <StageLabel number={4} label="Results" />
+            </TabsTrigger>
           </TabsList>
         </Tabs>
         <span className="flex-1" />
-        <ServiceStatus />
+        <ServiceStatus className="max-w-56" />
       </div>
 
       <HealthAlert />
 
       {pickerOpened.current && (
         <div className={cn("flex min-h-0 flex-1 flex-col", stage !== "products" && "hidden")}>
-          <ProductPicker canEdit={canEdit} onContinue={() => setSearch({ stage: "batch" })} />
+          <ProductPicker
+            canEdit={canEdit}
+            initialQuery={search.q ?? ""}
+            onContinue={() => setSearch({ stage: "batch", q: undefined })}
+          />
         </div>
       )}
       {stage === "batch" && (
@@ -148,7 +178,7 @@ export function ProductionWorkspace({ switcher }: { switcher: ReactNode }) {
           jobId={search.job ?? null}
           batch={search.batch ?? null}
           canEdit={canEdit}
-          onStartNew={startNew}
+          onOpenDraft={openDraft}
         />
       )}
     </div>

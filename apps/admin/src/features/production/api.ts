@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { LIMITS } from "./batch-logic";
 import {
   IDEMPOTENCY_KEY,
   RESOURCE_ID,
@@ -18,12 +19,10 @@ import {
 // Idempotency-Key the browser creates once per operator action and reuses for
 // retries, so an uncertain submission is never queued twice.
 
-/** Room for the largest current/future sheet plus custom stock. */
-const MAX_MM = 10_000;
-const MAX_LINES = 200;
-const MAX_QUANTITY = 10_000;
-const MAX_TOTAL_INSTANCES = 5_000;
-const MAX_SHEETS = 500;
+// Shared with the browser's own checks (batch-logic.ts), so the operator sees
+// these limits at the row before a request is ever sent.
+const { maxMm: MAX_MM, maxLines: MAX_LINES, maxQuantity: MAX_QUANTITY, maxSheets: MAX_SHEETS } = LIMITS;
+const MAX_TOTAL_INSTANCES = LIMITS.maxTotalParts;
 const SLUG = /^[a-z0-9][a-z0-9-]{0,78}[a-z0-9]$/;
 
 function input(data: unknown) {
@@ -43,14 +42,16 @@ function productRef(value: unknown) {
   if (typeof ref.slug !== "string" || !SLUG.test(ref.slug)) throw new Error("Invalid product");
   return { id: resourceId(ref.id), slug: ref.slug };
 }
-function finite(value: unknown, min: number, max: number) {
+// Messages name the field and the allowed range: the browser shows them as
+// the reason a request was rejected.
+function finite(value: unknown, min: number, max: number, what = "Value") {
   if (typeof value !== "number" || !Number.isFinite(value) || value < min || value > max)
-    throw new Error("Invalid number");
+    throw new Error(`${what} must be between ${min} and ${max}.`);
   return value;
 }
-function integer(value: unknown, min: number, max: number) {
-  const result = finite(value, min, max);
-  if (!Number.isInteger(result)) throw new Error("Invalid number");
+function integer(value: unknown, min: number, max: number, what = "Value") {
+  const result = finite(value, min, max, what);
+  if (!Number.isInteger(result)) throw new Error(`${what} must be a whole number.`);
   return result;
 }
 function label(value: unknown, max: number) {
@@ -58,17 +59,18 @@ function label(value: unknown, max: number) {
     throw new Error("Invalid text");
   return value.trim();
 }
-function positiveOrNull(value: unknown) {
-  return value == null ? null : finite(value, 0.01, MAX_MM);
+function positiveOrNull(value: unknown, what: string) {
+  return value == null ? null : finite(value, 0.01, MAX_MM, what);
 }
 
-function batchLine(value: unknown): BatchLineRequest {
+function batchLine(value: unknown, index: number): BatchLineRequest {
+  const row = `Row ${index + 1}`;
   const line = input(value);
   const size = input(line.size);
   const mode = size.mode as SizeMode;
   if (!["width", "height", "fit"].includes(mode)) throw new Error("Invalid size mode");
-  const width = positiveOrNull(size.width_mm);
-  const height = positiveOrNull(size.height_mm);
+  const width = positiveOrNull(size.width_mm, `${row} width (mm)`);
+  const height = positiveOrNull(size.height_mm, `${row} height (mm)`);
   if ((mode !== "height" && width == null) || (mode !== "width" && height == null))
     throw new Error("Missing dimensions");
   const rotations = Array.isArray(line.allowed_rotations) ? line.allowed_rotations : [];
@@ -87,9 +89,9 @@ function batchLine(value: unknown): BatchLineRequest {
       width_mm: mode === "height" ? null : width,
       height_mm: mode === "width" ? null : height,
     },
-    quantity: integer(line.quantity, 1, MAX_QUANTITY),
+    quantity: integer(line.quantity, 1, MAX_QUANTITY, `${row} quantity`),
     material: label(line.material, 80),
-    thickness_mm: finite(line.thickness_mm, 0.1, 100),
+    thickness_mm: finite(line.thickness_mm, 0.1, 100, `${row} thickness (mm)`),
     allowed_rotations: (rotations as Rotation[]).slice().sort((a, b) => a - b),
     variant_id: line.variant_id == null ? null : label(line.variant_id, 80),
   };
@@ -98,11 +100,11 @@ function batchLine(value: unknown): BatchLineRequest {
 export function parseBatchRequest(value: unknown): BatchRequest {
   const body = input(value);
   const lines = Array.isArray(body.lines) ? body.lines.map(batchLine) : [];
-  if (!lines.length || lines.length > MAX_LINES) throw new Error("Invalid batch lines");
+  if (!lines.length || lines.length > MAX_LINES) throw new Error(`A batch needs 1 to ${MAX_LINES} rows.`);
   if (new Set(lines.map((line) => line.line_id)).size !== lines.length)
     throw new Error("Duplicate line ids");
   if (lines.reduce((sum, line) => sum + line.quantity, 0) > MAX_TOTAL_INSTANCES)
-    throw new Error("Too many parts in one batch");
+    throw new Error(`A batch holds at most ${MAX_TOTAL_INSTANCES} parts.`);
   const stock = input(body.stock);
   const margins = input(stock.margins_mm);
   const optimization = input(body.optimization);
@@ -121,7 +123,7 @@ export function parseBatchRequest(value: unknown): BatchRequest {
         top: finite(margins.top, 0, MAX_MM),
       },
       gap_mm: finite(stock.gap_mm, 0, 1_000),
-      max_sheets: integer(stock.max_sheets, 1, MAX_SHEETS),
+      max_sheets: integer(stock.max_sheets, 1, MAX_SHEETS, "Maximum sheets"),
       label: label(stock.label, 120),
     },
     optimization: {
@@ -217,7 +219,7 @@ export const listJobs = createServerFn({ method: "GET" })
     const values = input(data);
     const kind = values.kind as JobKind | undefined;
     if (kind != null && kind !== "trace" && kind !== "nest") throw new Error("Invalid kind");
-    return { kind, limit: values.limit == null ? 25 : integer(values.limit, 1, 100) };
+    return { kind, limit: values.limit == null ? 25 : integer(values.limit, 1, 200) };
   })
   .handler(async ({ data }) => (await server()).jobHistory(data));
 
@@ -235,7 +237,7 @@ export const getBatch = createServerFn({ method: "GET" })
 export const listBatches = createServerFn({ method: "GET" })
   .validator((data: unknown) => {
     const limit = input(data).limit;
-    return limit == null ? 25 : integer(limit, 1, 100);
+    return limit == null ? 25 : integer(limit, 1, 200);
   })
   .handler(async ({ data }) => (await server()).batchHistory(data));
 

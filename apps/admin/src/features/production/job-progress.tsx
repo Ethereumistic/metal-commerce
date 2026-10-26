@@ -1,10 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2, Square } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
 import { cancelJob, getJob } from "./api";
 import type { Job, ServiceResult } from "./contracts";
 import { attempt, backoff, useActionKey, usePolling } from "./hooks";
-import { ErrorText, JobBadge, OfflineAlert, ResultAlert, formatDate } from "./status";
+import { NEST_PHASES, formatDuration, nestPhase } from "./results-logic";
+import { ErrorText, OfflineAlert, ResultAlert } from "./status";
 
 const TERMINAL = new Set(["succeeded", "failed", "cancelled"]);
 const FIRST_DELAY_MS = 1_000;
@@ -54,6 +56,53 @@ export function useJob(jobId: string | null) {
   };
 }
 
+/** Wall-clock time since the job was accepted; ticks on its own so nothing else re-renders. */
+function Elapsed({ job }: { job: Job }) {
+  const finished = TERMINAL.has(job.status);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (finished) return;
+    const timer = setInterval(() => setNow(Date.now()), 1_000);
+    return () => clearInterval(timer);
+  }, [finished]);
+  const start = Date.parse(job.created_at);
+  const end = finished ? Date.parse(job.updated_at) : now;
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
+  return <span className="tabular-nums">{formatDuration((end - start) / 1000)}</span>;
+}
+
+const PHASE_LABELS: Record<(typeof NEST_PHASES)[number], string> = {
+  queued: "Queued",
+  preparing: "Preparing",
+  solving: "Solving",
+  checking: "Checking",
+  exporting: "Exporting",
+};
+
+function Phases({ current }: { current: ReturnType<typeof nestPhase>["key"] }) {
+  const reached = current === "finished" ? NEST_PHASES.length : NEST_PHASES.indexOf(current);
+  return (
+    <ol className="grid grid-cols-5 gap-1 text-[11px]" aria-label="Nesting phases">
+      {NEST_PHASES.map((phase, index) => (
+        <li
+          key={phase}
+          aria-current={index === reached ? "step" : undefined}
+          className={cn(
+            "border-t-2 pt-1",
+            index < reached && "border-ws-temper text-muted-foreground",
+            index === reached && "border-ws-temper font-medium text-foreground",
+            index > reached && "border-border text-muted-foreground",
+          )}
+        >
+          {PHASE_LABELS[phase]}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+const STALE_HEARTBEAT_MS = 45_000;
+
 export function JobProgress({
   jobId,
   state,
@@ -65,54 +114,82 @@ export function JobProgress({
 }) {
   const { job, failure, update, retry } = state;
   const cancelKey = useActionKey(`cancel:${jobId}`);
-  const [cancelling, setCancelling] = useState(false);
+  // Set the moment Cancel is pressed and kept until the job is terminal, so
+  // the card never reads "running" with a live Cancel button after a click.
+  const [cancelRequested, setCancelRequested] = useState(false);
   const [cancelFailure, setCancelFailure] = useState<ServiceResult<Job> | null>(null);
+  useEffect(() => setCancelRequested(false), [jobId]);
 
   async function cancel() {
-    setCancelling(true);
+    setCancelRequested(true);
+    setCancelFailure(null);
     const result = await attempt(() =>
       cancelJob({ data: { id: jobId, idempotencyKey: cancelKey.key(jobId) } }),
     );
     cancelKey.settle(result);
-    setCancelling(false);
-    setCancelFailure(result.ok ? null : result);
-    if (result.ok) update(result.data);
+    if (!result.ok) {
+      setCancelRequested(false);
+      setCancelFailure(result);
+      return;
+    }
+    update(result.data);
+    // Follow the job closely until the worker stops it.
+    retry();
   }
 
+  const running = !!job && !TERMINAL.has(job.status);
   const percent = job ? Math.round(job.progress * 100) : 0;
+  const phase = job ? nestPhase(job.status, job.stage) : null;
+  const heartbeatAge = job?.heartbeat_at ? Date.now() - Date.parse(job.heartbeat_at) : null;
   return (
-    <div className="flex flex-col gap-2 rounded-lg border p-3">
-      <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium">Nesting job</span>
-        <span className="font-mono text-xs text-muted-foreground">{jobId}</span>
-        {job && <JobBadge status={job.status} />}
-        {job && !TERMINAL.has(job.status) && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+    <section className="flex flex-col gap-2 border bg-ws-panel p-3" aria-label="Nesting job" title={`Job ${jobId}`}>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        {running && <Loader2 className="size-4 animate-spin text-ws-temper" aria-hidden />}
+        <span className="font-medium">
+          {cancelRequested && running ? "Cancelling…" : job ? (running ? phase?.label : JOB_DONE[job.status]) : "Loading job…"}
+        </span>
+        {job && (
+          <span className="text-xs text-muted-foreground">
+            {running ? "Elapsed " : "Took "}
+            <Elapsed job={job} />
+          </span>
+        )}
         <span className="flex-1" />
-        {job && !TERMINAL.has(job.status) && (
-          <Button variant="outline" size="sm" disabled={!canEdit || cancelling} onClick={() => void cancel()}>
-            <Square /> Cancel
+        {running && (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!canEdit || cancelRequested}
+            onClick={() => void cancel()}
+          >
+            {cancelRequested ? <Loader2 className="animate-spin" /> : <Square />}
+            {cancelRequested ? "Cancelling…" : "Cancel"}
           </Button>
         )}
       </div>
-      {job && (
+      {job && running && (
         <>
+          <Phases current={phase!.key} />
           <div
-            className="h-2 overflow-hidden rounded-full bg-muted"
+            className="h-1.5 overflow-hidden bg-muted"
             role="progressbar"
+            aria-label="Nesting progress"
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={percent}
           >
-            <div className="h-full bg-primary transition-[width]" style={{ width: `${percent}%` }} />
+            <div className="h-full bg-ws-temper transition-[width] duration-500" style={{ width: `${percent}%` }} />
           </div>
           <p className="text-xs text-muted-foreground tabular-nums">
-            {job.stage ?? "waiting"} · {percent}% · attempt {job.attempts}
-            {job.cache_hit && " · reused cached result"} · last heartbeat {formatDate(job.heartbeat_at)}
+            {percent}% done
+            {job.attempts > 1 && `, attempt ${job.attempts}`}
+            {job.cache_hit && ", reusing a cached result"}
+            {heartbeatAge != null && heartbeatAge > STALE_HEARTBEAT_MS &&
+              `. No progress report for ${formatDuration(heartbeatAge / 1000)}; the solver may be busy.`}
           </p>
-          {job.error && <ErrorText error={job.error} />}
         </>
       )}
-      {!job && !failure && <p className="text-xs text-muted-foreground">Loading job…</p>}
+      {job?.error && !["NEST_INCOMPLETE", "CANCELLED"].includes(job.error.code) && <ErrorText error={job.error} />}
       {failure && !failure.ok && failure.offline && (
         <OfflineAlert>
           The job was accepted earlier and keeps running on the workshop PC. Progress resumes here
@@ -128,6 +205,12 @@ export function JobProgress({
         </div>
       )}
       <ResultAlert result={cancelFailure} title="Cancel failed" />
-    </div>
+    </section>
   );
 }
+
+const JOB_DONE: Record<string, string> = {
+  succeeded: "Nesting finished",
+  failed: "Nesting stopped",
+  cancelled: "Nesting cancelled",
+};

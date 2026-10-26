@@ -1,17 +1,19 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, Copy, Loader2, Trash2 } from "lucide-react";
+import { AlertTriangle, ArrowRight, Copy, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { NumberField } from "@workspace/ui/components/number-field";
 import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group";
 import { useShallow } from "zustand/react/shallow";
+import { cn } from "@workspace/ui/lib/utils";
 import { Segmented, SelectField } from "../studio/components/fields";
-import { ALL_ROTATIONS, isEmptyPatch, type BulkPatch } from "./batch-logic";
+import { ALL_ROTATIONS, isEmptyPatch, quantityProblem, type BulkPatch } from "./batch-logic";
 import type { Rotation, SizeMode } from "./contracts";
-import { DraftNumberField } from "./draft-field";
+import { DraftNumberField, QuantityField } from "./draft-field";
 import { consumeRequestedFocus, focusField } from "./focus";
 import { ProductImage } from "./product-image";
 import { Checkbox } from "./checkbox";
 import { actualSize } from "./sizing";
+import { plural } from "./results-logic";
 import { ErrorText, PreparationBadge, formatMm } from "./status";
 import { MATERIALS, useProduction, type BatchLine } from "./store";
 import { useMaster } from "./trace-preview";
@@ -87,75 +89,83 @@ const LineRow = memo(function LineRow({ lineId, chosen, onChoose, onEnter }: Row
   const problems = lineIssues(effective, master?.aspect_ratio ?? null);
   const cell = (field: LineField) => ({ "data-line": lineId, "data-field": field });
 
+  const problemId = `problems-${lineId}`;
+  const quantityInvalid = problems.some((entry) => entry.field === "quantity");
+
   return (
-    <li className="flex flex-col gap-1.5 px-3 py-2">
-      <div className="grid grid-cols-[auto_auto_minmax(8rem,1fr)_6.5rem_6.5rem_9.5rem_5.5rem_8.5rem_6rem] items-center gap-2">
-        <Checkbox label={`Select ${line.productName}`} checked={chosen} onChange={(next) => onChoose(lineId, next)} />
-        <ProductImage thumbnail={line.thumbnail} masterId={line.masterId} name={line.productName} className="size-10" />
-        <div className="flex min-w-0 flex-col">
-          <span className="truncate font-medium" title={line.productName}>
-            {line.productName}
-          </span>
-          {master && (
-            <span className="truncate text-xs text-muted-foreground tabular-nums">
-              master r{master.revision} · aspect {master.aspect_ratio.toFixed(3)}
+    <li className="flex flex-col gap-1.5 px-3 py-2.5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div className="flex min-w-0 grow basis-60 items-center gap-2">
+          <Checkbox label={`Select ${line.productName}`} checked={chosen} onChange={(next) => onChoose(lineId, next)} />
+          <ProductImage thumbnail={line.thumbnail} masterId={line.masterId} name={line.productName} className="size-10" />
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate font-medium" title={line.productName}>
+              {line.productName}
             </span>
-          )}
+            <span className="truncate text-xs text-muted-foreground tabular-nums">
+              {actual ? (
+                <>
+                  Cuts at <span className="text-foreground">{formatMm(actual.width)} × {formatMm(actual.height)} mm</span>
+                </>
+              ) : master ? (
+                "Enter a size"
+              ) : (
+                "Loading master…"
+              )}
+            </span>
+          </div>
         </div>
-        <div {...cell("width")}>
-          <DraftNumberField
-            label="W"
-            unit="mm"
-            value={line.mode === "height" ? null : line.width}
-            disabled={line.mode === "height"}
-            onDraft={draftOf("width")}
-            onCommit={(width) => update({ width })}
-            onEnter={() => onEnter(lineId, "width")}
-          />
-        </div>
-        <div {...cell("height")}>
-          <DraftNumberField
-            label="H"
-            unit="mm"
-            value={line.mode === "width" ? null : line.height}
-            disabled={line.mode === "width"}
-            onDraft={draftOf("height")}
-            onCommit={(height) => update({ height })}
-            onEnter={() => onEnter(lineId, "height")}
-          />
-        </div>
-        <div className="text-xs tabular-nums">
-          <span className="text-muted-foreground">Actual </span>
-          {actual ? `${formatMm(actual.width)} × ${formatMm(actual.height)} mm` : "—"}
-        </div>
-        <div {...cell("quantity")}>
-          <DraftNumberField
-            label="Qty"
-            value={line.quantity}
-            min={1}
-            digits={0}
-            onDraft={draftOf("quantity")}
-            onCommit={(quantity) => update({ quantity })}
-            onEnter={() => onEnter(lineId, "quantity")}
-          />
-        </div>
-        <div {...cell("material")}>
-          <SelectField
-            value={line.material || "none"}
-            options={materialOptions(line.material)}
-            onChange={(material) => update({ material: material === "none" ? "" : material })}
-            aria-label={`Material of ${line.productName}`}
-          />
-        </div>
-        <div {...cell("thickness")}>
-          <DraftNumberField
-            label="t"
-            unit="mm"
-            value={line.thickness}
-            onDraft={draftOf("thickness")}
-            onCommit={(thickness) => update({ thickness })}
-            onEnter={() => onEnter(lineId, "thickness")}
-          />
+        <div className="flex flex-wrap items-center gap-2">
+          <div {...cell("width")} className="w-[6.5rem]">
+            <DraftNumberField
+              label="W"
+              unit="mm"
+              value={line.mode === "height" ? null : line.width}
+              disabled={line.mode === "height"}
+              onDraft={draftOf("width")}
+              onCommit={(width) => update({ width })}
+              onEnter={() => onEnter(lineId, "width")}
+            />
+          </div>
+          <div {...cell("height")} className="w-[6.5rem]">
+            <DraftNumberField
+              label="H"
+              unit="mm"
+              value={line.mode === "width" ? null : line.height}
+              disabled={line.mode === "width"}
+              onDraft={draftOf("height")}
+              onCommit={(height) => update({ height })}
+              onEnter={() => onEnter(lineId, "height")}
+            />
+          </div>
+          <div {...cell("quantity")} className="w-24">
+            <QuantityField
+              value={line.quantity}
+              invalid={quantityInvalid}
+              describedBy={problems.length ? problemId : undefined}
+              onDraft={draftOf("quantity")}
+              onCommit={(quantity) => update({ quantity })}
+              onEnter={() => onEnter(lineId, "quantity")}
+            />
+          </div>
+          <div {...cell("material")} className="w-[8rem]">
+            <SelectField
+              value={line.material || "none"}
+              options={materialOptions(line.material)}
+              onChange={(material) => update({ material: material === "none" ? "" : material })}
+              aria-label={`Material of ${line.productName}`}
+            />
+          </div>
+          <div {...cell("thickness")} className="w-[5.5rem]">
+            <DraftNumberField
+              label="t"
+              unit="mm"
+              value={line.thickness}
+              onDraft={draftOf("thickness")}
+              onCommit={(thickness) => update({ thickness })}
+              onEnter={() => onEnter(lineId, "thickness")}
+            />
+          </div>
         </div>
       </div>
 
@@ -175,9 +185,7 @@ const LineRow = memo(function LineRow({ lineId, chosen, onChoose, onEnter }: Row
           <span className="text-xs text-muted-foreground">Rotations</span>
           <Rotations label={`Rotations of ${line.productName}`} value={line.rotations} onChange={(rotations) => update({ rotations })} />
         </div>
-        <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={problems.map((entry) => entry.message).join(" ")}>
-          {problems.map((entry) => entry.message).join(" ")}
-        </span>
+        <span className="flex-1" />
         <Button
           variant="ghost"
           size="icon-sm"
@@ -198,6 +206,12 @@ const LineRow = memo(function LineRow({ lineId, chosen, onChoose, onEnter }: Row
         </Button>
       </div>
 
+      {problems.length > 0 && (
+        <p id={problemId} className="flex items-start gap-1.5 pl-[4.5rem] text-xs text-ws-hazard-ink">
+          <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
+          <span>{problems.map((entry) => entry.message).join(" ")}</span>
+        </p>
+      )}
       {failure && !failure.ok && (
         <p className="pl-[4.5rem] text-xs text-destructive">
           {failure.offline ? "Local processing service offline; the master cannot be loaded." : failure.error.message}
@@ -206,15 +220,14 @@ const LineRow = memo(function LineRow({ lineId, chosen, onChoose, onEnter }: Row
       {service && (
         <div className="flex flex-col gap-0.5 pl-[4.5rem]">
           <p className="text-xs tabular-nums">
-            Service:{" "}
+            Checked by the service:{" "}
             {service.actual_width_mm != null && service.actual_height_mm != null
-              ? `${formatMm(service.actual_width_mm)} × ${formatMm(service.actual_height_mm)} mm`
-              : "size unavailable"}{" "}
-            ·{" "}
+              ? `${formatMm(service.actual_width_mm)} × ${formatMm(service.actual_height_mm)} mm, `
+              : "size unavailable, "}
             {service.fits ? (
-              <span className="text-emerald-600 dark:text-emerald-400">fits the sheet</span>
+              <span className="text-ws-cut">fits the sheet</span>
             ) : (
-              <span className="text-destructive">does not fit</span>
+              <span className="text-destructive">does not fit the sheet</span>
             )}
           </p>
           {service.errors.map((error, index) => (
@@ -235,11 +248,12 @@ function BulkBar({ chosen, total }: { chosen: ReadonlySet<string>; total: number
   const [rotations, setRotations] = useState<Rotation[]>([]);
   const patch: BulkPatch = {
     ...(width != null && width > 0 ? { width } : {}),
-    ...(quantity != null && quantity >= 1 ? { quantity } : {}),
+    ...(quantity != null && !quantityProblem(quantity) ? { quantity } : {}),
     ...(material ? { material } : {}),
     ...(thickness != null && thickness > 0 ? { thickness } : {}),
     ...(rotations.length ? { rotations } : {}),
   };
+  const quantityNote = quantity != null ? quantityProblem(quantity) : null;
   const target = chosen.size ? chosen : null;
   const apply = () => {
     if (!isEmptyPatch(patch)) useProduction.getState().applyToLines(target, patch);
@@ -254,7 +268,7 @@ function BulkBar({ chosen, total }: { chosen: ReadonlySet<string>; total: number
         if (event.key === "Enter" && (event.target as HTMLElement).tagName === "INPUT") apply();
       }}
     >
-      <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Set for {target ? `${chosen.size} selected` : "all rows"}</span>
+      <span className="text-xs font-semibold text-muted-foreground">Set for {target ? `${chosen.size} selected` : "all rows"}</span>
       <NumberField
         className="w-28"
         label="W"
@@ -264,14 +278,7 @@ function BulkBar({ chosen, total }: { chosen: ReadonlySet<string>; total: number
         format={{ maximumFractionDigits: 2, useGrouping: false }}
         onValueChange={(value) => setWidth(num(value))}
       />
-      <NumberField
-        className="w-24"
-        label="Qty"
-        value={quantity}
-        min={1}
-        format={{ maximumFractionDigits: 0, useGrouping: false }}
-        onValueChange={(value) => setQuantity(num(value))}
-      />
+      <QuantityField className="w-24" value={quantity} invalid={quantityNote != null} onCommit={setQuantity} onDraft={(value) => value !== undefined && setQuantity(value)} />
       <SelectField
         className="w-32"
         value={material || "none"}
@@ -292,6 +299,7 @@ function BulkBar({ chosen, total }: { chosen: ReadonlySet<string>; total: number
       <Button size="sm" variant="secondary" disabled={isEmptyPatch(patch)} onClick={apply}>
         Apply to {target ? `${chosen.size} selected` : `all ${total}`}
       </Button>
+      {quantityNote && <span className="basis-full text-xs text-ws-hazard-ink">{quantityNote}</span>}
     </div>
   );
 }
@@ -376,7 +384,7 @@ export function BatchEditor() {
   if (!ids.length && !pendingCount)
     return (
       <div className="flex flex-1 items-center justify-center p-6 text-center text-sm text-muted-foreground">
-        No lines yet. Select products on the Products step and press Continue.
+        No rows yet. Select products on the Products step, then add them to a batch.
       </div>
     );
   const allChosen = ids.length > 0 && chosenLive.size === ids.length;
@@ -393,8 +401,8 @@ export function BatchEditor() {
               onChange={(next) => setChosen(next ? new Set(ids) : new Set())}
             />
             <span>
-              {chosenLive.size ? `${chosenLive.size} of ${ids.length} rows selected` : `${ids.length} rows`} · Enter moves to the
-              same field in the next row
+              {chosenLive.size ? `${chosenLive.size} of ${plural(ids.length, "row")} selected` : plural(ids.length, "row")}. Enter moves to
+              the same field in the next row.
             </span>
           </div>
         </>
@@ -412,6 +420,9 @@ export function BatchEditor() {
 /** Continue to Sheets, only once every row is complete; otherwise jump to the first problem. */
 export function BatchFooter({ onContinue }: { onContinue: () => void }) {
   const lineCount = useProduction((state) => state.lines.length);
+  const parts = useProduction((state) =>
+    state.lines.reduce((sum, line) => sum + (line.quantity != null && Number.isInteger(line.quantity) && line.quantity > 0 ? line.quantity : 0), 0),
+  );
   const invalid = useProduction((state) => invalidLineCount(state.lines, state.masters));
   const pending = useProduction((state) => Object.keys(state.pendingAdds).length);
   const [message, setMessage] = useState<string | null>(null);
@@ -425,13 +436,13 @@ export function BatchFooter({ onContinue }: { onContinue: () => void }) {
     const first = issues[0];
     if (first) {
       const rows = new Set(issues.map((entry) => entry.lineId)).size;
-      setMessage(`${rows} row${rows === 1 ? "" : "s"} need attention. ${first.productName}: ${first.issue.message}`);
+      setMessage(`${plural(rows, "row")} need${rows === 1 ? "s" : ""} attention. ${first.productName}: ${first.issue.message}`);
       if (first.issue.field) focusField({ scope: "line", lineId: first.lineId, field: first.issue.field });
       return;
     }
     if (pending) {
       setMessage(
-        `${pending} product${pending === 1 ? " is" : "s are"} still being prepared. Wait until ${pending === 1 ? "it joins" : "they join"} the batch, or remove ${pending === 1 ? "it" : "them"}.`,
+        `${plural(pending, "product")} still being prepared. Wait until ${pending === 1 ? "it joins" : "they join"} the batch, or remove ${pending === 1 ? "it" : "them"}.`,
       );
       return;
     }
@@ -439,15 +450,21 @@ export function BatchFooter({ onContinue }: { onContinue: () => void }) {
     onContinue();
   };
 
+  const status =
+    message ??
+    (invalid
+      ? `${plural(invalid, "row")} need${invalid === 1 ? "s" : ""} attention before nesting.`
+      : pending
+        ? `${plural(pending, "product")} still preparing.`
+        : `Ready: ${plural(lineCount, "row")}, ${plural(parts, "part")}.`);
   return (
-    <div className="flex items-center justify-end gap-3 border-t p-2">
-      <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" role="status">
-        {message ??
-          (invalid
-            ? `${invalid} row${invalid === 1 ? "" : "s"} still need${invalid === 1 ? "s" : ""} values.`
-            : pending
-              ? `${pending} product${pending === 1 ? "" : "s"} still preparing.`
-              : "All rows complete.")}
+    <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t bg-ws-panel px-3 py-2">
+      <span
+        className={cn("min-w-0 flex-1 truncate text-xs", invalid || message ? "text-ws-hazard-ink" : "text-muted-foreground")}
+        role="status"
+        title={status}
+      >
+        {status}
       </span>
       <Button onClick={proceed}>
         Continue to sheets <ArrowRight />

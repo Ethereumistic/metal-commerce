@@ -126,7 +126,7 @@ export function TracePreviewDialog({
 }) {
   return (
     <Dialog open={!!masterId} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="workshop sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{productName}</DialogTitle>
           <DialogDescription>

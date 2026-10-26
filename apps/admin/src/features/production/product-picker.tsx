@@ -1,11 +1,11 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { ArrowRight, Eye, Loader2, RefreshCw, Search, Wand2, X } from "lucide-react";
+import { ArrowRight, Eye, FilePlus2, Loader2, RefreshCw, Search, Wand2, X } from "lucide-react";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { useShallow } from "zustand/react/shallow";
 import { getJobs, getMaster, listProducts, prepareProducts } from "./api";
-import { newLine } from "./batch-logic";
+import { addPlan, newLine } from "./batch-logic";
 import { Checkbox } from "./checkbox";
 import type {
   CatalogCard,
@@ -16,6 +16,7 @@ import type {
 } from "./contracts";
 import { attempt, backoff, useActionKey, usePolling } from "./hooks";
 import { ProductImage } from "./product-image";
+import { plural } from "./results-logic";
 import { ErrorText, OfflineAlert, PreparationBadge, ResultAlert } from "./status";
 import { useProduction, type PendingAdd, type SelectedProduct } from "./store";
 import { TracePreviewDialog } from "./trace-preview";
@@ -161,8 +162,8 @@ export function PreparationFollower() {
   return null;
 }
 
-function useCatalog() {
-  const [query, setQuery] = useState("");
+function useCatalog(initialQuery: string) {
+  const [query, setQuery] = useState(initialQuery);
   const [items, setItems] = useState<CatalogCard[]>([]);
   const [page, setPage] = useState<CatalogPage | null>(null);
   const [failure, setFailure] = useState<ServiceResult<CatalogPage> | null>(null);
@@ -269,13 +270,19 @@ const CatalogRow = memo(function CatalogRow({
   card,
   item,
   selected,
+  inBatch,
   onInspect,
+  onRetrace,
 }: {
   card: CatalogCard;
   item: PreparationItem | null;
   selected: boolean;
+  inBatch: boolean;
   onInspect: (target: { masterId: string; name: string }) => void;
+  /** Traces this product again; absent when the operator cannot prepare. */
+  onRetrace?: (card: CatalogCard) => void;
 }) {
+  const retraceable = !!onRetrace && card.firstImage.ok && (item?.status === "failed" || item?.status === "stale");
   return (
     <li className="flex items-center gap-3 px-3 py-2">
       <Checkbox
@@ -289,12 +296,18 @@ const CatalogRow = memo(function CatalogRow({
           <span className="truncate font-medium">{card.name}</span>
           {!card.published && <Badge variant="outline">Draft</Badge>}
           {card.archived && <Badge variant="outline">Archived</Badge>}
+          {inBatch && <Badge variant="secondary">In batch</Badge>}
         </div>
         <span className="truncate font-mono text-xs text-muted-foreground">{card.slug}</span>
         {!card.firstImage.ok && <ErrorText error={card.firstImage.error} />}
         {item?.error && <ErrorText error={item.error} />}
       </div>
       <PreparationBadge status={item?.status ?? null} />
+      {retraceable && (
+        <Button variant="outline" size="sm" onClick={() => onRetrace(card)}>
+          <RefreshCw /> Trace again
+        </Button>
+      )}
       {item?.master_id && (
         <Button
           variant="ghost"
@@ -313,13 +326,19 @@ type ContinueNote = { tone: "info" | "error"; text: string };
 
 export function ProductPicker({
   canEdit,
+  initialQuery = "",
   onContinue,
 }: {
   canEdit: boolean;
+  /** A search to start with (e.g. a product named in a failed history entry). */
+  initialQuery?: string;
   /** Called once every selected product is in the batch or waiting for its master. */
   onContinue: () => void;
 }) {
-  const catalog = useCatalog();
+  const catalog = useCatalog(initialQuery);
+  const lineProducts = useProduction(useShallow((state) => state.lines.map((line) => line.productId)));
+  const pendingIds = useProduction(useShallow((state) => Object.keys(state.pendingAdds)));
+  const inBatch = useMemo(() => new Set([...lineProducts, ...pendingIds]), [lineProducts, pendingIds]);
   const selected = useProduction((state) => state.selected);
   const preparation = useProduction((state) => state.preparation);
   const pollOffline = useProduction((state) => state.tracePollOffline);
@@ -370,9 +389,10 @@ export function ProductPicker({
    * adds ready products (never twice), and queues the ones still tracing so
    * they join the batch when ready. Stays here when anything failed.
    */
-  async function continueToBatch() {
+  async function continueToBatch(mode: "add" | "new") {
     const products = Object.values(useProduction.getState().selected);
     if (!products.length) return;
+    if (mode === "new") useProduction.getState().clearBatch();
     setBusy("continue");
     setAddFailure(null);
     setNote(null);
@@ -442,7 +462,21 @@ export function ProductPicker({
   }
 
   const onInspect = useCallback((target: { masterId: string; name: string }) => setInspect(target), []);
+  const onRetrace = useCallback(
+    (card: CatalogCard) => {
+      setNote(null);
+      void requestPreparation([toSelected(card)], true);
+    },
+    // requestPreparation only reads stable store actions and the action key.
+    [],
+  );
   const notReady = chosen.filter((product) => preparation[product.id]?.status !== "ready").length;
+  const plan = addPlan(
+    chosen.map((product) => product.id),
+    lineProducts.map((productId) => ({ productId })),
+    pendingIds,
+  );
+  const initialLoad = catalog.loading && !catalog.page;
 
   return (
     <div className="flex min-h-0 flex-1">
@@ -462,11 +496,17 @@ export function ProductPicker({
             disabled={!shown.length}
             onChange={(checked) => shown.forEach((card) => toggle(toSelected(card), checked))}
           />
-          <span>
-            {catalog.page?.scope === "search"
-              ? `Best ${shown.length} name matches for “${catalog.query}”. Search results are not paginated; refine the words to find others.`
-              : `${shown.length} products loaded, all statuses including drafts, in route order.`}
-            {" "}Select all applies to the products shown here only.
+          <span aria-live="polite">
+            {initialLoad
+              ? "Loading products…"
+              : catalog.loading
+                ? catalog.query
+                  ? `Searching for “${catalog.query}”…`
+                  : "Loading products…"
+                : catalog.page?.scope === "search"
+                  ? `Best ${plural(shown.length, "name match", "name matches")} for “${catalog.query}”. Search results are not paginated; refine the words to find others.`
+                  : `${plural(shown.length, "product")} loaded, all statuses including drafts.`}
+            {!initialLoad && " Select all applies to the products shown here only."}
           </span>
         </div>
 
@@ -488,9 +528,23 @@ export function ProductPicker({
               card={card}
               item={preparation[card.id] ?? card.preparation}
               selected={!!selected[card.id]}
+              inBatch={inBatch.has(card.id)}
               onInspect={onInspect}
+              onRetrace={canEdit ? onRetrace : undefined}
             />
           ))}
+          {!shown.length &&
+            catalog.loading &&
+            Array.from({ length: 8 }, (_, index) => (
+              <li key={index} className="flex items-center gap-3 px-3 py-2" aria-hidden>
+                <span className="size-4 bg-muted" />
+                <span className="size-14 animate-pulse bg-muted" />
+                <span className="flex flex-1 flex-col gap-1.5">
+                  <span className="h-3.5 w-1/3 animate-pulse bg-muted" />
+                  <span className="h-3 w-1/5 animate-pulse bg-muted" />
+                </span>
+              </li>
+            ))}
           {!shown.length && !catalog.loading && !catalog.failure && (
             <li className="p-6 text-center text-sm text-muted-foreground">No products found.</li>
           )}
@@ -504,10 +558,10 @@ export function ProductPicker({
         )}
       </div>
 
-      <aside className="flex w-80 shrink-0 flex-col border-l">
+      <aside className="flex w-72 shrink-0 flex-col border-l xl:w-80">
         <div className="flex items-center justify-between border-b px-3 py-2">
-          <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Selected · {chosen.length}
+          <h3 className="text-xs font-semibold text-muted-foreground">
+            {chosen.length ? `${plural(chosen.length, "product")} selected` : "Selection"}
           </h3>
           {chosen.length > 0 && (
             <Button variant="ghost" size="xs" onClick={clearSelection}>
@@ -520,7 +574,11 @@ export function ProductPicker({
             <li key={product.id} className="flex items-center gap-2 px-3 py-1.5">
               <ProductImage thumbnail={product.thumbnail} className="size-8" />
               <span className="min-w-0 flex-1 truncate">{product.name}</span>
-              <PreparationBadge status={preparation[product.id]?.status ?? null} />
+              {inBatch.has(product.id) ? (
+                <Badge variant="secondary">In batch</Badge>
+              ) : (
+                <PreparationBadge status={preparation[product.id]?.status ?? null} />
+              )}
               <Button
                 variant="ghost"
                 size="icon-xs"
@@ -558,10 +616,43 @@ export function ProductPicker({
           {!canEdit && (
             <p className="text-xs text-muted-foreground">Your role can view production but not prepare products.</p>
           )}
-          <Button disabled={!chosen.length || busy != null} onClick={() => void continueToBatch()}>
-            {busy === "continue" ? <Loader2 className="animate-spin" /> : <ArrowRight />} Continue with{" "}
-            {chosen.length} to batch
-          </Button>
+          {plan.rowsNow > 0 ? (
+            <>
+              <p className="text-xs text-muted-foreground" role="status">
+                The current batch has {plural(plan.rowsNow, "row")}.{" "}
+                {plan.adding
+                  ? `Adding makes it ${plural(plan.rowsAfterAdd, "row")}.`
+                  : chosen.length
+                    ? "Every selected product is already in it."
+                    : ""}
+                {plan.alreadyInBatch > 0 && plan.adding > 0 ? ` ${plan.alreadyInBatch} selected already in it.` : ""}
+              </p>
+              <Button disabled={!chosen.length || busy != null} onClick={() => void continueToBatch("add")}>
+                {busy === "continue" ? <Loader2 className="animate-spin" /> : <ArrowRight />}
+                {plan.adding ? `Add ${plural(plan.adding, "product")} to current batch` : "Open current batch"}
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!chosen.length || busy != null}
+                onClick={() => void continueToBatch("new")}
+                title="Clears the current batch rows, then starts a batch with only the selected products"
+              >
+                <FilePlus2 /> New batch with these {chosen.length}
+              </Button>
+              {plan.keptUnselected > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {plural(plan.keptUnselected, "row")} in the current batch {plan.keptUnselected === 1 ? "is" : "are"} not
+                  selected here; adding keeps {plan.keptUnselected === 1 ? "it" : "them"}, a new batch drops{" "}
+                  {plan.keptUnselected === 1 ? "it" : "them"}.
+                </p>
+              )}
+            </>
+          ) : (
+            <Button disabled={!chosen.length || busy != null} onClick={() => void continueToBatch("new")}>
+              {busy === "continue" ? <Loader2 className="animate-spin" /> : <ArrowRight />} Create batch with{" "}
+              {plural(chosen.length, "product")}
+            </Button>
+          )}
           {notReady > 0 && (
             <p className="text-xs text-muted-foreground">
               Products without a master are prepared first; ones still tracing join the batch when ready.

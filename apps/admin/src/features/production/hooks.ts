@@ -12,19 +12,50 @@ const REQUEST_FAILED: ServiceError = {
     "The admin server could not be reached or refused the request. Check your connection and try again.",
 };
 
+const successListeners = new Set<() => void>();
+
+/** Called after any server function answers successfully (e.g. to re-check a stale health banner). */
+export function onServiceSuccess(listener: () => void) {
+  successListeners.add(listener);
+  return () => void successListeners.delete(listener);
+}
+
+/**
+ * Whether a thrown error means the request never got an answer. fetch
+ * reports network failures as TypeError; anything else was thrown by the
+ * admin server (input validation) and carries a message worth showing.
+ */
+function isNetworkFailure(error: unknown) {
+  return error instanceof TypeError || (typeof navigator !== "undefined" && navigator.onLine === false);
+}
+
 /** Runs a server function; a thrown error (network, validation) becomes a failed result. */
 export async function attempt<T>(
   work: () => Promise<ServiceResult<T>>,
 ): Promise<ServiceResult<T>> {
   try {
-    return await work();
-  } catch {
-    return { ok: false, offline: false, error: REQUEST_FAILED };
+    const result = await work();
+    if (result.ok) for (const listener of successListeners) listener();
+    return result;
+  } catch (error) {
+    if (isNetworkFailure(error)) return { ok: false, offline: false, error: REQUEST_FAILED };
+    const message = error instanceof Error ? error.message.trim().slice(0, 300) : "";
+    return {
+      ok: false,
+      offline: false,
+      error: {
+        code: "REQUEST_REJECTED",
+        message: message
+          ? `The admin server rejected the request: ${message}`
+          : "The admin server rejected the request without a reason. Reload the page and try again.",
+      },
+    };
   }
 }
 
 // Failures after which the service may or may not have accepted the request.
-const UNCERTAIN = new Set(["REQUEST_FAILED", "INVALID_RESPONSE", "SERVICE_ERROR"]);
+// A rejection is listed too: reusing its key for the same payload is always safe.
+const UNCERTAIN = new Set(["REQUEST_FAILED", "REQUEST_REJECTED", "INVALID_RESPONSE", "SERVICE_ERROR"]);
 
 /** True when a mutation's outcome is unknown, so a retry must reuse its key. */
 export function isUncertain(result: ServiceResult<unknown>) {

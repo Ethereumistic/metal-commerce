@@ -12,15 +12,21 @@ export type StudioSearch = {
   stage?: Stage;
   job?: string;
   batch?: string;
+  /** Product search to open the Products step with (from a history entry). */
+  q?: string;
 };
 
 const resource = (value: unknown) =>
   typeof value === "string" && RESOURCE_ID.test(value) ? value : undefined;
 
+const query = (value: unknown) =>
+  typeof value === "string" && value.trim() && value.length <= 200 ? value.trim() : undefined;
+
 export function validateStudioSearch(search: Record<string, unknown>): StudioSearch {
   if (search.workspace !== "production") return {};
   const stage = STAGES.includes(search.stage as Stage) ? (search.stage as Stage) : undefined;
   return {
+    ...(query(search.q) ? { q: query(search.q) } : {}),
     workspace: "production",
     ...(stage ? { stage } : {}),
     ...(resource(search.job) ? { job: resource(search.job) } : {}),

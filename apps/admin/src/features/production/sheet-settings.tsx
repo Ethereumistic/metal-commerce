@@ -1,15 +1,17 @@
-import { memo, useState, type ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Loader2, Play } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { Labelled, Section, Segmented, SelectField, SwitchField } from "../studio/components/fields";
+import { Labelled, Segmented, SelectField, SwitchField } from "../studio/components/fields";
 import { createBatch, startNesting } from "./api";
 import { marginsEqual } from "./batch-logic";
-import type { BatchDraft, BatchRequest, ServiceResult, TimeBudget } from "./contracts";
+import type { BatchDraft, BatchRequest, Master, ServiceResult, TimeBudget } from "./contracts";
 import { DraftNumberField } from "./draft-field";
 import { focusField } from "./focus";
 import { attempt, useActionKey } from "./hooks";
 import { ProductImage } from "./product-image";
+import { consumeRunRequest } from "./repeat";
+import { plural } from "./results-logic";
 import { actualSize } from "./sizing";
 import { BatchBadge, ErrorText, ResultAlert, formatMm } from "./status";
 import { MasterLoader } from "./trace-preview";
@@ -96,37 +98,78 @@ const SIDES = ["left", "right", "bottom", "top"] as const;
 type Side = (typeof SIDES)[number];
 const SIDE_LABELS: Record<Side, string> = { left: "Left", right: "Right", bottom: "Bottom", top: "Top" };
 
-/** Products per material group, with their pictures so look-alike names can be told apart. */
-const MaterialGroups = memo(function MaterialGroups({ lines }: { lines: BatchLine[] }) {
-  const groups = new Map<string, { label: string; lines: BatchLine[]; parts: number }>();
+/** A sheet-settings section with a plain sentence-case heading. */
+function Panel({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-2.5 border-b px-3 py-3 last:border-b-0">
+      <h3 className="text-xs font-semibold text-muted-foreground">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+type Group = { key: string; label: string; lines: BatchLine[]; parts: number };
+
+function materialGroups(lines: readonly BatchLine[]): Group[] {
+  const groups = new Map<string, Group>();
   for (const line of lines) {
     if (!line.material || !line.thickness) continue;
     const key = `${line.material}|${line.thickness}`;
-    const group = groups.get(key) ?? { label: `${line.material} · ${line.thickness} mm`, lines: [], parts: 0 };
+    const group = groups.get(key) ?? { key, label: `${line.material}, ${line.thickness} mm`, lines: [], parts: 0 };
     group.lines.push(line);
-    group.parts += line.quantity ?? 0;
+    group.parts += line.quantity != null && Number.isInteger(line.quantity) && line.quantity > 0 ? line.quantity : 0;
     groups.set(key, group);
   }
-  if (!groups.size)
-    return <p className="text-sm text-muted-foreground">Groups appear once lines have a material and thickness.</p>;
+  return [...groups.values()];
+}
+
+/** The size a row cuts at, and the box it was fitted into when that differs. */
+function SizeText({ line, master }: { line: BatchLine; master: Master | undefined }) {
+  const size = master ? actualSize(master.aspect_ratio, line) : null;
+  if (!size) return <span className="text-muted-foreground">size not set</span>;
   return (
-    <ul className="flex flex-wrap gap-2 text-sm">
-      {[...groups.values()].map((group) => (
-        <li key={group.label} className="flex max-w-md flex-col gap-2 rounded-lg border px-3 py-2">
+    <span className="tabular-nums">
+      {formatMm(size.width)} × {formatMm(size.height)} mm
+      {line.mode === "fit" && line.width != null && line.height != null && (
+        <span className="text-muted-foreground">
+          {" "}
+          (fitted in {formatMm(line.width)} × {formatMm(line.height)})
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Products per material group with the finished size each one cuts at. */
+const MaterialGroups = memo(function MaterialGroups({
+  groups,
+  masters,
+}: {
+  groups: Group[];
+  masters: Record<string, Master>;
+}) {
+  if (!groups.length)
+    return <p className="text-sm text-muted-foreground">Groups appear once rows have a material and thickness.</p>;
+  return (
+    <ul className="flex flex-wrap gap-3 text-sm">
+      {groups.map((group) => (
+        <li key={group.key} className="flex w-full max-w-md min-w-0 flex-col gap-2 border bg-ws-panel px-3 py-2">
           <div>
             <div className="font-medium">{group.label}</div>
             <div className="text-xs text-muted-foreground">
-              {group.lines.length} line{group.lines.length === 1 ? "" : "s"} · {group.parts} parts · nested on separate
-              sheets
+              {plural(group.lines.length, "row")}, {plural(group.parts, "part")}; nested on their own sheets
             </div>
           </div>
           <ul className="flex flex-col gap-1">
             {group.lines.map((line) => (
               <li key={line.lineId} className="flex items-center gap-2 text-xs">
                 <ProductImage thumbnail={line.thumbnail} masterId={line.masterId} name={line.productName} className="size-8" />
-                <span className="min-w-0 flex-1 truncate">{line.productName}</span>
-                <span className="text-muted-foreground tabular-nums">
-                  {line.mode === "height" ? `H ${line.height ?? "—"}` : `W ${line.width ?? "—"}`} mm × {line.quantity ?? "—"}
+                <span className="min-w-0 flex-1 truncate" title={line.productName}>
+                  {line.productName}
+                </span>
+                <span className="shrink-0 text-right">
+                  <SizeText line={line} master={masters[line.masterId]} />
+                  <span className="text-muted-foreground tabular-nums"> × {line.quantity ?? "—"}</span>
                 </span>
               </li>
             ))}
@@ -154,6 +197,8 @@ export function SheetSettings({
   const masters = useProduction((state) => state.masters);
   const draft = useProduction((state) => state.draft);
   const { updateSheet, choosePreset, setDraft } = useProduction.getState();
+  const groups = useMemo(() => materialGroups(lines), [lines]);
+  const autoRun = useRef(consumeRunRequest());
   const validateKey = useActionKey("batch");
   const nestKey = useActionKey("nest");
   const [busy, setBusy] = useState<"validate" | "nest" | null>(null);
@@ -258,13 +303,22 @@ export function SheetSettings({
     if (validated?.status === "draft") await nest(validated.batch_id);
   }
 
+  // "Increase limit and retry": run once every master this batch needs is loaded.
+  useEffect(() => {
+    if (!autoRun.current || !canEdit) return;
+    if (!lines.length || lines.some((line) => !masters[line.masterId])) return;
+    autoRun.current = false;
+    void run();
+    // run() reads the store at call time.
+  }, [lines, masters, canEdit]);
+
   return (
     <div className="flex min-h-0 flex-1">
       {[...new Set(lines.map((line) => line.masterId))].map((id) => (
         <MasterLoader key={id} masterId={id} />
       ))}
-      <div className="w-96 shrink-0 overflow-y-auto border-r">
-        <Section title="Stock sheet">
+      <div className="w-80 shrink-0 overflow-y-auto border-r xl:w-96">
+        <Panel title="Stock sheet">
           <SelectField<Settings["preset"]>
             value={sheet.preset}
             options={[
@@ -297,8 +351,8 @@ export function SheetSettings({
               onCommit={(height) => height != null && updateSheet({ height })}
             />
           </div>
-        </Section>
-        <Section title="Margins and gap">
+        </Panel>
+        <Panel title="Margins and gap">
           <p className="text-xs text-muted-foreground">
             No workshop values are confirmed, so nothing is pre-filled. What you enter is remembered
             for this sheet size.
@@ -332,16 +386,22 @@ export function SheetSettings({
               Usable area {formatMm(usable.width)} × {formatMm(usable.height)} mm
             </p>
           )}
-        </Section>
-        <Section title="Optimization">
-          <div data-sheet-field="maxSheets">
+        </Panel>
+        <Panel title="Optimization">
+          <div data-sheet-field="maxSheets" className="flex flex-col gap-1">
             <DraftNumberField
-              label="Max sheets"
+              label="Sheets per group"
               value={sheet.maxSheets}
               min={1}
               digits={0}
               onCommit={(maxSheets) => updateSheet({ maxSheets })}
             />
+            <p className="text-xs text-muted-foreground">
+              The limit applies to each material group separately.
+              {sheet.maxSheets != null && groups.length > 1
+                ? ` With ${groups.length} groups this batch may use up to ${sheet.maxSheets * groups.length} sheets in total.`
+                : ""}
+            </p>
           </div>
           <Labelled label="Time budget per material group">
             <Segmented<`${TimeBudget}`>
@@ -373,24 +433,24 @@ export function SheetSettings({
               }}
             />
           </Labelled>
-        </Section>
+        </Panel>
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
         <div>
           <h3 className="mb-2 text-sm font-semibold">Material groups</h3>
-          <MaterialGroups lines={lines} />
+          <MaterialGroups groups={groups} masters={masters} />
           <p className="mt-2 text-xs text-muted-foreground">
-            The sheet count is only known after nesting completes.
+            Sizes are the finished part sizes. The sheet count is only known after nesting completes.
           </p>
         </div>
 
         {(problems.length > 0 || fitIssues.length > 0) && (
           <div>
             <h3 className="mb-1 text-sm font-semibold">Before running</h3>
-            <ul className="list-disc pl-5 text-xs">
-              {[...problems, ...fitIssues].map((problem) => (
-                <li key={problem.message} className={problem.tone === "error" ? "text-destructive" : "text-muted-foreground"}>
+            <ul className="flex flex-col gap-1 border-l-4 border-l-ws-hazard bg-ws-hazard/10 py-1.5 pr-2 pl-3 text-xs">
+              {[...problems, ...fitIssues].map((problem, index) => (
+                <li key={`${index}-${problem.message}`} className={problem.tone === "error" ? "text-destructive" : "text-foreground"}>
                   {problem.go ? (
                     <button type="button" className="text-left underline-offset-2 hover:underline" onClick={problem.go}>
                       {problem.message}
@@ -406,27 +466,19 @@ export function SheetSettings({
 
         <ResultAlert result={failure} title="The service did not accept the request" />
 
-        <div className="flex items-center gap-2">
-          <Button disabled={!canEdit || busy != null} onClick={() => void run()}>
-            {busy ? <Loader2 className="animate-spin" /> : <Play />}{" "}
-            {busy === "validate" ? "Validating…" : busy === "nest" ? "Starting…" : "Run nesting"}
-          </Button>
-          <span className="text-xs text-muted-foreground">
-            Validates the batch with the service, then starts nesting if it is valid.
-          </span>
-        </div>
-
         {draft && (
           <div className="flex flex-col gap-2 rounded-lg border p-3 text-sm">
             <div className="flex items-center gap-2">
-              <span className="font-medium">Batch {draft.batch_id}</span>
+              <span className="font-medium" title={draft.batch_id}>
+                {sheet.name.trim() || "Untitled batch"}, checked by the service
+              </span>
               <BatchBadge status={draft.status} />
             </div>
             <ul className="flex flex-col gap-1 text-xs">
               {draft.groups.map((group) => (
                 <li key={group.group_key}>
-                  {group.material} · {group.thickness_mm} mm — {group.line_ids.length} lines,{" "}
-                  {group.instance_count} parts
+                  {group.material}, {group.thickness_mm} mm: {plural(group.line_ids.length, "row")},{" "}
+                  {plural(group.instance_count, "part")}
                 </li>
               ))}
             </ul>
@@ -454,6 +506,16 @@ export function SheetSettings({
             )}
           </div>
         )}
+        <div className="sticky bottom-0 -mx-4 mt-auto flex flex-wrap items-center gap-2 border-t bg-ws-panel px-4 py-2">
+          <Button disabled={!canEdit || busy != null} onClick={() => void run()}>
+            {busy ? <Loader2 className="animate-spin" /> : <Play />}{" "}
+            {busy === "validate" ? "Validating…" : busy === "nest" ? "Starting…" : "Run nesting"}
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            Validates the batch with the service, then starts nesting if it is valid.
+          </span>
+        </div>
+
       </div>
     </div>
   );

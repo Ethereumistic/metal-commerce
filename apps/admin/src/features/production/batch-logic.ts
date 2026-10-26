@@ -246,3 +246,205 @@ export function migrateProduction(persisted: unknown, version: number): Persiste
     pendingAdds: record(state.pendingAdds) as Record<string, PendingAdd>,
   };
 }
+
+/**
+ * Limits the admin server enforces on a batch (api.ts). They are checked here
+ * too, so the operator learns about them at the row that breaks them instead
+ * of from a rejected request.
+ */
+export const LIMITS = {
+  maxMm: 10_000,
+  maxLines: 200,
+  maxQuantity: 10_000,
+  maxTotalParts: 5_000,
+  maxSheets: 500,
+} as const;
+
+const count = (value: number) => value.toLocaleString("en-US");
+
+/**
+ * Reads a quantity as typed, without correcting it: "0" stays 0 and "-5"
+ * stays -5 so validation can say what is wrong. Blank or non-numeric text is
+ * null (no quantity entered).
+ */
+export function parseQuantityText(text: string): number | null {
+  const trimmed = text.trim().replaceAll(/[\s,_]/g, "");
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(trimmed)) return null;
+  const value = Number(trimmed);
+  return Number.isFinite(value) ? value : null;
+}
+
+/** Why a row quantity cannot be used, or null when it is a valid count. */
+export function quantityProblem(quantity: number | null): string | null {
+  if (quantity == null) return "Enter a quantity.";
+  if (!Number.isInteger(quantity))
+    return `Quantity must be a whole number; ${quantity} was entered.`;
+  if (quantity < 1) return `Quantity must be at least 1; ${count(quantity)} was entered.`;
+  if (quantity > LIMITS.maxQuantity)
+    return `At most ${count(LIMITS.maxQuantity)} per row; ${count(quantity)} was entered. Split larger runs into several batches.`;
+  return null;
+}
+
+/** Problems with the batch as a whole (row count, total parts), with the row best placed to fix each. */
+export function batchLimitProblems(
+  lines: readonly Pick<BatchLine, "lineId" | "quantity">[],
+): { lineId: string | null; message: string }[] {
+  const problems: { lineId: string | null; message: string }[] = [];
+  if (lines.length > LIMITS.maxLines)
+    problems.push({
+      lineId: null,
+      message: `A batch holds at most ${LIMITS.maxLines} rows; this one has ${lines.length}. Split it into several batches.`,
+    });
+  let total = 0;
+  let largest: { lineId: string; quantity: number } | null = null;
+  for (const line of lines) {
+    const quantity = line.quantity;
+    if (quantity == null || !Number.isInteger(quantity) || quantity < 1) continue;
+    total += quantity;
+    if (!largest || quantity > largest.quantity) largest = { lineId: line.lineId, quantity };
+  }
+  if (total > LIMITS.maxTotalParts)
+    problems.push({
+      lineId: largest?.lineId ?? null,
+      message: `A batch holds at most ${count(LIMITS.maxTotalParts)} parts; this one has ${count(total)}. Lower the quantities or split the batch.`,
+    });
+  return problems;
+}
+
+/** What "add the selection to the current batch" and "start a new batch" would each produce. */
+export type AddPlan = {
+  selected: number;
+  /** Selected products already in the batch (as a row or waiting for their master). */
+  alreadyInBatch: number;
+  /** Rows the add would create. */
+  adding: number;
+  rowsNow: number;
+  rowsAfterAdd: number;
+  /** Batch rows whose product is not selected; adding keeps them, a new batch drops them. */
+  keptUnselected: number;
+};
+
+export function addPlan(
+  selectedIds: readonly string[],
+  lines: readonly Pick<BatchLine, "productId">[],
+  pendingIds: readonly string[],
+): AddPlan {
+  const inBatch = new Set([...lines.map((line) => line.productId), ...pendingIds]);
+  const selected = new Set(selectedIds);
+  const alreadyInBatch = [...selected].filter((id) => inBatch.has(id)).length;
+  const adding = selected.size - alreadyInBatch;
+  // Pending products are never also rows (queueAdds skips products already in the batch).
+  const rowsNow = lines.length + pendingIds.length;
+  const keptUnselected =
+    lines.filter((line) => !selected.has(line.productId)).length +
+    pendingIds.filter((id) => !selected.has(id)).length;
+  return { selected: selected.size, alreadyInBatch, adding, rowsNow, rowsAfterAdd: rowsNow + adding, keptUnselected };
+}
+
+/** Identity of a draft's content (not its row ids), to tell whether two drafts are the same job. */
+export function draftSignature(lines: readonly NewLine[]): string {
+  return JSON.stringify(
+    lines.map((line) => [
+      line.productId,
+      line.masterId,
+      line.mode,
+      line.mode === "height" ? null : line.width,
+      line.mode === "width" ? null : line.height,
+      line.quantity,
+      line.material,
+      line.thickness,
+      [...line.rotations].sort((a, b) => a - b),
+    ]),
+  );
+}
+
+type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+type JsonRecord = { [key: string]: Json };
+
+const asRecord = (value: Json | undefined): JsonRecord | null =>
+  value && typeof value === "object" && !Array.isArray(value) ? value : null;
+const asNumber = (value: Json | undefined) => (typeof value === "number" && Number.isFinite(value) ? value : null);
+
+export type ClonedBatch = { lines: NewLine[]; sheet: SheetSettings; skipped: number };
+
+/**
+ * A new draft from a batch's frozen request: the same products, masters,
+ * sizes, quantities, materials, rotations, stock, margins, gap, sheet limit,
+ * time budget, seed and name. Names and thumbnails come from what this
+ * browser knows about the products. Lines the request does not describe
+ * completely are skipped and counted. Null when the request has no lines.
+ */
+export function cloneBatchRequest(
+  request: JsonRecord,
+  products: Record<string, ProductInfo>,
+  current: SheetSettings,
+): ClonedBatch | null {
+  const rawLines = Array.isArray(request.lines) ? request.lines : [];
+  let skipped = 0;
+  const lines: NewLine[] = [];
+  for (const raw of rawLines) {
+    const line = asRecord(raw);
+    const size = asRecord(line?.size);
+    const productId = typeof line?.product_id === "string" ? line.product_id : null;
+    const masterId = typeof line?.master_id === "string" ? line.master_id : null;
+    const mode = size?.mode === "width" || size?.mode === "height" || size?.mode === "fit" ? size.mode : null;
+    const rotations = Array.isArray(line?.allowed_rotations)
+      ? ALL_ROTATIONS.filter((rotation) => (line.allowed_rotations as Json[]).includes(rotation))
+      : [];
+    if (!line || !productId || !masterId || !mode || !rotations.length) {
+      skipped += 1;
+      continue;
+    }
+    const known = products[productId];
+    lines.push({
+      productId,
+      productName: known?.name ?? "Product from an earlier batch",
+      thumbnail: known?.thumbnail ?? null,
+      masterId,
+      mode,
+      width: asNumber(size?.width_mm),
+      height: asNumber(size?.height_mm),
+      quantity: asNumber(line.quantity),
+      material: typeof line.material === "string" ? line.material : "",
+      thickness: asNumber(line.thickness_mm),
+      rotations,
+    });
+  }
+  if (!lines.length) return null;
+
+  const stock = asRecord(request.stock);
+  const margins = asRecord(stock?.margins_mm);
+  const optimization = asRecord(request.optimization);
+  const width = asNumber(stock?.width_mm) ?? current.width;
+  const height = asNumber(stock?.height_mm) ?? current.height;
+  const preset: SheetPreset =
+    width === SHEET_PRESETS.current.width && height === SHEET_PRESETS.current.height
+      ? "current"
+      : width === SHEET_PRESETS.future.width && height === SHEET_PRESETS.future.height
+        ? "future"
+        : "custom";
+  const sheetMargins: Margins = {
+    left: asNumber(margins?.left),
+    right: asNumber(margins?.right),
+    bottom: asNumber(margins?.bottom),
+    top: asNumber(margins?.top),
+  };
+  const budget = asNumber(optimization?.time_budget_s);
+  return {
+    lines,
+    skipped,
+    sheet: {
+      ...current,
+      preset,
+      width,
+      height,
+      margins: sheetMargins,
+      linkMargins: marginsEqual(sheetMargins),
+      gap: asNumber(stock?.gap_mm),
+      maxSheets: asNumber(stock?.max_sheets) ?? current.maxSheets,
+      timeBudget: budget === 10 || budget === 30 || budget === 120 ? budget : current.timeBudget,
+      seed: asNumber(optimization?.seed) ?? current.seed,
+      name: typeof request.name === "string" ? request.name : "",
+    },
+  };
+}

@@ -235,12 +235,32 @@ export type BatchTotals = {
   occupied_extent_mm: JsonValue;
   runtime_s: number | null;
   optimization_status: string | null;
+  /** Per material group: engine, status, metrics (free-form; read by results-logic.ts). */
+  groups: JsonValue;
+  occupied_extent_by_group_mm: JsonValue;
+};
+
+/** Process check of one part's features against the fabrication profile. */
+export type FeatureCheck = { status: "pass" | "fail" | "unknown"; message: string };
+
+/** The service's frozen view of one line of a nested batch. */
+export type BatchResultLine = {
+  line_id: string;
+  actual_width_mm: number | null;
+  actual_height_mm: number | null;
+  feature_check: FeatureCheck | null;
 };
 
 export type Batch = {
   batch_id: string;
   status: BatchStatus;
+  /** The operator's batch name, if one was given. */
+  name: string | null;
+  /** Why the batch did not complete (e.g. NEST_INCOMPLETE), when the service recorded one. */
+  error: ServiceError | null;
+  created_at: string | null;
   request: JsonObject;
+  lines: BatchResultLine[];
   groups: BatchGroup[];
   sheets: Sheet[];
   totals: BatchTotals | null;
@@ -512,6 +532,8 @@ function parseTotals(value: unknown, path: string): BatchTotals {
       totals.optimization_status,
       `${path}.optimization_status`,
     ),
+    groups: json(totals.groups),
+    occupied_extent_by_group_mm: json(totals.occupied_extent_by_group_mm),
   };
 }
 
@@ -539,15 +561,38 @@ function parseSheet(value: unknown, path: string): Sheet {
   };
 }
 
+/** Lenient: a missing or unrecognised check reads as "unknown", never as passed. */
+function parseFeatureCheck(value: unknown): FeatureCheck | null {
+  if (value == null) return null;
+  if (typeof value !== "object" || Array.isArray(value)) return { status: "unknown", message: "" };
+  const check = value as JsonObject;
+  const status = check.status === "pass" || check.status === "fail" ? check.status : "unknown";
+  return { status, message: typeof check.message === "string" ? check.message : "" };
+}
+
 export function parseBatch(value: unknown): Batch {
   const body = record(value, "batch");
   const status = oneOf(BATCH_STATUSES)(body.status, "batch.status");
   const artifacts = record(body.artifacts ?? {}, "batch.artifacts");
   const zip = nullable(id)(artifacts.zip, "batch.artifacts.zip");
+  const request = record(body.request ?? {}, "batch.request");
   return {
     batch_id: id(body.batch_id, "batch.batch_id"),
     status,
-    request: record(body.request ?? {}, "batch.request"),
+    name: nullable(text)(body.name ?? request.name, "batch.name"),
+    error: nullable(parseServiceError)(body.error, "batch.error"),
+    created_at: nullable(text)(body.created_at, "batch.created_at"),
+    request,
+    lines: list(body.lines ?? [], "batch.lines").map((raw, index) => {
+      const path = `batch.lines[${index}]`;
+      const line = record(raw, path);
+      return {
+        line_id: id(line.line_id, `${path}.line_id`),
+        actual_width_mm: nullable(number)(line.actual_width_mm, `${path}.actual_width_mm`),
+        actual_height_mm: nullable(number)(line.actual_height_mm, `${path}.actual_height_mm`),
+        feature_check: parseFeatureCheck(line.feature_check),
+      };
+    }),
     groups: list(body.groups ?? [], "batch.groups").map((group, index) =>
       parseGroup(group, `batch.groups[${index}]`),
     ),

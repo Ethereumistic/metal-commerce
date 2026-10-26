@@ -1,4 +1,5 @@
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/big-shoulders";
 @import "@workspace/ui/globals.css";
 
 /* globals.css scans packages/ui; scan the admin's own sources too. */
@@ -16,5 +17,101 @@
   html.dark {
     /* Native controls (scrollbars, colour pickers) follow the theme. */
     color-scheme: dark;
+  }
+}
+
+/*
+ * Production workshop tokens (docs/admin-production-design.md). Scoped to
+ * .workshop so the Studio editor and other admin pages keep the shared
+ * theme: steel surfaces, ink hairlines, temper blue for action and focus,
+ * hazard yellow only where a human is needed, spark orange for blockers.
+ */
+@theme inline {
+  --font-numeral: "Big Shoulders Variable", "Geist Variable", ui-sans-serif, sans-serif;
+  --color-ws-surface: var(--ws-surface);
+  --color-ws-panel: var(--ws-panel);
+  --color-ws-ink: var(--ws-ink);
+  --color-ws-temper: var(--ws-temper);
+  --color-ws-hazard: var(--ws-hazard);
+  --color-ws-hazard-ink: var(--ws-hazard-ink);
+  --color-ws-spark: var(--ws-spark);
+  --color-ws-cut: var(--ws-cut);
+}
+
+.workshop {
+  --ws-surface: #e6e9ea;
+  --ws-panel: #f7f8f8;
+  --ws-ink: #16191c;
+  --ws-temper: #2a4fd6;
+  --ws-hazard: #f5c022;
+  /* Text on light panels next to a hazard mark (yellow itself is too light to read). */
+  --ws-hazard-ink: #7a5600;
+  --ws-spark: #c2410c;
+  --ws-cut: #1d7a4c;
+
+  --background: var(--ws-panel);
+  --foreground: var(--ws-ink);
+  --card: var(--ws-panel);
+  --card-foreground: var(--ws-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ws-ink);
+  --primary: var(--ws-temper);
+  --primary-foreground: #ffffff;
+  --secondary: #e1e5e7;
+  --secondary-foreground: var(--ws-ink);
+  --muted: #e6e9ea;
+  --muted-foreground: #4c555c;
+  --accent: #e3e8f7;
+  --accent-foreground: var(--ws-ink);
+  --destructive: var(--ws-spark);
+  --border: rgb(22 25 28 / 0.14);
+  --input: rgb(22 25 28 / 0.24);
+  --ring: var(--ws-temper);
+  --radius: 0.25rem;
+  background: var(--ws-panel);
+  color: var(--ws-ink);
+}
+
+.dark .workshop {
+  --ws-surface: #101315;
+  --ws-panel: #171b1d;
+  --ws-ink: #e6e9ea;
+  --ws-temper: #8ea6ff;
+  --ws-hazard: #f5c022;
+  --ws-hazard-ink: #f5c022;
+  --ws-spark: #ff7a45;
+  --ws-cut: #5bd69a;
+
+  --popover: #1e2326;
+  --primary-foreground: #0e1430;
+  --secondary: #23292c;
+  --muted: #22272a;
+  --muted-foreground: #a3acb2;
+  --accent: #252c3d;
+  --border: rgb(230 233 234 / 0.12);
+  --input: rgb(230 233 234 / 0.2);
+}
+
+@layer components {
+  /* Stencilled identifiers (stage and sheet numbers, headline counts). */
+  .ws-numeral {
+    font-family: var(--font-numeral);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .workshop :focus-visible {
+    outline: 2px solid var(--ws-temper);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workshop *,
+  .workshop *::before,
+  .workshop *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
