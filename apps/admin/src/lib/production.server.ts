@@ -96,7 +96,8 @@ function serviceConfig(): ServiceConfig | ServiceResult<never> {
 }
 
 function isFailure(value: unknown): value is ServiceResult<never> {
-  return !!value && typeof value === "object" && "ok" in value;
+  // A fetch Response also has `ok`; only our plain result objects are failures.
+  return !!value && typeof value === "object" && !(value instanceof Response) && "ok" in value;
 }
 
 /** The signed-in operator, refused unless a member (and an editor when `edit`). */
