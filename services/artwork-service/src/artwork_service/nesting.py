@@ -45,7 +45,7 @@ from .nesting_types import (
 from . import solver_adapter
 from .validation import validate_layout
 
-NESTING_VERSION = "nesting-1.1.0"
+NESTING_VERSION = "nesting-1.2.0"
 BASELINE_ENGINE = "bbox-baseline"
 # Share of the time budget for the first solver attempt. The rest goes to gap
 # filling, or, if the first layout is invalid, to one retry with a safer
@@ -238,9 +238,12 @@ def _fill(best, parts, stock, deadline, cancel, speculation, settings, by_instan
         start, moves, searches, runtime = prior.sheets, prior.moves, prior.searches, prior.runtime_s
         record["continued_speculative_fill"] = True
     result: FillResult | None = prior
+    phase = prior if prior is not None and prior.filler_phase == "applied" else None
     if (prior is None or prior.stopped != "converged") and time.monotonic() < deadline:
-        result = fill_gaps(parts, stock, start, deadline=deadline, cancel=cancel)
+        result = fill_gaps(parts, stock, start, deadline=deadline, cancel=cancel, fillers_placed=phase is not None)
         moves, searches, runtime = moves + result.moves, searches + result.searches, runtime + result.runtime_s
+    # The filler phase runs once per layout: report the run that did it.
+    phase = phase or result
     record.update(
         stopped=result.stopped if result is not None else "no time left",
         cell_mm=result.cell_mm if result is not None else None,
@@ -248,6 +251,12 @@ def _fill(best, parts, stock, deadline, cancel, speculation, settings, by_instan
         searches=searches,
         runtime_s=runtime,
     )
+    if phase is not None:
+        record["filler_phase"] = {
+            "status": phase.filler_phase,
+            "fillers": phase.fillers,
+            "tucked": phase.fillers_tucked,
+        }
     if moves == 0 or result is None:
         return best
     filled = _candidate(best.engine, _renumber(result.sheets, parts), parts, stock)

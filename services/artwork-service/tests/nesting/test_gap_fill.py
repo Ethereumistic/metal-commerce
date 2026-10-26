@@ -6,10 +6,11 @@ from __future__ import annotations
 import time
 
 import pytest
+import shapely
 from shapely.geometry import MultiPolygon, Polygon
 
 from artwork_service import nesting, solver_adapter
-from artwork_service.gap_fill import _Filler, fill_gaps
+from artwork_service.gap_fill import _Filler, fill_gaps, filler_parts
 from artwork_service.nesting import bbox_baseline, layout_metrics, nest_group
 from artwork_service.nesting_types import Placement, filled_shell, place_geometry
 from artwork_service.validation import validate_layout
@@ -160,6 +161,8 @@ def test_owner_like_batch_tucks_fillers_with_the_solver():
     attempt = outcome.settings["attempts"][0]
     assert attempt["solution_times_s"] and attempt["build_s"] is not None
     assert outcome.settings["gap_fill"]["moves"] >= 0
+    phase = outcome.settings["gap_fill"]["filler_phase"]
+    assert phase["status"] != "applied" or phase["fillers"] == 12
 
 
 def test_irregular_layout_wins_an_extent_tie_with_the_baseline(monkeypatch):
@@ -201,3 +204,96 @@ def test_leftover_usable_area_metric():
     big = MultiPolygon([Polygon([(0, 0), (980, 0), (980, 1970), (0, 1970)])])
     full = layout_metrics([[Placement("big#0001", "big", "big", "p", 0, 10.0, 20.0)]], [], [part("big", big, 1)], stock)
     assert full["leftover_usable_area_mm2"] == 0.0
+
+
+def test_filler_tier_is_the_small_parts_below_a_size_jump():
+    wave = part("wave", wave_art(), 10)
+    stars = part("star", star(300, 5), 44)
+    shurikens = part("shuriken", shuriken(100), 20)
+    kunai = part("kunai", ninja_blade(70), 10)
+    assert {p.part_key for p in filler_parts([wave, stars, shurikens, kunai])} == {"shuriken", "kunai"}
+    # Similar sizes: no tier.
+    assert filler_parts([stars, part("star6", star(280, 6, inner=0.5), 20)]) == []
+    # 44 stars next to 10 wave pieces are a tier by size, but far too much area
+    # for the gaps among the waves: no filler phase.
+    assert filler_parts([wave, stars]) == []
+
+
+def _strip_layout():
+    """Solver-like owner layout: on the first sheet two concave wave pieces on the
+    left, small fillers in a strip of their own at the bottom of the right column
+    and the stars above them; the remnant sheet holds a third wave piece."""
+    parts = [
+        part("wave", wave_art(400, depth=40), 3),
+        part("star", star(150, 5), 8),
+        part("shuriken", shuriken(40), 8),
+        part("kunai", ninja_blade(70), 4),
+    ]
+    stock = sheet(800, 1000, margins=(10, 10, 10, 10), gap=4, max_sheets=2)
+    wave, stars, shurikens, kunai = parts
+    column = 10 + 400 + 4
+
+    def at(p, n, x, y):
+        return Placement(p.instance_ids[n], p.part_key, p.line_id, p.product_id, 0, x, y)
+
+    first = [at(wave, n, 10, 10 + n * 404) for n in range(2)]
+    first += [at(shurikens, n, column + n * 45, 10) for n in range(8)]
+    first += [at(kunai, n, column + n * 75, 55) for n in range(4)]
+    first += [at(stars, n, column + (n % 2) * 155, 75 + (n // 2) * 155) for n in range(8)]
+    sheets = [first, [at(wave, 2, 10, 10)]]
+    assert validate_layout(parts, stock, sheets).valid
+    return parts, stock, sheets
+
+
+def _among_large_parts(parts, sheet, reach: float) -> float:
+    """Share of a sheet's fillers with at least two larger parts (waves, stars)
+    within ``reach`` mm: tucked between them rather than lined up with each other."""
+    by_instance = {i: p for p in parts for i in p.instance_ids}
+    large, small = [], []
+    for p in sheet:
+        world = filled_shell(place_geometry(by_instance[p.instance_id].geometry, p.rotation_deg, p.tx_mm, p.ty_mm))
+        (large if p.line_id in ("wave", "star") else small).append(world)
+    near = [sum(shapely.distance(s, other) <= reach for other in large) for s in small]
+    return sum(n >= 2 for n in near) / len(small)
+
+
+def test_fillers_leave_their_strip_for_the_gaps_among_larger_parts():
+    """Owner report: all fillers sat together in a bottom strip while the space
+    among the 300 mm parts stayed empty. They must move among the larger parts and
+    the clear strip must not shrink."""
+    parts, stock, sheets = _strip_layout()
+    reach = 4 * stock.gap_mm
+    assert _among_large_parts(parts, sheets[0], reach) == 0.0
+    before = layout_metrics(sheets, [], parts, stock)
+
+    result = _fill(parts, stock, sheets)
+
+    report = validate_layout(parts, stock, result.sheets)
+    assert report.valid, [v.to_dict() for v in report.violations]
+    assert result.filler_phase == "applied" and result.fillers == 12
+    # Every filler stays on the first sheet, most of them between larger parts
+    # (the gap fill before this change left all of them in their strip: 0.0).
+    assert sum(p.line_id in ("shuriken", "kunai") for p in result.sheets[0]) == 12
+    assert _among_large_parts(parts, result.sheets[0], reach) >= 0.5
+    after = layout_metrics(result.sheets, [], parts, stock)
+    assert after["sheet_count"] <= before["sheet_count"]
+    assert after["occupied_extent_mm"] <= before["occupied_extent_mm"]
+    assert after["leftover_usable_area_mm2"] >= before["leftover_usable_area_mm2"]
+    # The stars took over the freed strip: their far edge came down.
+    assert _far(result.sheets[0], parts, stock, {"star"}) < _far(sheets[0], parts, stock, {"star"})
+
+
+def test_interrupted_filler_phase_keeps_a_complete_layout():
+    parts, stock, sheets = _strip_layout()
+    calls = 0
+
+    def cancel_soon() -> bool:
+        nonlocal calls
+        calls += 1
+        return calls > 3
+
+    result = fill_gaps(parts, stock, sheets, deadline=time.monotonic() + 30, cancel=cancel_soon)
+    assert result.stopped == "cancelled" and result.filler_phase.startswith("abandoned")
+    placed = sorted(p.instance_id for s in result.sheets for p in s)
+    assert placed == sorted(i for p in parts for i in p.instance_ids)
+    assert validate_layout(parts, stock, result.sheets).valid

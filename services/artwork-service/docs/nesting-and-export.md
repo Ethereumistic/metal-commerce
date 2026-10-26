@@ -44,10 +44,11 @@ flip happens once, upstream, in the tracer; nothing here flips Y.
    trusted. `settings.selection` records the choice.
 6. **Gap fill** (`gap_fill.py`, below) on the selected layout until it
    converges or the budget ends, continuing the speculative fill of step 4
-   when it ran on exactly this layout. The filled layout is re-validated and
-   kept only if it is valid and not worse by (unplaced, sheets, last-sheet
-   extent); `settings.gap_fill` records moves, searches, runtime, how it
-   stopped and whether it was applied or rejected.
+   when it ran on exactly this layout (its filler phase is not repeated). The
+   filled layout is re-validated and kept only if it is valid and not worse
+   by (unplaced, sheets, last-sheet extent); `settings.gap_fill` records
+   moves, searches, runtime, how it stopped, whether it was applied or
+   rejected, and `filler_phase: {status, fillers, tucked}`.
 7. Status is `complete` only when every instance is placed on a valid layout;
    `incomplete` lists `unplaced_instance_ids` (for example when `max_sheets` is
    too small); `cancelled` returns no sheets. Only profit-free objectives are
@@ -66,14 +67,47 @@ it, its move count is `metrics.gap_fill_moves`.
 
 PackingSolver's objective (fewest bins, then the shortest last bin) is
 indifferent to where small parts sit on the earlier sheets, and the
-bounding-box fallback cannot use concavities at all. The pass moves single
-parts of a valid layout to the lowest free position along the long axis:
+bounding-box fallback cannot use concavities at all. The pass has two phases.
+
+**1. Filler phase** (only when the group has a filler tier). Fillers
+(`filler_parts`) are the smallest parts up to a jump of at least 4x in filled
+area to the next part size, provided all their copies together cover at most
+10 % of the other parts' filled area; the largest such tier wins. For the
+owner's batch these are the 70 and 100 mm shurikens (not the 300 mm stars:
+44 stars are 41 % of the wave pieces' area, far more than the gaps among
+them can take). The phase:
+
+1. lifts every filler off the layout;
+2. compacts the remaining parts (phase 2 rules) until half of the remaining
+   time, so the larger parts first settle into the strip the fillers leave;
+3. places the fillers again, largest first: on the earliest sheet that has
+   room for the filler **inside its occupied box** (so it never enlarges a
+   sheet's envelope), at the position with the **most contact**: obstacle
+   cells of the non-filler parts within 10 mm around the filler, one more
+   `cv2.filter2D` correlation per rotation with a band kernel. Contact
+   ignores other fillers and the sheet edge, so fillers seek the pockets
+   between large parts (including outer concavities) instead of lining up
+   with each other or along the margin; ties go to the lowest position. All
+   allowed rotations are tried. Only when no occupied box has room does a
+   filler go to the lowest free position on the earliest sheet with room,
+   and failing that back where it was;
+4. if it is cancelled, runs out of time or finds no position at all, the
+   layout it started from is used unchanged (`status: "abandoned: ..."`).
+
+`settings.gap_fill.filler_phase` reports `status` (`applied`, `none` or
+`abandoned: <reason>`), `fillers` (parts placed) and `tucked` (of those,
+placed inside an occupied box).
+
+**2. Compaction.** Single parts move to the lowest free position along the
+long axis:
 
 - parts on the last sheet may go anywhere on earlier sheets (this can save the
   sheet or shorten it), or lower on the last sheet;
 - every other part may only move to an earlier sheet or lower on its own
   sheet **inside that sheet's occupied box** (usable origin to the farthest
   part on both axes), so the remnant strip and a free side column stay intact;
+- fillers placed by phase 1 stay where they are (moving them to the lowest
+  position would pull them back into a strip of their own);
 - order per pass: parts on the last sheet, then small parts (filled area at
   most 25 % of the largest part), then the rest; later sheets and farther
   parts first. Passes repeat until no part moves, the deadline, or cancel.
@@ -85,10 +119,11 @@ conservative; one `cv2.filter2D` correlation per rotation gives every grid
 translation where the part's cells miss all obstacle cells. Rotations whose
 raster equals an earlier rotation's (symmetric parts) are skipped, and a
 distance-transform bound skips parts too thick for the largest free disk.
-Up to 6 lowest candidates per rotation are then checked **exactly** with
-Shapely (usable bounds, shell-to-shell distance >= gap + 0.001 mm), and the
-finished layout is re-validated by `validate_layout`. Holes are filled before
-rasterising and in the exact check, so nothing lands in a hole (v1 rule).
+Up to 6 best candidates per rotation (lowest, or most contact in phase 1)
+are then checked **exactly** with Shapely (usable bounds, shell-to-shell
+distance >= gap + 0.001 mm), and the finished layout is re-validated by
+`validate_layout`. Holes are filled before rasterising and in the exact
+check, so nothing lands in a hole (v1 rule).
 
 
 ## Solver integration
@@ -403,9 +438,110 @@ Options evaluated and not adopted:
   a process pool.
 
 
+## Owner QA 2026-10-27: fillers in a strip of their own
+
+Reported (browser QA, twice): the owner's real batch, 10 x Chromatic Waves at
+800 mm + 44 x Starburst Compass at 300 mm + 20 x Leaf Four-Point Shuriken at
+100 mm + 10 x Demon Wind Shuriken at 70 mm, steel 2 mm, 1500 x 3000 mm,
+margins 10 mm, gap 5 mm, gave 84/84 on 4 sheets (55/25/3/1) with 126-205
+gap-fill moves, but all 30 shurikens sat together in a strip at the bottom
+of sheet 1 while the spaces among the stars stayed empty, at 30 s and at
+120 s. An independent check found valid shuriken positions among the stars
+with 6.9-9.7 mm clearance.
+
+Root cause: compaction moves every part to the *lowest* free position. On a
+solver layout whose bottom strip is free, the shurikens are already as low as
+they can go, and a star cannot drop into the strip while they occupy it; no
+single move improves anything, so the strip stays a filler strip. Moving a
+shuriken up into a star pocket would only pay off after a star then takes its
+place, which a one-part-at-a-time greedy pass never sees.
+
+Change: the filler phase (see "Gap filling"): lift the fillers, let the
+larger parts settle first, then put each filler into the tightest pocket
+inside an occupied box, and keep the fillers there during compaction.
+`fill_gaps(..., fillers_placed=True)` continues a fill without repeating the
+phase. The owner's traced masters are now a fixture
+(`tests/fixtures/real/owner-masters.json.gz`, geometry only, exported from
+the dev catalogue) and a benchmark (`--owner-real`).
+
+Benchmark, `uv run python scripts/bench_nesting.py --budget 30 --owner-real`
+(2026-10-27, Omarchy workstation, seed 1; "before" is the previous gap fill,
+commit d238783, run from the same script). The `owner-real-*` fixtures use the
+owner's stock (1500 x 3000 mm, margins 10 mm, gap 5 mm); the others use the
+benchmark stock above. "tucked" = fillers placed inside an occupied box by the
+filler phase / fillers. Leftover is `leftover_usable_area_mm2` summed over
+the sheets, in m².
+
+| fixture | before: sheets (per sheet) / extent / leftover / moves / nest | after: sheets (per sheet) / extent / leftover / moves / tucked / nest |
+|---|---|---|
+| mixed-54 | 1 (54) / 1713.9 / 1.853 / 0 / 17.2 s | 1 (54) / 1713.9 / 1.853 / 0 / - / 17.2 s |
+| concave-combs-40 | 1 (40) / 1931.1 / 1.667 / 0 / 17.2 s | 1 (40) / 1931.1 / 1.667 / 0 / - / 17.3 s |
+| owner-54 | 4 (35/15/3/1) / 820.0 / 7.031 / 100 / 21.8 s | 4 (35/15/3/1) / 820.0 / 7.031 / 100 / - / 21.9 s |
+| owner-84 | 4 (64/16/3/1) / 820.0 / 7.062 / 96 / 22.6 s | 4 (64/16/3/1) / 820.0 / **7.068** / 97 / **30/30** / 20.3 s |
+| owner-real-54 | 4 (26/24/3/1) / 810.0 / 6.804 / 82 / 17.6 s | 4 (26/24/3/1) / 810.0 / 6.804 / 82 / - / 17.7 s |
+| owner-real-84 | 4 (55/25/3/1) / 810.0 / 6.469 / 259 / **30.1 s (deadline)** | 4 (56/24/3/1) / 810.0 / **6.637** / 151 / **30/30** / 23.3 s |
+
+Same fixtures at a 10 s budget (both stop at the deadline):
+
+| fixture | before | after |
+|---|---|---|
+| owner-84 | 4 (63/17/3/1) / 820.0 / 7.062 | 4 (63/17/3/1) / 820.0 / 7.068, 30/30 tucked |
+| owner-real-84 | 4 (53/27/3/1) / 810.0 / 6.287 | 4 (57/23/3/1) / 810.0 / **6.630**, 30/30 tucked |
+
+At a 120 s budget, owner-real-84 after the change: 4 (57/23/3/1) / 810.0 mm
+/ 6.640 m², 30/30 tucked, nest 69 s (the solver child ran 68 s). The QA
+job with the same batch at 120 s before the change reported 4 (55/25/3/1) /
+810.0 mm / 6.442 m² with every shuriken in the strip (service job, not this
+script).
+
+- Fixtures without a filler tier (mixed, combs, owner-54, owner-real-54) take
+  exactly the previous path; their layouts are identical.
+- owner-real-84: all 30 shurikens now sit among the stars on sheet 1 (none
+  in a strip), a star from the top of sheet 2 took the freed space, and
+  sheet 2's occupied extent drops from 2842.5 to 2727.3 mm, so its clear
+  strip grows from 0.21 to 0.38 m². The 30 fillers now cost 0.17 m² of
+  leftover against the same batch without them (owner-real-54, 6.804 m²),
+  half of the 0.34 m² before. The fill also converges sooner (23 s instead of
+  running into the 30 s deadline), because the shurikens no longer step
+  down one move at a time.
+- owner-84 (synthetic): all fillers move from the strip into the star pockets
+  of sheet 1; the stars there were already packed, so leftover is equal.
+- Sheet counts and last-sheet extents are unchanged everywhere; every layout
+  passes `validate_layout`.
+
+Options evaluated (owner-real-84 and owner-84 solver layouts, the same
+saved layout for every variant, `fill_gaps` with a 60 s deadline):
+
+| variant | owner-real-84 leftover | owner-84 leftover | fillers among parts |
+|---|---|---|---|
+| previous gap fill (lowest position only) | 6.470 m² | 7.062 m² | 0/30 (all in a strip) |
+| early prototype: fillers placed before the larger parts settle, contact counts other fillers too (run on the already filled layout) | 6.469 m² | - | 17/30; 13 cluster in the old strip again |
+| filler phase, lowest position inside the occupied box | 6.641 m² | 7.098 m² | 30/30, lined up along the column edges |
+| filler phase, most contact inside the occupied box (adopted) | 6.641 m² | 7.098 m² | 30/30, in the pockets between stars |
+| as adopted, but the 300 mm stars also treated as fillers | owner-real-54: 6.254 m² (was 6.804) | owner-54: 7.302 m² (was 7.031) | - |
+
+- The tier rule's 10 % area share exists because of the last row: a whole
+  tier of mid-size parts placed by contact spreads out on the traced stars
+  and loses 0.55 m² of leftover, although it helps the synthetic stars.
+- Moves beyond the occupied box only when they shrink the envelope: a move
+  out of the box always grows that sheet's envelope; envelope-shrinking moves
+  (lower inside the box, or onto an earlier sheet) are what compaction
+  already does, so there is nothing to add.
+- An objective that minimises the occupied envelope directly (instead of
+  each part's position) is what the filler phase approximates: fillers never
+  enlarge a box, and larger parts are compacted first. A global envelope
+  search (moving several parts at once) was not tried.
+- Candidate positions at concave vertices of neighbours: the contact score
+  already ranks positions inside outer concavities and between neighbours
+  highest; explicit vertex candidates were not added.
+
 ## Known limits
 
 - No nesting inside holes, no common-line cutting, no tabs (v1 scope).
+- Filler detection is a heuristic (4x size jump, 10 % area share); a group
+  whose small parts do not meet it gets the plain compaction, and mid-size
+  parts (the 300 mm stars) are never re-placed by contact. Fillers are
+  frozen after the filler phase, so compaction does not move them again.
 - Seed is not applied (see above).
 - If the solver needs more than the hard limit just to build the instance,
   the result is the baseline. This can happen with very many distinct part
