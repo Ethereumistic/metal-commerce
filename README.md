@@ -24,6 +24,8 @@ The CLI may ask to overwrite components that already exist; answer no unless you
 
 The admin imports `@workspace/ui/globals.css`, which holds the stock shadcn neutral theme. The storefront keeps its own brand tokens in `apps/store/src/styles.css` and uses `@source` to scan `packages/ui`. Shared components take text through props (for example `closeLabel` on `DialogContent` and `SheetContent`), so each app supplies its own translations.
 
+Full admin guide (shell, sign-in, Studio, Production workspace, artwork service, deploy): [docs/metal-admin.md](docs/metal-admin.md).
+
 ## Admin authentication
 
 Operators sign in with their **Echoray platform account**, either with an email code or a password, against Echoray core (`https://convex.echoray.io`). The Worker runs the sign-in on the server and keeps the Echoray tokens in `HttpOnly` cookies. On every page load it checks `businesses.get` for `ADMIN_BUSINESS_ID` (`ks7edx6n4kr4zz1396yqy4deq18g0tkc`).
