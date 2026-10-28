@@ -1,3 +1,4 @@
+import { CollectionLink } from "@/components/collection-link";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -11,6 +12,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@workspace/ui/components/accordion";
+import { collectionGroup } from "@/lib/taxonomy";
+import { groupLabel } from "@/lib/taxonomy-copy";
 import { categoryLabel } from "@/lib/catalog";
 import {
   getStoreProduct,
@@ -60,7 +63,9 @@ export const Route = createFileRoute("/pieces/$slug")({
   preloadStaleTime: 30_000,
   head: ({ loaderData }) => ({
     meta: [
-      { title: (loaderData?.product?.name ?? m.collection()) + " — Metal Craft" },
+      {
+        title: (loaderData?.product?.name ?? m.collection()) + " — Metal Craft",
+      },
       {
         name: "description",
         content: loaderData?.product?.description ?? m.collection_intro(),
@@ -79,10 +84,10 @@ function PiecePage() {
       <div className="page-container catalog-unavailable">
         <h1>{m.collection()}</h1>
         <p role="status">{m.products_unavailable()}</p>
-        <Link to="/collection" className="text-link">
+        <CollectionLink className="text-link">
           {m.back_collection()}
           <ArrowLeft size={17} />
-        </Link>
+        </CollectionLink>
       </div>
     </SiteShell>
   );
@@ -105,9 +110,24 @@ function ProductDetail({
         <nav className="breadcrumb" aria-label={m.home()}>
           <Link to="/">{m.home()}</Link>
           <span>/</span>
-          <Link to="/collection" search={{ category: piece.category }}>
-            {categoryLabel(piece.category)}
+          <Link to="/collection" search={{}}>
+            {m.collection()}
           </Link>
+          {piece.category && (
+            <>
+              <span>/</span>
+              <Link
+                to="/categories/$category"
+                params={{ category: collectionGroup(piece.category) }}
+              >
+                {groupLabel(collectionGroup(piece.category))}
+              </Link>
+              <span>/</span>
+              <CollectionLink search={{ category: piece.category }}>
+                {categoryLabel(piece.category)}
+              </CollectionLink>
+            </>
+          )}
           <span>/</span>
           <span>{piece.name}</span>
         </nav>
@@ -190,24 +210,22 @@ function ProductDetail({
                 </AccordionItem>
               ))}
             </Accordion>
-            <Link
-              to="/collection"
+            <CollectionLink
               search={{ category: piece.category }}
               className="text-link product-collection-link"
             >
               {m.view_category({ category: categoryLabel(piece.category) })}
               <ArrowUpRight size={19} />
-            </Link>
+            </CollectionLink>
           </div>
         </section>
-        <Link
-          to="/collection"
+        <CollectionLink
           search={{ category: piece.category }}
           className="text-link back-link"
         >
           <ArrowLeft size={17} />
           {m.back_collection()}
-        </Link>
+        </CollectionLink>
         {related.length > 0 && (
           <section className="related-section">
             <div className="section-heading">

@@ -10,6 +10,18 @@ Metal Craft storefront, forked from `furniture-commerce`, built with TanStack St
 
 Public catalog reads use `@echoray/api-client/public-catalog` through `https://commerce.echoray.io`. Bootstrap checks the configured business and origin. Private shopper operations use the same-origin `/api/shop` gateway and protected Worker bindings. Credentials are never part of browser configuration.
 
+## Storefront categories and collections
+
+The shop at `/{locale}/collection` groups published collections beneath storefront categories:
+
+- `/{locale}/categories/wall-art` contains Architecture.
+- `/{locale}/categories/collectibles` contains Ninja Blades (display replicas).
+- Each collection has its own filtered page, such as `/{locale}/collections/architecture` or `/{locale}/collections/ninja-blades`.
+
+`src/lib/taxonomy.ts` owns this presentation grouping. Commerce remains authoritative for collection names, product membership, descriptions and imagery. New unmapped collections remain discoverable under More collections until assigned to a group. Empty groups are omitted. This change does not create or rename dashboard records.
+
+Products retain their stable `/{locale}/pieces/{slug}` URLs and link back through category and collection breadcrumbs. Existing `/collection?category=...` links remain usable; their canonical and language alternate links point to the clean collection route. Product filtering and cursor pagination run through the public catalog gateway; category navigation uses bootstrap without fetching all products.
+
 ## Setup and deployment
 
 ```sh

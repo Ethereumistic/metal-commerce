@@ -1,3 +1,4 @@
+import { CollectionLink } from "@/components/collection-link";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -37,6 +38,8 @@ import {
 import { AccountLink, BagButton } from "@/components/cart";
 import { m } from "@/paraglide/messages";
 import { getLocale, setLocale, type Locale } from "@/paraglide/runtime";
+import { groupedCollections } from "@/lib/taxonomy";
+import { groupLabel } from "@/lib/taxonomy-copy";
 import { categoryLabel } from "@/lib/catalog";
 import {
   useCategories,
@@ -212,30 +215,29 @@ function SearchDialog({
               </p>
             )}
             {state === "ready" && (
-              <Link
+              <CollectionLink
                 className="text-link"
-                to="/collection"
+
                 search={{ q: term }}
                 onClick={() => onOpenChange(false)}
               >
                 {m.search_view_all()}
                 <ArrowUpRight size={18} />
-              </Link>
+              </CollectionLink>
             )}
           </div>
         ) : (
           <div className="search-suggestions">
             <p className="small-label">{m.search_suggestions()}</p>
             {categoryIds.map((id) => (
-              <Link
-                to="/collection"
+              <CollectionLink
                 search={{ category: id }}
                 key={id}
                 onClick={() => onOpenChange(false)}
               >
                 {categoryLabel(id)}
                 <ArrowUpRight size={18} />
-              </Link>
+              </CollectionLink>
             ))}
           </div>
         )}
@@ -246,7 +248,6 @@ function SearchDialog({
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const { categories } = useCategories();
-  const categoryIds = categories.map((category) => category.id);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   return (
@@ -263,7 +264,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
         {[m.marquee_1(), m.marquee_2(), m.marquee_3(), m.marquee_4()].map(
           (text) => (
             <MarqueeItem key={text} className="text-sm">
-              <Sparkle aria-hidden="true" className="size-3.5 fill-accent text-accent" />
+              <Sparkle
+                aria-hidden="true"
+                className="size-3.5 fill-accent text-accent"
+              />
               {text}
             </MarqueeItem>
           ),
@@ -275,9 +279,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Logo />
           </Link>
           <nav className="primary-nav" aria-label={m.main_nav()}>
-            <Link to="/collection" search={{}}>
-              {m.collection()}
-            </Link>
+            <CollectionLink search={{}}>{m.collection()}</CollectionLink>
             <Link to="/about">{m.about()}</Link>
           </nav>
           <div className="header-right">
@@ -307,7 +309,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent closeLabel={m.close()}
+        <SheetContent
+          closeLabel={m.close()}
           side="right"
           className="mobile-menu"
           id="mobile-navigation"
@@ -322,25 +325,35 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </SheetDescription>
           </SheetHeader>
           <nav aria-label={m.collection()}>
-            <Link
-              to="/collection"
+            <CollectionLink
               search={{}}
               onClick={() => setMenuOpen(false)}
               className="menu-collection"
             >
               {m.all_pieces()}
               <ArrowUpRight size={22} />
-            </Link>
-            {categoryIds.map((id) => (
-              <Link
-                key={id}
-                to="/collection"
-                search={{ category: id }}
-                onClick={() => setMenuOpen(false)}
-              >
-                {categoryLabel(id)}
-                <ArrowUpRight size={18} />
-              </Link>
+            </CollectionLink>
+            {groupedCollections(categories).map((group) => (
+              <div className="menu-category-group" key={group.id}>
+                <Link
+                  className="menu-category-heading"
+                  to="/categories/$category"
+                  params={{ category: group.id }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {groupLabel(group.id)}
+                </Link>
+                {group.collections.map(({ id }) => (
+                  <CollectionLink
+                    key={id}
+                    search={{ category: id }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {categoryLabel(id)}
+                    <ArrowUpRight size={18} />
+                  </CollectionLink>
+                ))}
+              </div>
             ))}
           </nav>
           <div className="menu-secondary">
@@ -362,20 +375,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="footer-cta border-b-3 border-foreground bg-primary text-primary-foreground">
           <div className="footer-inner flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
             <h2 className="footer-cta-title">{m.cta_heading()}</h2>
-            <Link
-              to="/collection"
+            <CollectionLink
               search={{}}
               className={buttonVariants({ variant: "ink", size: "xl" })}
             >
               {m.view_collection()}
               <ArrowRight />
-            </Link>
+            </CollectionLink>
           </div>
         </div>
         <div className="bg-foreground text-background">
           <div className="footer-inner grid gap-10 py-14 md:grid-cols-[1.2fr_2fr_1fr]">
             <div className="space-y-5">
-              <Link to="/" className="wordmark footer-logo" aria-label="Metal Craft">
+              <Link
+                to="/"
+                className="wordmark footer-logo"
+                aria-label="Metal Craft"
+              >
                 <Logo />
               </Link>
               <p className="max-w-[34ch] text-sm text-background/75">
@@ -388,11 +404,24 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <div>
               <h3 className="footer-heading">{m.explore()}</h3>
               <ul className="footer-collections">
-                {categoryIds.map((id) => (
-                  <li key={id}>
-                    <Link to="/collection" search={{ category: id }}>
-                      {categoryLabel(id)}
+                {groupedCollections(categories).map((group) => (
+                  <li key={group.id} className="footer-category-group">
+                    <Link
+                      to="/categories/$category"
+                      params={{ category: group.id }}
+                      className="footer-category-heading"
+                    >
+                      {groupLabel(group.id)}
                     </Link>
+                    <ul>
+                      {group.collections.map(({ id }) => (
+                        <li key={id}>
+                          <CollectionLink search={{ category: id }}>
+                            {categoryLabel(id)}
+                          </CollectionLink>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 ))}
               </ul>
@@ -401,9 +430,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <h3 className="footer-heading">{m.discover()}</h3>
               <ul className="footer-links">
                 <li>
-                  <Link to="/collection" search={{}}>
+                  <CollectionLink search={{}}>
                     {m.view_collection()}
-                  </Link>
+                  </CollectionLink>
                 </li>
                 <li>
                   <Link to="/about">{m.about()}</Link>

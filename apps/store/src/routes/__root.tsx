@@ -18,6 +18,7 @@ import {
   type CatalogRouterContext,
 } from "@/lib/catalog-freshness";
 import { getStoreCatalog } from "@/lib/commerce";
+import { collectionSlug } from "@/lib/taxonomy";
 import { Logo } from "@/components/logo";
 import { CartDrawer, CartFlightLayer, CartSync } from "@/components/cart";
 
@@ -60,6 +61,7 @@ export const Route = createRootRouteWithContext<CatalogRouterContext>()({
 
 function Root() {
   const { pathname, searchStr } = useLocation();
+  const { categories } = Route.useLoaderData();
   const router = useRouter();
   useEffect(() => {
     document.documentElement.dataset.morisHydrated = "true";
@@ -68,16 +70,24 @@ function Root() {
       const data = match.loaderData as { loadedAt?: number } | undefined;
       if (
         data &&
-        ["__root__", "/", "/collection", "/pieces/$slug"].includes(
-          match.routeId,
-        )
+        [
+          "__root__",
+          "/",
+          "/collection",
+          "/collections/$collection",
+          "/pieces/$slug",
+        ].includes(match.routeId)
       ) {
         recordReceipt(
           router.options.context!,
           catalogKey(
             match.routeId,
             match.loaderDeps,
-            "slug" in match.params ? match.params.slug : undefined,
+            "slug" in match.params
+              ? match.params.slug
+              : "collection" in match.params
+                ? match.params.collection
+                : undefined,
           ),
           data,
         );
@@ -92,13 +102,19 @@ function Root() {
           .filter((match) => {
             const data = match.loaderData as { loadedAt?: number } | undefined;
             if (
-              !["__root__", "/", "/collection", "/pieces/$slug"].includes(
-                match.routeId,
-              )
+              ![
+                "__root__",
+                "/",
+                "/collection",
+                "/collections/$collection",
+                "/pieces/$slug",
+              ].includes(match.routeId)
             )
               return false;
             const ttl =
-              match.routeId === "/collection" && match.search.q
+              (match.routeId === "/collection" ||
+                match.routeId === "/collections/$collection") &&
+              match.search.q
                 ? 15_000
                 : 30_000;
             return !data?.loadedAt || Date.now() - data.loadedAt >= ttl;
@@ -124,7 +140,17 @@ function Root() {
     };
   }, [router]);
   const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
-  const path = pathname + searchStr;
+  const filters = new URLSearchParams(searchStr);
+  const legacyCollection =
+    pathname === "/collection"
+      ? categories.find(
+          (collection) => collection.id === filters.get("category"),
+        )
+      : undefined;
+  if (legacyCollection) filters.delete("category");
+  const path = legacyCollection
+    ? `/collections/${encodeURIComponent(collectionSlug(legacyCollection.id))}${filters.size ? `?${filters}` : ""}`
+    : pathname + searchStr;
   return (
     <html lang={getLocale()}>
       <head>

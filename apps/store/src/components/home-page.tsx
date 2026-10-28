@@ -5,13 +5,12 @@ import { PieceCard } from "./piece-card";
 import { buttonVariants } from "./boldkit/button";
 import { Sticker, Stamp } from "./boldkit/sticker";
 import {
-  CollectionBento,
   FAQAccordion,
   FeatureSteps,
   SectionHeading,
   StatsCards,
 } from "./boldkit/blocks";
-import { categoryLabel } from "@/lib/catalog";
+import { CategoryDirectory } from "./category-directory";
 import { Route } from "@/routes/index";
 import { m } from "@/paraglide/messages";
 import { useCategories } from "@/lib/commerce";
@@ -107,23 +106,18 @@ export function HomePage() {
           {m.categories_unavailable()}
         </p>
       )}
-      <CollectionBento
-        title={m.category_heading()}
-        description={m.category_body()}
-        collections={categories.map(({ id, imageUrl, imageAlt, image }) => ({
-          id,
-          label: categoryLabel(id),
-          image: imageUrl
-            ? {
-                src: imageUrl,
-                srcSet: image?.srcSet,
-                width: image?.width,
-                height: image?.height,
-                alt: imageAlt || categoryLabel(id),
-              }
-            : undefined,
-        }))}
-      />
+      <section
+        id="collections"
+        className="home-category-directory page-container"
+        aria-labelledby="collections-heading"
+      >
+        <SectionHeading
+          id="collections-heading"
+          title={m.category_heading()}
+          description={m.category_body()}
+        />
+        <CategoryDirectory collections={categories} showHeading={false} />
+      </section>
 
       <section
         className="border-y-3 border-foreground bg-secondary px-4 py-20 md:px-8 lg:px-16"
@@ -164,10 +158,26 @@ export function HomePage() {
         title={m.process_heading()}
         stepLabel={(number) => m.step({ number: String(number) })}
         steps={[
-          { title: m.process_1_title(), description: m.process_1_body(), icon: <PenTool /> },
-          { title: m.process_2_title(), description: m.process_2_body(), icon: <Zap /> },
-          { title: m.process_3_title(), description: m.process_3_body(), icon: <Paintbrush /> },
-          { title: m.process_4_title(), description: m.process_4_body(), icon: <Truck /> },
+          {
+            title: m.process_1_title(),
+            description: m.process_1_body(),
+            icon: <PenTool />,
+          },
+          {
+            title: m.process_2_title(),
+            description: m.process_2_body(),
+            icon: <Zap />,
+          },
+          {
+            title: m.process_3_title(),
+            description: m.process_3_body(),
+            icon: <Paintbrush />,
+          },
+          {
+            title: m.process_4_title(),
+            description: m.process_4_body(),
+            icon: <Truck />,
+          },
         ]}
       />
 

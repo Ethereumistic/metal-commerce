@@ -8,6 +8,8 @@ export function catalogKey(
   slug?: string,
 ) {
   if (routeId === "/pieces/$slug") return `${routeId}:${slug}`;
+  if (routeId === "/collections/$collection")
+    return `${routeId}:${slug}:${JSON.stringify(filters)}`;
   if (routeId === "/collection") return `${routeId}:${JSON.stringify(filters)}`;
   return routeId;
 }

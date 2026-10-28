@@ -1,10 +1,10 @@
+import { CollectionLink } from "@/components/collection-link";
 /*
  * Marketing blocks adapted from BoldKit (MIT): StatsCards, FeatureGridWithIcons,
  * FAQAccordion and BentoGrid. Markup and tokens follow the originals; data and
  * links are the store's own, and the accordion uses the shared Base UI one.
  */
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionContent,
@@ -99,7 +99,11 @@ export function FeatureSteps({
   steps: { title: string; description: string; icon: ReactNode }[];
 }) {
   return (
-    <section id={id} className="px-4 py-20 md:px-8 lg:px-16" aria-labelledby="steps-heading">
+    <section
+      id={id}
+      className="px-4 py-20 md:px-8 lg:px-16"
+      aria-labelledby="steps-heading"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeading id="steps-heading" title={title} />
         <ol className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -146,7 +150,10 @@ export function FAQAccordion({
   items: { question: string; answer: string }[];
 }) {
   return (
-    <section className="px-4 py-20 md:px-8 lg:px-16" aria-labelledby="faq-heading">
+    <section
+      className="px-4 py-20 md:px-8 lg:px-16"
+      aria-labelledby="faq-heading"
+    >
       <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[1fr_1.6fr]">
         <SectionHeading id="faq-heading" title={title} className="mb-0" />
         <Accordion className="space-y-4">
@@ -183,7 +190,13 @@ export function CollectionBento({
   collections: {
     id: string;
     label: string;
-    image?: { src: string; srcSet?: string; width?: number; height?: number; alt: string };
+    image?: {
+      src: string;
+      srcSet?: string;
+      width?: number;
+      height?: number;
+      alt: string;
+    };
   }[];
 }) {
   // A large first tile makes the grid read as a bento rather than a table.
@@ -203,9 +216,8 @@ export function CollectionBento({
         />
         <div className="grid grid-flow-dense grid-cols-2 gap-4 md:grid-cols-4 md:gap-5 lg:grid-cols-6">
           {collections.map((item, index) => (
-            <Link
+            <CollectionLink
               key={item.id}
-              to="/collection"
               search={{ category: item.id }}
               className={cn(
                 "group flex flex-col border-3 border-foreground bg-card shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition hover:translate-x-[-3px] hover:translate-y-[-3px] hover:shadow-[7px_7px_0px_hsl(var(--shadow-color))] focus-visible:translate-x-[-3px] focus-visible:translate-y-[-3px]",
@@ -251,7 +263,7 @@ export function CollectionBento({
               >
                 {item.label}
               </span>
-            </Link>
+            </CollectionLink>
           ))}
         </div>
       </div>

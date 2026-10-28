@@ -671,7 +671,7 @@
   padding: 36px 0 36px;
 }
 .collection-intro h1 {
-  font-size: clamp(64px, 9vw, 150px);
+  font-size: clamp(52px, 7vw, 112px);
   line-height: 0.85;
   text-shadow: 5px 5px 0 hsl(var(--primary));
 }
@@ -2621,5 +2621,180 @@
   }
   .contact-summary {
     padding: 16px;
+  }
+}
+
+/* Catalog hierarchy: category headers frame the actual collection imagery. */
+.home-category-directory {
+  padding-block: 64px;
+}
+.category-directory {
+  margin: 24px 0 48px;
+}
+.category-directory > h2 {
+  font-size: clamp(30px, 4vw, 46px);
+  margin-bottom: 24px;
+}
+.category-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.category-group {
+  min-width: 0;
+  border: 3px solid hsl(var(--foreground));
+  background: hsl(var(--card));
+}
+.category-group > header {
+  min-height: 154px;
+  padding: 22px 24px;
+  background: hsl(var(--primary));
+  border-bottom: 3px solid hsl(var(--foreground));
+}
+.category-group:nth-child(even) > header {
+  background: hsl(var(--secondary));
+}
+.category-group h3 {
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1;
+}
+.category-group h3 a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.category-group header p {
+  margin-top: 12px;
+  max-width: 48ch;
+}
+.collection-previews {
+  display: grid;
+  gap: 0;
+}
+.collection-preview {
+  display: block;
+  min-width: 0;
+}
+.collection-preview + .collection-preview {
+  border-top: 3px solid hsl(var(--foreground));
+}
+.collection-preview-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: white;
+}
+.collection-preview-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.collection-preview-image > span {
+  font-family: var(--font-display);
+  font-size: 36px;
+  padding: 24px;
+}
+.collection-preview-copy {
+  padding: 20px 24px 24px;
+  border-top: 3px solid hsl(var(--foreground));
+}
+.collection-kind {
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+.collection-preview :is(h2, h4) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font: 700 30px / 1.15 var(--font-display);
+  margin-top: 6px;
+}
+.collection-preview p {
+  margin-top: 10px;
+  color: hsl(var(--muted-foreground));
+  max-width: 55ch;
+}
+.collection-preview:hover .collection-preview-copy {
+  background: hsl(var(--primary) / 0.15);
+}
+.collection-cover {
+  margin: 0 0 40px;
+  border: 3px solid hsl(var(--foreground));
+  background: white;
+  height: clamp(220px, 36vw, 440px);
+}
+.collection-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.catalog-products-heading {
+  font-size: clamp(28px, 4vw, 42px);
+  margin-bottom: 20px;
+}
+.category-page .category-directory-grid {
+  grid-template-columns: 1fr;
+}
+.category-page .collection-previews {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.category-page .category-group {
+  background: transparent;
+  border: none;
+}
+.category-page .collection-preview {
+  border: 3px solid hsl(var(--foreground));
+  background: hsl(var(--card));
+}
+.mobile-menu nav .menu-category-heading {
+  font-size: 18px;
+  padding-top: 24px;
+  padding-bottom: 8px;
+  border-bottom: none;
+}
+.mobile-menu nav .menu-category-group .collection-kind {
+  font-size: 14px;
+}
+.mobile-menu nav .menu-category-group > a:not(.menu-category-heading) {
+  padding-left: 16px;
+  font-size: 22px;
+}
+.footer-category-heading {
+  display: inline-block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.footer-category-group + .footer-category-group {
+  margin-top: 20px;
+}
+.footer-category-group ul {
+  padding-left: 12px;
+  border-left: 2px solid hsl(var(--primary));
+}
+@media (max-width: 700px) {
+  .category-directory-grid,
+  .category-page .collection-previews {
+    grid-template-columns: 1fr;
+  }
+  .home-category-directory {
+    padding-block: 44px;
+  }
+  .category-group > header,
+  .collection-preview-copy {
+    padding: 18px;
+  }
+  .category-group > header {
+    min-height: auto;
+  }
+  .category-directory {
+    margin-top: 12px;
   }
 }

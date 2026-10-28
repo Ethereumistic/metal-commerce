@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 const control = "http://127.0.0.1:4319/control";
 test.beforeEach(async ({ request }) => {
-  await request.get(`${control}?reset=1&fail=0&scope=ok`);
+  await request.get(`${control}?reset=1&fail=0&scope=ok&catalog=furniture`);
 });
 
 test("informational SSR reads bootstrap only and every dynamic response is no-store", async ({
@@ -45,7 +45,7 @@ test("home fetches four cards and derivatives; hydration, mobile menu and locale
   ).toHaveCount(4);
   await expect(
     page.locator('section[aria-labelledby="collections-heading"] a'),
-  ).toHaveCount(7);
+  ).toHaveCount(8);
   expect(
     await page.locator(".piece-primary").first().getAttribute("src"),
   ).toContain("/media/");
@@ -53,7 +53,7 @@ test("home fetches four cards and derivatives; hydration, mobile menu and locale
     await page.locator(".piece-primary").first().getAttribute("srcset"),
   ).toContain("640w");
   await page.getByRole("button", { name: "Отвори менюто" }).click();
-  await expect(page.locator(".mobile-menu nav a")).toHaveCount(8);
+  await expect(page.locator(".mobile-menu nav a")).toHaveCount(9);
   await page.keyboard.press("Escape");
   await expect(
     page.getByRole("button", { name: "Отвори менюто" }),
@@ -304,7 +304,7 @@ test("Bulgarian defaults, supported language switching, and removed locale links
   await expect(page).toHaveURL(/\/bg\/collection\?category=chairs/);
   await expect(page.locator('link[hreflang="x-default"]')).toHaveAttribute(
     "href",
-    /\/bg\/collection\?category=chairs$/,
+    /\/bg\/collections\/chairs$/,
   );
   await expect(
     page.locator('link[hreflang="fr"], link[hreflang="de"]'),
@@ -374,6 +374,133 @@ test("Bulgarian and English home pages fit narrow phones and wide screens", asyn
         ),
         `${locale} at ${width}px`,
       ).toBe(true);
+    }
+  }
+});
+
+test("categories lead to clean collection URLs and stable product breadcrumbs", async ({
+  page,
+  request,
+}) => {
+  await request.get(`${control}?catalog=metal`);
+  const legacy = await request.get("/en/collection?category=Architecture");
+  expect(await legacy.text()).toContain(
+    'rel="canonical" href="/en/collections/architecture"',
+  );
+  await page.goto("/en/collection");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-moris-hydrated",
+    "true",
+  );
+  await expect(page.locator(".category-group")).toHaveCount(2);
+  await page
+    .locator(".category-group h3")
+    .getByRole("link", { name: "Wall Art" })
+    .click();
+  await expect(page).toHaveURL("/en/categories/wall-art");
+  await expect(page.locator("h1")).toHaveText("Wall Art");
+  await expect(page.locator(".collection-preview")).toHaveCount(1);
+  await page.locator(".collection-preview").click();
+  await expect(page).toHaveURL("/en/collections/architecture");
+  await expect(page.locator(".piece-card")).toHaveCount(1);
+  await expect(page.locator(".breadcrumb")).toContainText("Wall Art");
+  await page.locator(".piece-card").click();
+  await expect(page).toHaveURL("/en/pieces/sydney-opera-house");
+  await expect(page.locator(".breadcrumb")).toContainText(
+    "Home/Shop/Wall Art/Architecture/Sydney Opera House",
+  );
+  await page
+    .locator(".breadcrumb")
+    .getByRole("link", { name: "Architecture", exact: true })
+    .click();
+  await expect(page).toHaveURL("/en/collections/architecture");
+  const calls = (await (await request.get(control)).json()).requests;
+  expect(
+    calls
+      .filter((c: { path: string }) => c.path.endsWith("/products"))
+      .every(
+        (c: { query: { collection?: string } }) =>
+          !c.query.collection || c.query.collection === "Architecture",
+      ),
+  ).toBe(true);
+  for (const path of [
+    "/en/categories/missing",
+    "/en/categories/more-collections",
+    "/en/collections/missing",
+  ]) {
+    expect((await request.get(path)).status()).toBe(404);
+  }
+});
+
+test("Collectibles contains Ninja Blades; collection pagination, filters, locale and refresh retain scope", async ({
+  page,
+  request,
+}) => {
+  await request.get(`${control}?catalog=metal`);
+  await page.goto("/en/categories/collectibles");
+  await page.locator(".collection-preview").click();
+  await expect(page).toHaveURL("/en/collections/ninja-blades");
+  await expect(page.locator(".piece-card")).toHaveCount(24);
+  await expect(page.locator(".breadcrumb")).toContainText("Collectibles");
+  await page.getByRole("link", { name: "Next page" }).click();
+  await expect(page).toHaveURL(/\/en\/collections\/ninja-blades\?cursor=/);
+  await expect(page.locator(".piece-card")).toHaveCount(2);
+  await page.getByRole("link", { name: "First page" }).click();
+  await expect(page).toHaveURL("/en/collections/ninja-blades");
+  await page.getByRole("button", { name: "Refine" }).click();
+  await page.getByRole("button", { name: "Glass", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".piece-card")).toHaveCount(0);
+  await expect(page.locator(".collection-empty")).toContainText(
+    "No pieces here yet",
+  );
+  await page.goto("/en/collections/ninja-blades?cursor=invalid");
+  await expect(page).toHaveURL("/en/collections/ninja-blades");
+  await expect(page.locator(".piece-card")).toHaveCount(24);
+  await page.locator("header").getByRole("combobox").click();
+  await page.getByRole("option", { name: "Български" }).click();
+  await expect(page).toHaveURL("/bg/collections/ninja-blades");
+  await expect(page.locator("h1")).toHaveText("Нинджа остриета.");
+  await page.clock.install();
+  await page.clock.fastForward(31_000);
+  await request.get(`${control}?fail=1`);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(page.locator(".piece-card")).toHaveCount(0);
+  await request.get(`${control}?fail=0`);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(page.locator(".piece-card")).toHaveCount(24);
+  await page.goto("/en/collections/ninja-blades?q=" + "x".repeat(201));
+  await expect(page.locator(".collection-empty")).toContainText(
+    "fewer than 200",
+  );
+});
+
+test("category and collection discovery fit phones and desktop in both languages", async ({
+  page,
+  request,
+}) => {
+  await request.get(`${control}?catalog=metal`);
+  for (const locale of ["bg", "en"]) {
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const path of [
+        "",
+        "/collection",
+        "/categories/collectibles",
+        "/collections/architecture",
+        "/collections/ninja-blades",
+      ]) {
+        const response = await page.goto(`/${locale}${path}`);
+        expect(response?.status()).toBe(200);
+        await expect(page.locator("h1")).toBeVisible();
+        await page.evaluate(() => document.fonts.ready);
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+          `${locale}${path} at ${width}px`,
+        ).toBe(true);
+      }
     }
   }
 });

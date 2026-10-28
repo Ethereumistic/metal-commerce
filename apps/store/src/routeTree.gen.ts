@@ -14,6 +14,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as CategoriesCategoryRouteImport } from './routes/categories.$category'
+import { Route as CollectionsCollectionRouteImport } from './routes/collections.$collection'
 import { Route as PiecesSlugRouteImport } from './routes/pieces.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +43,16 @@ const CollectionRoute = CollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriesCategoryRoute = CategoriesCategoryRouteImport.update({
+  id: '/categories/$category',
+  path: '/categories/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionsCollectionRoute = CollectionsCollectionRouteImport.update({
+  id: '/collections/$collection',
+  path: '/collections/$collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PiecesSlugRoute = PiecesSlugRouteImport.update({
   id: '/pieces/$slug',
   path: '/pieces/$slug',
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/collection': typeof CollectionRoute
+  '/categories/$category': typeof CategoriesCategoryRoute
+  '/collections/$collection': typeof CollectionsCollectionRoute
   '/pieces/$slug': typeof PiecesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/collection': typeof CollectionRoute
+  '/categories/$category': typeof CategoriesCategoryRoute
+  '/collections/$collection': typeof CollectionsCollectionRoute
   '/pieces/$slug': typeof PiecesSlugRoute
 }
 export interface FileRoutesById {
@@ -70,15 +86,31 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/collection': typeof CollectionRoute
+  '/categories/$category': typeof CategoriesCategoryRoute
+  '/collections/$collection': typeof CollectionsCollectionRoute
   '/pieces/$slug': typeof PiecesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/account' | '/checkout' | '/collection' | '/pieces/$slug'
+    | '/'
+    | '/about'
+    | '/account'
+    | '/checkout'
+    | '/collection'
+    | '/categories/$category'
+    | '/collections/$collection'
+    | '/pieces/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/about' | '/account' | '/checkout' | '/collection' | '/pieces/$slug'
+    | '/'
+    | '/about'
+    | '/account'
+    | '/checkout'
+    | '/collection'
+    | '/categories/$category'
+    | '/collections/$collection'
+    | '/pieces/$slug'
   id:
     | '__root__'
     | '/'
@@ -86,6 +118,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout'
     | '/collection'
+    | '/categories/$category'
+    | '/collections/$collection'
     | '/pieces/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -95,6 +129,8 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   CheckoutRoute: typeof CheckoutRoute
   CollectionRoute: typeof CollectionRoute
+  CategoriesCategoryRoute: typeof CategoriesCategoryRoute
+  CollectionsCollectionRoute: typeof CollectionsCollectionRoute
   PiecesSlugRoute: typeof PiecesSlugRoute
 }
 
@@ -135,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categories/$category': {
+      id: '/categories/$category'
+      path: '/categories/$category'
+      fullPath: '/categories/$category'
+      preLoaderRoute: typeof CategoriesCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collections/$collection': {
+      id: '/collections/$collection'
+      path: '/collections/$collection'
+      fullPath: '/collections/$collection'
+      preLoaderRoute: typeof CollectionsCollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pieces/$slug': {
       id: '/pieces/$slug'
       path: '/pieces/$slug'
@@ -151,6 +201,8 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   CheckoutRoute: CheckoutRoute,
   CollectionRoute: CollectionRoute,
+  CategoriesCategoryRoute: CategoriesCategoryRoute,
+  CollectionsCollectionRoute: CollectionsCollectionRoute,
   PiecesSlugRoute: PiecesSlugRoute,
 }
 export const routeTree = rootRouteImport

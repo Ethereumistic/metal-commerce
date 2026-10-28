@@ -13,6 +13,8 @@ export const categoryIds = [
 export type CategoryId = (typeof categoryIds)[number];
 export type Material = "wood" | "fabric" | "metal" | "glass";
 export function categoryLabel(id: string) {
+  if (id === "Architecture") return m.architecture();
+  if (id === "Ninja Blades") return m.ninja_blades();
   if (!categoryIds.includes(id as CategoryId)) return id;
   return {
     tables: m.tables,
